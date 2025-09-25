@@ -1,0 +1,35 @@
+summary: Get a church by id, name, city, state, or zip
+description: Gets a church by id, name, city, state, or zip
+parameters:
+  - name: id
+    in: query
+    description: The id of the church
+    required: false
+    type: string
+  - name: name
+    in: query
+    description: The name of the church
+    required: false
+    type: string
+  - name: city
+    in: query
+    description: The city of the church
+    required: false
+    type: string
+  - name: state
+    in: query
+    description: The state of the church
+    required: false
+    type: string
+  - name: zip
+    in: query
+    description: The zip of the church
+    required: false
+    type: string
+responses:
+  '200':
+    description: The church was found
+    content:
+      application/json:
+        schema:
+          type: object

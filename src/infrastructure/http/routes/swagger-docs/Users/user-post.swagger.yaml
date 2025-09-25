@@ -1,0 +1,21 @@
+summary: Create a new user
+description: Creates a new user with the given information
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          email:
+            type: string
+          username:
+            type: string
+          firstName:
+            type: string
+          lastName:
+            type: string
+          primaryChurchId:
+            type: number
+          isPublic:
+            type: boolean

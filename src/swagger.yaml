@@ -1,0 +1,15 @@
+openapi: 3.0.0
+info:
+  title: BibJotz API
+  version: 1.0.0
+  description: BibJotz API with Express and Swagger (YAML)
+
+paths:
+  /api/v1/users:
+    post:
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-post.swagger.yaml'
+  /api/v1/churches:
+    post:
+      $ref: './infrastructure/http/routes/swagger-docs/Churches/church-post.swagger.yaml'
+    get:
+      $ref: './infrastructure/http/routes/swagger-docs/Churches/church-get.swagger.yaml'

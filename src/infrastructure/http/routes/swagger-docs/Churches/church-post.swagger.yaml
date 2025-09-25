@@ -1,0 +1,25 @@
+summary: Create a new church
+description: Creates a new church with the given information
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          name:
+            type: string  
+          street:
+            type: string
+          city:
+            type: string
+          state:
+            type: string
+          zip:
+            type: string
+          website:
+            type: string
+          email:
+            type: string
+          phone:
+            type: string

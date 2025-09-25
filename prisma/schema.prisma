@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas = ["app"]
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String   @unique @map("user_name")
+  firstName String? @map("first_name")
+  lastName  String? @map("last_name")
+  isPublic  Boolean  @default(true) @map("is_public")
+  primaryChurchId  Int? @map("primary_church_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  church              Church?              @relation(fields: [primaryChurchId], references: [id])
+  @@map("users")
+  @@schema("app")
+}
+
+model Church {
+  id        Int      @id @default(autoincrement())
+  name      String
+  street    String
+  city      String
+  state     String
+  zip       String
+  website   String?
+  email     String?
+  phone     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  users User[]
+
+  @@map("churches")
+  @@schema("app")
+}
