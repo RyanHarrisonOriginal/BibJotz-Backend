@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { CommandBus } from "@/infrastructure/CQRS/command-bus/command-bus";
-import { IUserDTO } from "@/domain/User/user.dbt";
+import { IUserDTO } from "@/domain/User/user.dto";
 import { CreateUserCommand } from "@/domain/User/commands/create-user/create-user.command";
 import { GetUserQuery } from "@/domain/User/queries/get-user/get-user.query";
 import { QueryBus } from "@/infrastructure/CQRS/query-bus/query-bus";

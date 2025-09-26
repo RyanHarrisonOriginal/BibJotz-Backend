@@ -2,7 +2,7 @@
 import { Email } from "../shared/value-objects/Email";
 import { BaseEntity } from "../BaseEntity";
 import { Subscription } from "../shared/value-objects/Subscription";
-import { IUserDTO } from "./user.dbt";
+import { IUserDTO } from "./user.dto";
 
 export class User extends BaseEntity {
 
