@@ -1,5 +1,5 @@
 import { BaseEntity } from "../BaseEntity";
-import { BiblicalRefrence } from "../shared/value-objects/BiblicalRefrence";
+import { BiblicalReference } from "../shared/value-objects/BiblicalReference";
 import { GuideSection } from "./guide-section";
 
 export class Guide extends BaseEntity {
@@ -9,7 +9,7 @@ export class Guide extends BaseEntity {
         private description: string,
         private isPublic: boolean,
         private guideSections: GuideSection[],
-        private biblicalRefrences: BiblicalRefrence[],
+        private biblicalRefrences: BiblicalReference[],
         createdAt: Date = new Date(),
         updatedAt: Date = new Date()
     ) {
@@ -32,7 +32,7 @@ export class Guide extends BaseEntity {
         return this.guideSections;
     }
     
-    getBiblicalRefrences(): BiblicalRefrence[] {
+    getBiblicalRefrences(): BiblicalReference[] {
         return this.biblicalRefrences;
     }
 
@@ -46,7 +46,7 @@ export class Guide extends BaseEntity {
         this.touch();
     }
 
-    addBiblicalRefrence(biblicalRefrence: BiblicalRefrence) {
+    addBiblicalRefrence(biblicalRefrence: BiblicalReference) {
         this.biblicalRefrences.push(biblicalRefrence);
         this.touch();
     }

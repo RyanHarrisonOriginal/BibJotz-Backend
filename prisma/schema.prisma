@@ -20,7 +20,7 @@ model User {
   isPublic  Boolean  @default(true) @map("is_public")
   primaryChurchId  Int? @map("primary_church_id")
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt @map("updated_at")
 
   // Relations
   church              Church?              @relation(fields: [primaryChurchId], references: [id])
@@ -45,5 +45,46 @@ model Church {
   users User[]
 
   @@map("churches")
+  @@schema("app")
+}
+
+model Guide {
+  id        Int      @id @default(autoincrement())
+  name      String
+  description String
+  biblicalReferences GuidBibleReference[]
+  isPublic Boolean @default(true) @map("is_public")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("guides")
+  @@schema("app")
+}
+
+model GuidBibleReference {
+  id        Int      @id @default(autoincrement())
+  guideId Int @map("guide_id")
+  book String
+  chapter Int
+  startVerse Int @map("start_verse")
+  endVerse Int @map("end_verse")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  guide Guide @relation(fields: [guideId], references: [id])
+
+  @@map("guide_bible_references")
+  @@schema("app")
+}
+
+model GuideSection {
+  id Int @id @default(autoincrement())
+  guidId Int @map("guide_id")
+  title String
+  description String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("guide_sections")
   @@schema("app")
 }

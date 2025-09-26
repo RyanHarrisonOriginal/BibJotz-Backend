@@ -21,9 +21,7 @@ export class User extends BaseEntity {
     updatedAt: Date = new Date()
   ) { 
     super(id ?? 0, createdAt, updatedAt);
-    if (!id) {
-      throw new Error('Id is required');
-    }
+ 
   }
 
   setAccountPrivacy(isPublic: boolean) {

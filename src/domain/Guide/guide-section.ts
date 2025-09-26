@@ -1,4 +1,4 @@
-import { BiblicalRefrence } from "../shared/value-objects/BiblicalRefrence";
+import { BiblicalRefrence } from "../shared/value-objects/BiblicalReference";
 
 export class GuideSection {
     constructor(

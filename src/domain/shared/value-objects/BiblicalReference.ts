@@ -1,4 +1,4 @@
-export class BiblicalRefrence {
+export class BiblicalReference {
     constructor(
         private readonly book: string,
         private readonly chapter: number,
@@ -6,7 +6,7 @@ export class BiblicalRefrence {
         private readonly endVerse: number
     ) {}
 
-    static create(book: string, chapter: number, startVerse: number, endVerse: number): BiblicalRefrence {
+    static create(book: string, chapter: number, startVerse: number, endVerse: number): BiblicalReference {
         if (!book) {
             throw new Error('Book is required');
         }
@@ -19,7 +19,7 @@ export class BiblicalRefrence {
         if (!endVerse) {
             throw new Error('End verse is required');
         }
-        return new BiblicalRefrence(book, chapter, startVerse, endVerse);
+        return new BiblicalReference(book, chapter, startVerse, endVerse);
     }
 
     getBook(): string {
@@ -38,7 +38,7 @@ export class BiblicalRefrence {
         return this.endVerse;
     }
     
-    equals(other: BiblicalRefrence): boolean {
+    equals(other: BiblicalReference): boolean {
         return this.book === other.book && this.chapter === other.chapter && this.startVerse === other.startVerse && this.endVerse === other.endVerse;
     }
 }
