@@ -1,10 +1,10 @@
-import { BiblicalRefrence } from "../shared/value-objects/BiblicalReference";
+import { BiblicalReference } from "../shared/value-objects/BiblicalReference";
 
 export class GuideSection {
     constructor(
         private readonly title: string,
         private readonly description: string,
-        private readonly biblicalRefrences: BiblicalRefrence[]
+        private readonly biblicalRefrences: BiblicalReference[]
     ) {}
 
     getTitle(): string {
@@ -15,7 +15,7 @@ export class GuideSection {
         return this.description;
     }
 
-    getBiblicalRefrences(): BiblicalRefrence[] {
+    getBiblicalRefrences(): BiblicalReference[] {
         return this.biblicalRefrences;
     }
 }

@@ -8,8 +8,8 @@ export class Guide extends BaseEntity {
         private name: string,
         private description: string,
         private isPublic: boolean,
-        private guideSections: GuideSection[],
-        private biblicalRefrences: BiblicalReference[],
+        private guideSections: GuideSection[] = [],
+        private biblicalRefrences: BiblicalReference[] = [],
         createdAt: Date = new Date(),
         updatedAt: Date = new Date()
     ) {
