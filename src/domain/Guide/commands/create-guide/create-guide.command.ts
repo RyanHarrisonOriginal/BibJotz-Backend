@@ -1,6 +1,6 @@
 import { ICommand } from "@/domain/shared/interfaces/command.interface";
-import { BiblicalReference } from "@/domain/shared/value-objects/BiblicalReference"; 
-import { GuideSection } from "@/domain/Guide/guide-section";
+import { IBiblicalReferenceDTO } from "@/domain/Guide/guide.dto";
+import { IGuideSectionDTO } from "@/domain/Guide/guide.dto";
 
 export class CreateGuideCommand implements ICommand {
     readonly commandType = 'CreateGuideCommand';
@@ -9,7 +9,8 @@ export class CreateGuideCommand implements ICommand {
         public readonly name: string,
         public readonly description: string,        
         public readonly isPublic: boolean,
-        public readonly biblicalReferences: BiblicalReference[],
-        public readonly guideSections: GuideSection[],
+        public readonly biblicalReferences: IBiblicalReferenceDTO[],
+        public readonly guideSections: IGuideSectionDTO[],
+        public readonly authorId: number,
     ) {}
 }

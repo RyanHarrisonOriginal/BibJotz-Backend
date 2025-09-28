@@ -1,0 +1,46 @@
+summary: Create a new guide
+description: Creates a new guide with the given information
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          name:
+            type: string
+          description:
+            type: string
+          isPublic:
+            type: boolean
+          authorId:
+            type: number
+          biblicalReferences:
+            type: array
+            items:
+              type: object
+              properties:
+                book:
+                  type: string
+                chapter:
+                  type: number
+                startVerse:
+                  type: number
+                endVerse:
+                  type: number
+          guideSections:
+            type: array
+            items:
+              type: object
+              properties:
+                title:
+                  type: string
+                ordinalPosition:
+                  type: number
+                description:
+                  type: string
+                biblicalReferences:
+                  type: array
+                  items:
+                    type: object
+                    properties:

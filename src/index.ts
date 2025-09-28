@@ -14,6 +14,7 @@ import { prisma } from '@/infrastructure/database/prisma-client';
 import { DatabaseSetup } from '@/infrastructure/database/database-setup';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { ChurchPostgresRepository } from './infrastructure/persistence/postgres/church-postgres-repository';
+import { GuidePostgresRepository } from './infrastructure/persistence/postgres/guide-postgres-repository';
 
 // Load environment variables
 dotenv.config();
@@ -46,8 +47,9 @@ async function startServer() {
 
     const userRepository = new UserPostgresRepository(prisma);
     const churchRepository = new ChurchPostgresRepository(prisma);
-
-    const commandBus = setupCommandBus({ userRepository, churchRepository });
+    const guideRepository = new GuidePostgresRepository(prisma);
+    
+    const commandBus = setupCommandBus({ userRepository, churchRepository, guideRepository });
     const queryBus = setupQueryBus({ userRepository, churchRepository });
 
     // Routes

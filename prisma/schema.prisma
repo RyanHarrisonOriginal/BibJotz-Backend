@@ -53,9 +53,11 @@ model Guide {
   name      String
   description String
   biblicalReferences GuidBibleReference[]
+  guideSections GuideSection[]
   isPublic Boolean @default(true) @map("is_public")
+  authorId Int @map("created_by")
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
 
   @@map("guides")
   @@schema("app")
@@ -69,21 +71,23 @@ model GuidBibleReference {
   startVerse Int @map("start_verse")
   endVerse Int @map("end_verse")
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
 
   guide Guide @relation(fields: [guideId], references: [id])
 
-  @@map("guide_bible_references")
+  @@map("guide_biblical_references")
   @@schema("app")
 }
 
 model GuideSection {
   id Int @id @default(autoincrement())
-  guidId Int @map("guide_id")
+  guideId Int @map("guide_id")
+  ordinalPosition Int @map("ordinal_position")
   title String
   description String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  guide Guide @relation(fields: [guideId], references: [id])
 
   @@map("guide_sections")
   @@schema("app")

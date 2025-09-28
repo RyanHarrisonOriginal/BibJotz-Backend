@@ -13,8 +13,11 @@ export class CreateGuideCommandHandler implements ICommandHandler<CreateGuideCom
             name: command.name,
             description: command.description,
             isPublic: command.isPublic,
-            biblicalReferences: command.biblicalReferences,
-            guideSections: command.guideSections,
+            biblicalReferences: command.biblicalReferences ?? [],
+            guideSections: command.guideSections ?? [],
+            authorId: command.authorId,
+            createdAt: new Date(),
+            updatedAt: new Date(),
         });
         return this.guideRepository.save(guide);
     }

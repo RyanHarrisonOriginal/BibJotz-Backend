@@ -1,14 +1,12 @@
 import { BiblicalReference } from "../shared/value-objects/BiblicalReference";
 
-interface IGuideSectionDTO {
-    id: string | null;
+export interface IGuideSectionDTO {
     title: string;
     description: string;
     biblicalReferences: IBiblicalReferenceDTO[];
 }
 
-interface IBiblicalReferenceDTO {
-    id: string | null;
+export interface IBiblicalReferenceDTO {
     book: string;
     chapter: number;
     startVerse: number;
@@ -22,4 +20,5 @@ export interface IGuideDTO {
     isPublic: boolean;
     biblicalReferences: IBiblicalReferenceDTO[];
     guideSections: IGuideSectionDTO[];
+    authorId: number;
 }

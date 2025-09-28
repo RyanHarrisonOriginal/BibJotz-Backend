@@ -3,7 +3,7 @@ import { userRoutes } from './user.routes';
 import { CommandBus } from '@/infrastructure/CQRS/command-bus/command-bus';
 import { QueryBus } from '@/infrastructure/CQRS/query-bus/query-bus';
 import { churchRoutes } from './church.routes';
-import { UserController } from '../controllers/user.controller';
+import { guideRoutes } from './guide.routes';
 
 
 export const routes = (commandBus: CommandBus, queryBus: QueryBus) => {
@@ -25,6 +25,7 @@ router.get(`${API_VERSION}/health`, (req, res) => {
 // Mount route modules
 router.use(`${API_VERSION}/users`, userRoutes(commandBus, queryBus));
 router.use(`${API_VERSION}/churches`, churchRoutes(commandBus, queryBus));
+router.use(`${API_VERSION}/guides`, guideRoutes(commandBus, queryBus));
 
 
 return router;

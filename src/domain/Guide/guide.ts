@@ -10,6 +10,7 @@ export class Guide extends BaseEntity {
         private isPublic: boolean,
         private guideSections: GuideSection[] = [],
         private biblicalRefrences: BiblicalReference[] = [],
+        private authorId: number,
         createdAt: Date = new Date(),
         updatedAt: Date = new Date()
     ) {
@@ -30,6 +31,10 @@ export class Guide extends BaseEntity {
 
     getGuideSections(): GuideSection[] {
         return this.guideSections;
+    }
+    
+    getAuthorId(): number {
+        return this.authorId;
     }
     
     getBiblicalRefrences(): BiblicalReference[] {
