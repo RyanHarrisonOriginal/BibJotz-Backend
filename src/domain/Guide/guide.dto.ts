@@ -3,6 +3,7 @@ import { BiblicalReference } from "../shared/value-objects/BiblicalReference";
 export interface IGuideSectionDTO {
     title: string;
     description: string;
+    guideId?: number;
     biblicalReferences: IBiblicalReferenceDTO[];
 }
 

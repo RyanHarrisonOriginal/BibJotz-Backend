@@ -1,0 +1,22 @@
+summary: Add a new guide section to a guide
+description: Adds a new guide section to a guide with the given information
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          guideId:
+            type: number
+          title:
+            type: string
+          description:
+            type: string
+          biblicalReferences:
+            type: array
+            items:
+              type: object
+              properties:
+                book:
+                  type: string

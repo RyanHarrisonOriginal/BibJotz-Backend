@@ -29,4 +29,9 @@ export class GuideSection extends BaseEntity {
     getBiblicalRefrences(): BiblicalReference[] {
         return this.biblicalRefrences;
     }
+
+    setOrdinalPosition(ordinalPosition: number) {
+        this.setOrdinalPosition(ordinalPosition);
+        this.touch();
+    }
 }

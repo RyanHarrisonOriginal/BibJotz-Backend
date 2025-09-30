@@ -47,6 +47,7 @@ export class Guide extends BaseEntity {
     }
 
     addGuideSection(guideSection: GuideSection) {
+        guideSection.setOrdinalPosition(this.guideSections.length ?? 0 + 1);
         this.guideSections.push(guideSection);
         this.touch();
     }
