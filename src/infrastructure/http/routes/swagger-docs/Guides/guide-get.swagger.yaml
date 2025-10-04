@@ -1,0 +1,55 @@
+summary: Get a guide by id 
+description: Gets a guide by id 
+parameters:
+  - name: guideId
+    in: path
+    description: The id of the guide
+    required: true
+    type: string
+responses:
+  '200':
+    description: The guide was found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+            description:
+              type: string
+            isPublic:
+              type: boolean
+            biblicalReferences:
+              type: array
+              items:
+                type: object
+                properties:
+                  book:
+                    type: string
+                  chapter:
+                    type: number
+                  startVerse:
+                    type: number
+                  endVerse:
+                    type: number
+            guideSections:
+              type: array
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  ordinalPosition:
+                    type: number
+                  biblicalReferences:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        book:
+                          type: string

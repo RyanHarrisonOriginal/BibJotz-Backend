@@ -50,7 +50,7 @@ async function startServer() {
     const guideRepository = new GuidePostgresRepository(prisma);
     
     const commandBus = setupCommandBus({ userRepository, churchRepository, guideRepository });
-    const queryBus = setupQueryBus({ userRepository, churchRepository });
+    const queryBus = setupQueryBus({ userRepository, churchRepository, guideRepository });
 
     // Routes
     app.use('/api', routes(commandBus, queryBus));

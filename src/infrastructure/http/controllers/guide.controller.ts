@@ -4,6 +4,7 @@ import { QueryBus } from "@/infrastructure/CQRS/query-bus/query-bus";
 import { Request, Response } from "express";
 import { IGuideDTO, IGuideSectionDTO } from "@/domain/Guide/guide.dto";
 import { AddGuideSectionCommand } from "@/domain/Guide/commands/add-guide-section/add-guide-section.command";
+import { GetGuideByIdQuery } from "@/domain/Guide/queries/get-guide-by-id/get-guide-by-id.command";
 
 
 export class GuideController {
@@ -36,6 +37,18 @@ export class GuideController {
             const command = new AddGuideSectionCommand(guideId, dto);
             const result = await this.commandBus.execute(command);
             res.status(201).json(result);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: (error as Error).message });
+        }
+    }
+
+    getGuideById = async (req: Request, res: Response) => {
+        try {
+        const guideId = parseInt(req.params.guideId);
+        const query = new GetGuideByIdQuery(guideId);
+        const result = await this.queryBus.execute(query);
+        res.status(200).json(result);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: (error as Error).message });

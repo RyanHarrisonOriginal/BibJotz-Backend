@@ -16,6 +16,9 @@ paths:
   /api/v1/guides:
     post:
       $ref: './infrastructure/http/routes/swagger-docs/Guides/guide-post.swagger.yaml'
+  /api/v1/guides/{guideId}:
+    get:
+      $ref: './infrastructure/http/routes/swagger-docs/Guides/guide-get.swagger.yaml'
   /api/v1/guides/{guideId}/sections:
     post:
       $ref: './infrastructure/http/routes/swagger-docs/Guides/guide-section-post.swagger.yaml'

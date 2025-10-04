@@ -10,5 +10,6 @@ export const guideRoutes = (commandBus: CommandBus, queryBus: QueryBus) => {
     const guideController = new GuideController(commandBus, queryBus);
     router.post('/', guideController.createGuide);
     router.post('/:guideId/sections', guideController.addGuideSection);
+    router.get('/:guideId', guideController.getGuideById);
     return router;
 }
