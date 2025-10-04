@@ -5,6 +5,7 @@ import { IUserRepository } from '@/domain/User/user-repository.interface';
 import { CreateChurchCommandHandler } from '@/domain/Church/commands/create-church/create-church-command.handler';
 import { IGuideRepository } from '@/domain/Guide/guide-repository.interface';
 import { CreateGuideCommandHandler } from '@/domain/Guide/commands/create-guide/create-guide-command.handler';
+import { AddGuideSectionCommandHandler } from '@/domain/Guide/commands/add-guide-section/add-guide-section-command.handler';
 
 
 interface ICommandBusSetup {
@@ -24,6 +25,9 @@ export function setupCommandBus(commandBusSetup: ICommandBusSetup): CommandBus {
 
   const createGuideHandler = new CreateGuideCommandHandler(commandBusSetup.guideRepository);
   commandBus.registerHandler('CreateGuideCommand', createGuideHandler);
+
+  const addGuideSectionHandler = new AddGuideSectionCommandHandler(commandBusSetup.guideRepository);
+  commandBus.registerHandler('AddGuideSectionCommand', addGuideSectionHandler);
 
   return commandBus;
 }

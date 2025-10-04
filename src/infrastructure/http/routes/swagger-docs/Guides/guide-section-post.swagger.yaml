@@ -1,14 +1,20 @@
 summary: Add a new guide section to a guide
 description: Adds a new guide section to a guide with the given information
+parameters:
+  - name: guideId
+    in: path
+    required: true
+    description: The ID of the guide to add a section to
+    schema:
+      type: integer
+      format: int64
 requestBody:
   required: true
   content:
     application/json:
-      schema:
+      schema: 
         type: object
         properties:
-          guideId:
-            type: number
           title:
             type: string
           description:
@@ -20,3 +26,9 @@ requestBody:
               properties:
                 book:
                   type: string
+                chapter:
+                  type: number
+                startVerse:
+                  type: number
+                endVerse:
+                  type: number

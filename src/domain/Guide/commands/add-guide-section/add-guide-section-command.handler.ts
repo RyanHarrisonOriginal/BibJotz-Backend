@@ -8,7 +8,7 @@ export class AddGuideSectionCommandHandler implements ICommandHandler<AddGuideSe
     constructor(private readonly guideRepository: IGuideRepository) {}
 
     async execute(command: AddGuideSectionCommand): Promise<GuideSection> {
-        const guide = await this.guideRepository.findById(command.guideId);
+        const guide = await this.guideRepository.findGuideById(command.guideId );
         const guideSection = GuideMapper.mapGuideSectionModelToDomain(command.guideSection);
         guide.addGuideSection(guideSection);
         await this.guideRepository.save(guide);

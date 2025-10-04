@@ -27,9 +27,9 @@ export class GuideMapper {
     }
 
     public static mapGuideSectionModelToDomain(section: any): GuideSection {
-        const biblicalReferences = this.arrayToDomain(
+        const biblicalReferences = GuideMapper.arrayToDomain(
             section.biblicalReferences, 
-            this.mapBiblicalReferenceModelToDomain
+            GuideMapper.mapBiblicalReferenceModelToDomain
         );
         return new GuideSection(
             section.id,
@@ -41,9 +41,9 @@ export class GuideMapper {
     }
 
     public static mapGuideSectionToPersistenceModel(section: any, guideId: number | null): any {
-        const biblicalReferences = this.arrayToDomain(
+        const biblicalReferences = GuideMapper.arrayToDomain(
             section.biblicalReferences, 
-            (item) => this.mapBiblicalReferenceToPersistenceModel(item, guideId)
+            (item) => GuideMapper.mapBiblicalReferenceToPersistenceModel(item, guideId)
         );
         return {
             id: section.getId(),
@@ -62,13 +62,13 @@ export class GuideMapper {
             throw new Error("Guide data is undefined or null");
         }
 
-        const guideSections = this.arrayToDomain(
+        const guideSections = GuideMapper.arrayToDomain(
             prismaGuide.guideSections, 
-            this.mapGuideSectionModelToDomain
+            GuideMapper.mapGuideSectionModelToDomain
         );
-        const biblicalReferences = this.arrayToDomain(
+        const biblicalReferences = GuideMapper.arrayToDomain(
             prismaGuide.biblicalReferences, 
-            this.mapBiblicalReferenceModelToDomain
+            GuideMapper.mapBiblicalReferenceModelToDomain
         );
 
         return new Guide(
@@ -85,13 +85,13 @@ export class GuideMapper {
     }
 
     public static mapToPersistencePrisma(guide: Guide): any {
-        const biblicalReferences = this.arrayToDomain(
+        const biblicalReferences = GuideMapper.arrayToDomain(
             guide.getBiblicalRefrences(), 
-            (item) => this.mapBiblicalReferenceToPersistenceModel(item, guide.getId())
+            (item) => GuideMapper.mapBiblicalReferenceToPersistenceModel(item, guide.getId())
         );
-        const guideSections = this.arrayToDomain(
+        const guideSections = GuideMapper.arrayToDomain(
             guide.getGuideSections(), 
-            (item) => this.mapGuideSectionToPersistenceModel(item, guide.getId())
+            (item) => GuideMapper.mapGuideSectionToPersistenceModel(item, guide.getId())
         );
         return {
             guide: {

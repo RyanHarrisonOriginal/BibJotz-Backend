@@ -32,7 +32,8 @@ export class GuideController {
     addGuideSection = async (req: Request, res: Response) => {
         try {
             const dto: IGuideSectionDTO = req.body;
-            const command = new AddGuideSectionCommand(dto.guideId ?? 0, dto);
+            const guideId = parseInt(req.params.guideId);
+            const command = new AddGuideSectionCommand(guideId, dto);
             const result = await this.commandBus.execute(command);
             res.status(201).json(result);
         } catch (error) {

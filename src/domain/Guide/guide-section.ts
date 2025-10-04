@@ -5,7 +5,7 @@ export class GuideSection extends BaseEntity {
     constructor(
         id: number | null,
         private readonly title: string,
-        private readonly ordinalPosition: number,
+        private ordinalPosition: number,
         private readonly description: string,
         private readonly biblicalRefrences: BiblicalReference[],
         createdAt: Date = new Date(),
@@ -31,7 +31,7 @@ export class GuideSection extends BaseEntity {
     }
 
     setOrdinalPosition(ordinalPosition: number) {
-        this.setOrdinalPosition(ordinalPosition);
+        this.ordinalPosition = ordinalPosition;
         this.touch();
     }
 }

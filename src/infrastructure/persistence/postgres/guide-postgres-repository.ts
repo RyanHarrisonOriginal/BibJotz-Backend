@@ -24,8 +24,13 @@ export class GuidePostgresRepository implements IGuideRepository {
 
     private async updateGuide(tx: Prisma.TransactionClient, guideData: any): Promise<Guide> {
         const savedGuide = await tx.guide.update({
-            where: { id: guideData.guide.id },
-            data: guideData.guide,
+            where: { id: guideData.id },
+            data: {
+                name: guideData.name,
+                description: guideData.description,
+                isPublic: guideData.isPublic,
+                authorId: guideData.authorId,
+            },
         });
         return GuideMapper.mapGuideModelToDomain(savedGuide);
     }
@@ -45,7 +50,11 @@ export class GuidePostgresRepository implements IGuideRepository {
     private async updateGuideSection(tx: Prisma.TransactionClient, guideSectionData: any): Promise<GuideSection> {
         const savedGuideSection = await tx.guideSection.update({
             where: { id: guideSectionData.id },
-            data: guideSectionData,
+            data: {
+                ordinalPosition: guideSectionData.ordinalPosition,
+                title: guideSectionData.title,
+                description: guideSectionData.description,
+            },
         });
         return GuideMapper.mapGuideSectionModelToDomain(savedGuideSection);
     }
@@ -121,14 +130,18 @@ export class GuidePostgresRepository implements IGuideRepository {
         return result;
     }
 
-    async findById(id: number): Promise<Guide> {
-        const guide = await this.prisma.guide.findUnique({
+    async findGuideById(id: number): Promise<Guide> {
+        const guide = await this.prisma.guide.findFirst({
             where: { id },
+            include: {
+                guideSections: true,
+                biblicalReferences: true,
+            },
         });
         return GuideMapper.mapGuideModelToDomain(guide);
     }
 
-    async findByName(name: string): Promise<Guide> {
+    async findGuideByName(name: string): Promise<Guide> {
         const guide = await this.prisma.guide.findFirst({
             where: { name },
         });
@@ -136,7 +149,7 @@ export class GuidePostgresRepository implements IGuideRepository {
     }
 
 
-    async findAll(): Promise<Guide[]> {
+    async findAllGuides(): Promise<Guide[]> {
         const guides = await this.prisma.guide.findMany();
         return guides.map(guide => GuideMapper.mapGuideModelToDomain(guide));
     }
