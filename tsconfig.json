@@ -28,7 +28,7 @@
       "@/queries/*": ["src/domain/User/queries/*"],
       "@/handlers/*": ["src/domain/User/commands/create-user/handlers/*"],
       "@/factories/*": ["src/domain/factories/*"],
-      "@/mappers/*": ["src/infrastructure/mappers/*"],
+      "@/mappers/*": ["mappers/*"],
       "@/middleware/*": ["src/middleware/*"],
       "@/routes/*": ["src/infrastructure/http/routes/*"],
       "@/utils/*": ["src/utils/*"]
@@ -36,7 +36,7 @@
   },
   "include": [
     "src/**/*"
-  ],
+, "mappers"  ],
   "exclude": [
     "node_modules",
     "dist",

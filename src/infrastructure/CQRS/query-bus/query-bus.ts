@@ -1,5 +1,5 @@
-import { IQueryHandler } from "@/domain/interfaces/shared/query-handler.interface";
-import { IQuery } from "@/domain/interfaces/shared/query.interface";
+import { IQueryHandler } from "@/domain/shared/interfaces/query-handler.interface";
+import { IQuery } from "@/domain/shared/interfaces/query.interface";
 
 export class QueryBus {
     private handlers: Map<string, IQueryHandler<any, any>> = new Map();

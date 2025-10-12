@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { Email } from "@/domain/shared/value-objects/Email";
 import { Subscription } from "@/domain/shared/value-objects/Subscription";
 import { UserFactory } from "@/domain/User/user-factory";
-import { UserMapper } from "../../mappers/user.mapper";
+import { UserMapper } from "../../../../mappers/user.mapper";
 
 export class UserPostgresRepository implements IUserRepository {
     constructor(private readonly prisma: PrismaClient) {}

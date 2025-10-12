@@ -11,5 +11,6 @@ export const guideRoutes = (commandBus: CommandBus, queryBus: QueryBus) => {
     router.post('/', guideController.createGuide);
     router.post('/:guideId/sections', guideController.addGuideSection);
     router.get('/:guideId', guideController.getGuideById);
+    router.post('/:guideId/biblical-references', guideController.addBiblicalReferenceToGuide);
     return router;
 }

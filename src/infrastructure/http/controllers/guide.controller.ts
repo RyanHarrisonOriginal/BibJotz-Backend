@@ -2,9 +2,10 @@ import { CreateGuideCommand } from "@/domain/Guide/commands/create-guide/create-
 import { CommandBus } from "@/infrastructure/CQRS/command-bus/command-bus";
 import { QueryBus } from "@/infrastructure/CQRS/query-bus/query-bus";
 import { Request, Response } from "express";
-import { IGuideDTO, IGuideSectionDTO } from "@/domain/Guide/guide.dto";
+import { IBiblicalReferenceDTO, IGuideDTO, IGuideSectionDTO } from "@/domain/Guide/guide.dto";
 import { AddGuideSectionCommand } from "@/domain/Guide/commands/add-guide-section/add-guide-section.command";
 import { GetGuideByIdQuery } from "@/domain/Guide/queries/get-guide-by-id/get-guide-by-id.command";
+import { AddBiblicalReferenceToGuideCommand } from "@/domain/Guide/commands/add-biblical-reference-to-guide/add-biblical-reference-to-guide.command";
 
 
 export class GuideController {
@@ -35,6 +36,19 @@ export class GuideController {
             const dto: IGuideSectionDTO = req.body;
             const guideId = parseInt(req.params.guideId);
             const command = new AddGuideSectionCommand(guideId, dto);
+            const result = await this.commandBus.execute(command);
+            res.status(201).json(result);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: (error as Error).message });
+        }
+    }
+
+    addBiblicalReferenceToGuide = async (req: Request, res: Response) => {
+        try {
+            const dto: IBiblicalReferenceDTO = req.body;
+            const guideId = parseInt(req.params.guideId);
+            const command = new AddBiblicalReferenceToGuideCommand(guideId, dto);
             const result = await this.commandBus.execute(command);
             res.status(201).json(result);
         } catch (error) {
