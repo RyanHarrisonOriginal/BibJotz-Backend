@@ -7,7 +7,7 @@ export class GuideSection extends BaseEntity {
         private readonly title: string,
         private ordinalPosition: number,
         private readonly description: string,
-        private readonly biblicalRefrences: BiblicalReference[],
+        private readonly biblicalReferences: BiblicalReference[],
         createdAt: Date = new Date(),
         updatedAt: Date = new Date()
     ) {
@@ -26,8 +26,8 @@ export class GuideSection extends BaseEntity {
         return this.description;
     }
 
-    getBiblicalRefrences(): BiblicalReference[] {
-        return this.biblicalRefrences;
+    getBiblicalReferences(): BiblicalReference[] {
+        return this.biblicalReferences;
     }
 
     setOrdinalPosition(ordinalPosition: number) {

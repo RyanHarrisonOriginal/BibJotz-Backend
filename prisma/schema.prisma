@@ -78,6 +78,22 @@ model GuidBibleReference {
   @@schema("app")
 }
 
+model GuideSectionBibleReference {
+  id        Int      @id @default(autoincrement())
+  guideSectionId Int @map("guide_section_id")
+  book String
+  chapter Int
+  startVerse Int @map("start_verse")
+  endVerse Int @map("end_verse")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  guideSection GuideSection @relation(fields: [guideSectionId], references: [id])
+
+  @@map("guide_section_biblical_references")
+  @@schema("app")
+}
+
+
 model GuideSection {
   id Int @id @default(autoincrement())
   guideId Int @map("guide_id")
@@ -88,7 +104,7 @@ model GuideSection {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   guide Guide @relation(fields: [guideId], references: [id])
-
+  biblicalReferences GuideSectionBibleReference[]
   @@map("guide_sections")
   @@schema("app")
 }

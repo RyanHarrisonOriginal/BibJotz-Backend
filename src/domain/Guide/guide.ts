@@ -9,7 +9,7 @@ export class Guide extends BaseEntity {
         private description: string,
         private isPublic: boolean,
         private guideSections: GuideSection[] = [],
-        private biblicalRefrences: BiblicalReference[] = [],
+        private biblicalReferences: BiblicalReference[] = [],
         private authorId: number,
         createdAt: Date = new Date(),
         updatedAt: Date = new Date()
@@ -37,8 +37,8 @@ export class Guide extends BaseEntity {
         return this.authorId;
     }
     
-    getBiblicalRefrences(): BiblicalReference[] {
-        return this.biblicalRefrences;
+    getBiblicalReferences(): BiblicalReference[] {
+        return this.biblicalReferences;
     }
 
     updateName(name: string) {
@@ -52,8 +52,8 @@ export class Guide extends BaseEntity {
         this.touch();
     }
 
-    addBiblicalRefrence(biblicalRefrence: BiblicalReference) {
-        this.biblicalRefrences.push(biblicalRefrence);
+    addBiblicalReference(biblicalReference: BiblicalReference) {
+        this.biblicalReferences.push(biblicalReference);
         this.touch();
     }
     
