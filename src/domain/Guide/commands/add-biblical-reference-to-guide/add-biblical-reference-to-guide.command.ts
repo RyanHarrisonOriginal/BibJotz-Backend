@@ -6,6 +6,6 @@ export class AddBiblicalReferenceToGuideCommand implements ICommand {
 
     constructor(
         public readonly guideId: number,
-        public readonly biblicalReference: IBiblicalReferenceDTO,
+        public readonly biblicalReferences: IBiblicalReferenceDTO[],
     ) {}
 }

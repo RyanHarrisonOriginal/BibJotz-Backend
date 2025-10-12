@@ -44,7 +44,6 @@ export class GuidePostgresRepository implements IGuideRepository {
                 description: guideSectionData.description,
             },
         });
-        console.log(guideSectionData.biblicalReferences);
          if (guideSectionData.biblicalReferences.length > 0) {
             await Promise.all(
                 guideSectionData.biblicalReferences.map((reference: any) =>
@@ -97,7 +96,12 @@ export class GuidePostgresRepository implements IGuideRepository {
     private async updateGuidBibleReference(tx: Prisma.TransactionClient, guidBibleReferenceData: any): Promise<BiblicalReference> {
         const savedGuidBibleReference = await tx.guidBibleReference.update({
             where: { id: guidBibleReferenceData.id },
-            data: guidBibleReferenceData,
+            data: {
+                book: guidBibleReferenceData.book,
+                chapter: guidBibleReferenceData.chapter,
+                startVerse: guidBibleReferenceData.startVerse,
+                endVerse: guidBibleReferenceData.endVerse,
+            },
         });
         return GuideMapper.mapBiblicalReferenceModelToDomain(savedGuidBibleReference);
     }

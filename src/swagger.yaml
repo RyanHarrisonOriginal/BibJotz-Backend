@@ -22,3 +22,6 @@ paths:
   /api/v1/guides/{guideId}/sections:
     post:
       $ref: './infrastructure/http/routes/swagger-docs/Guides/guide-section-post.swagger.yaml'
+  /api/v1/guides/{guideId}/biblical-references:
+    post:
+      $ref: './infrastructure/http/routes/swagger-docs/Guides/guide-biblical-references.swagger.yaml'

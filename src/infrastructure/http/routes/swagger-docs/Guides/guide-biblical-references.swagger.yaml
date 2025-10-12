@@ -1,0 +1,27 @@
+summary: Add biblical references to a guide
+description: Adds one or more biblical references to a guide with the given information
+parameters:
+  - name: guideId
+    in: path
+    required: true
+    description: The ID of the guide to add biblical references to
+    schema:
+      type: integer
+      format: int64
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: array
+        items:
+          type: object
+          properties:
+            book:
+              type: string
+            chapter:
+              type: number
+            startVerse:
+              type: number
+            endVerse:
+              type: number

@@ -11,8 +11,15 @@ export class GuideMapper {
         return array.map((item: any) => mapper(item));
     }
 
-    public static mapBiblicalReferenceModelToDomain(bible: any): BiblicalReference {
-        return new BiblicalReference(bible.book, bible.chapter, bible.startVerse, bible.endVerse);
+    public static mapBiblicalReferenceModelToDomain(biblicalReference: any): BiblicalReference {
+        console.log(biblicalReference);
+        return new BiblicalReference(
+            biblicalReference.id,
+            biblicalReference.book, 
+            biblicalReference.chapter, 
+            biblicalReference.startVerse, 
+            biblicalReference.endVerse
+        );
     }
 
     public static mapGuideSectionModelToDomain(section: any): GuideSection {
@@ -63,7 +70,7 @@ export class GuideMapper {
 
     private static mapBibleReferenceBase(biblicalReference: BiblicalReference): Record<string, any> {
         return {
-            id: 0,
+            id: biblicalReference.getId() ?? 0,
             book: biblicalReference.getBook(),
             chapter: biblicalReference.getChapter(),
             startVerse: biblicalReference.getStartVerse(),

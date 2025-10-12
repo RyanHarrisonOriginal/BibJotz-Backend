@@ -1,12 +1,13 @@
 export class BiblicalReference {
     constructor(
+        private readonly id: number | null,
         private readonly book: string,
         private readonly chapter: number,
         private readonly startVerse: number,
         private readonly endVerse: number
     ) {}
 
-    static create(book: string, chapter: number, startVerse: number, endVerse: number): BiblicalReference {
+    static create(id: number | null, book: string, chapter: number, startVerse: number, endVerse: number): BiblicalReference {
         if (!book) {
             throw new Error('Book is required');
         }
@@ -19,7 +20,11 @@ export class BiblicalReference {
         if (!endVerse) {
             throw new Error('End verse is required');
         }
-        return new BiblicalReference(book, chapter, startVerse, endVerse);
+        return new BiblicalReference(id ?? 0, book, chapter, startVerse, endVerse);
+    }
+
+    getId(): number | null {
+        return this.id ?? 0;
     }
 
     getBook(): string {

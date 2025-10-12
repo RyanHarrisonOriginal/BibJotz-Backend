@@ -9,8 +9,14 @@ export class AddBiblicalReferenceToGuideCommandHandler implements ICommandHandle
 
     async execute(command: AddBiblicalReferenceToGuideCommand): Promise<Guide> {
         const guide = await this.guideRepository.findGuideById(command.guideId);
-        const biblicalReference = GuideMapper.mapBiblicalReferenceModelToDomain(command.biblicalReference);
-        guide.addBiblicalReference(biblicalReference);
+        console.log(guide);
+        const biblicalReferences = command.biblicalReferences.map((reference) =>
+            GuideMapper.mapBiblicalReferenceModelToDomain(reference)
+        );
+        console.log(biblicalReferences);
+        biblicalReferences.forEach((reference) => {
+            guide.addBiblicalReference(reference);
+        });
         return this.guideRepository.save(guide);
     }
 }

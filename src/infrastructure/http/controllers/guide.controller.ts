@@ -46,7 +46,7 @@ export class GuideController {
 
     addBiblicalReferenceToGuide = async (req: Request, res: Response) => {
         try {
-            const dto: IBiblicalReferenceDTO = req.body;
+            const dto: IBiblicalReferenceDTO[] = req.body;
             const guideId = parseInt(req.params.guideId);
             const command = new AddBiblicalReferenceToGuideCommand(guideId, dto);
             const result = await this.commandBus.execute(command);
