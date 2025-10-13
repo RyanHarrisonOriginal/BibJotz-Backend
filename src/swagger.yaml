@@ -4,24 +4,89 @@ info:
   version: 1.0.0
   description: BibJotz API with Express and Swagger (YAML)
 
+tags:
+  - name: Users
+    description: User management operations
+  - name: Churches
+    description: Church management operations
+  - name: Guides
+    description: Guide management operations
+  - name: Guide Sections
+    description: Guide section management operations
+  - name: Biblical References
+    description: Biblical reference management operations
+
 paths:
   /api/v1/users:
     post:
+      tags:
+        - Users
       $ref: './infrastructure/http/routes/swagger-docs/Users/user-post.swagger.yaml'
+  /api/v1/users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User ID
+      responses:
+        '200':
+          description: User found
+        '404':
+          description: User not found
   /api/v1/churches:
     post:
+      tags:
+        - Churches
       $ref: './infrastructure/http/routes/swagger-docs/Churches/church-post.swagger.yaml'
     get:
+      tags:
+        - Churches
       $ref: './infrastructure/http/routes/swagger-docs/Churches/church-get.swagger.yaml'
+  /api/v1/churches/search:
+    get:
+      tags:
+        - Churches
+      summary: Search for a church
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query for church
+      responses:
+        '200':
+          description: Church found
+        '404':
+          description: Church not found
   /api/v1/guides:
     post:
+      tags:
+        - Guides
       $ref: './infrastructure/http/routes/swagger-docs/Guides/guide-post.swagger.yaml'
   /api/v1/guides/{guideId}:
     get:
+      tags:
+        - Guides
       $ref: './infrastructure/http/routes/swagger-docs/Guides/guide-get.swagger.yaml'
   /api/v1/guides/{guideId}/sections:
     post:
+      tags:
+        - Guide Sections
       $ref: './infrastructure/http/routes/swagger-docs/Guides/guide-section-post.swagger.yaml'
   /api/v1/guides/{guideId}/biblical-references:
     post:
+      tags:
+        - Biblical References
       $ref: './infrastructure/http/routes/swagger-docs/Guides/guide-biblical-references.swagger.yaml'
+  /api/v1/guides/{guideId}/sections/{sectionId}/biblical-references:
+    post:
+      tags:
+        - Biblical References
+      $ref: './infrastructure/http/routes/swagger-docs/Guides/guide-section-biblical-references.swagger.yaml'

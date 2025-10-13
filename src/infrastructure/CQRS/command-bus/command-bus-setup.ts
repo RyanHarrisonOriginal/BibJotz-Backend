@@ -7,6 +7,7 @@ import { IGuideRepository } from '@/domain/Guide/guide-repository.interface';
 import { CreateGuideCommandHandler } from '@/domain/Guide/commands/create-guide/create-guide-command.handler';
 import { AddGuideSectionCommandHandler } from '@/domain/Guide/commands/add-guide-section/add-guide-section-command.handler';
 import { AddBiblicalReferenceToGuideCommandHandler } from '@/domain/Guide/commands/add-biblical-reference-to-guide/add-biblical-reference-to-guide-command.handler';
+import { AddBiblicalReferenceToGuideSectionCommandHandler } from '@/domain/Guide/commands/add-biblical-reference-to-guide-section/add-biblical-reference-to-guide-section-command.handler';
 
 
 interface ICommandBusSetup {
@@ -32,6 +33,9 @@ export function setupCommandBus(commandBusSetup: ICommandBusSetup): CommandBus {
 
   const addBiblicalReferenceToGuideHandler = new AddBiblicalReferenceToGuideCommandHandler(commandBusSetup.guideRepository);
   commandBus.registerHandler('AddBiblicalReferenceToGuideCommand', addBiblicalReferenceToGuideHandler);
+
+  const addBiblicalReferenceToGuideSectionHandler = new AddBiblicalReferenceToGuideSectionCommandHandler(commandBusSetup.guideRepository);
+  commandBus.registerHandler('AddBiblicalReferenceToGuideSectionCommand', addBiblicalReferenceToGuideSectionHandler);
 
   return commandBus;
 }
