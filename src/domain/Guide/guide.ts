@@ -57,14 +57,6 @@ export class Guide extends BaseEntity {
         this.touch();
     }
 
-    addBiblicalReferenceToSection(sectionId: number, biblicalReference: BiblicalReference) {
-        const section = this.guideSections.find(s => s.getId() === sectionId);
-        if (section) {
-            section.addBiblicalReference(biblicalReference);
-            this.touch();
-        } else {
-            throw new Error(`Guide section with id ${sectionId} not found`);
-        }
-    }
+    
     
 }
