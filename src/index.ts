@@ -15,6 +15,8 @@ import { DatabaseSetup } from '@/infrastructure/database/database-setup';
 import SwaggerParser from '@apidevtools/swagger-parser';
 import { ChurchPostgresRepository } from './infrastructure/persistence/postgres/church-postgres-repository';
 import { GuidePostgresRepository } from './infrastructure/persistence/postgres/guide-postgres-repository';
+import { JourneyPostgresRepository } from './infrastructure/persistence/postgres/journey-postgres-repository';
+import { ReflectionPostgresRepository } from './infrastructure/persistence/postgres/reflection-postgres-repository';
 
 // Load environment variables
 dotenv.config();
@@ -48,9 +50,11 @@ async function startServer() {
     const userRepository = new UserPostgresRepository(prisma);
     const churchRepository = new ChurchPostgresRepository(prisma);
     const guideRepository = new GuidePostgresRepository(prisma);
+    const journeyRepository = new JourneyPostgresRepository(prisma);
+    const reflectionRepository = new ReflectionPostgresRepository(prisma);
     
-    const commandBus = setupCommandBus({ userRepository, churchRepository, guideRepository });
-    const queryBus = setupQueryBus({ userRepository, churchRepository, guideRepository });
+    const commandBus = setupCommandBus({ userRepository, churchRepository, guideRepository, journeyRepository, reflectionRepository });
+    const queryBus = setupQueryBus({ userRepository, churchRepository, guideRepository, journeyRepository });
 
     // Routes
     app.use('/api', routes(commandBus, queryBus));

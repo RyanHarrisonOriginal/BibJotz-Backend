@@ -1,9 +1,12 @@
 import { Reflection } from "../Reflection/reflection";
 import { Journey } from "./jouney";
+import { ReflectionFactory } from "../Reflection/reflection-factory";
+import { JourneyFactory } from "./journey-factory";
 
 export class JourneyMapper {
 
     private static arrayMapper<T>(array: any[], mapper: (item: any) => T): T[] {
+        console.log('array', array);
         if (!array) {
             return [];
         }
@@ -14,7 +17,8 @@ export class JourneyMapper {
         return {
             id: reflection.getId(),
             content: reflection.getContent(),
-            userId: reflection.getUserId(),
+            authorId: reflection.getAuthorId(),
+            guideSectionId: reflection.getGuideSectionId(),
             journeyId: journeyId,
         };
     }
@@ -28,19 +32,13 @@ export class JourneyMapper {
             id: journey.getId(),
             title: journey.getTitle(),
             ownerId: journey.getOwnerId(),
-            guideId: journey.getGuide().id,
+            guideId: journey.getGuideId(),
             reflections: reflections,
         };
     }
 
     public static mapJourneyModelToDomain(journey: any): Journey {
-        return new Journey(
-            journey.id,
-            journey.title,
-            journey.ownerId,
-            journey.guideId,
-            journey.reflections,
-        );
+        console.log('journey---->fricking', journey);
+        return JourneyFactory.create(journey);
     }
-
 }

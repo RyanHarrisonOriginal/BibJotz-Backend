@@ -1,18 +1,6 @@
-import { BiblicalReference } from "../shared/value-objects/BiblicalReference";
+import { IBiblicalReferenceDTO } from "../BiblicalReferences/biblical-reference.dto";
+import { IGuideSectionDTO } from "./guide-section.dto";
 
-export interface IGuideSectionDTO {
-    title: string;
-    description: string;
-    guideId?: number;
-    biblicalReferences: IBiblicalReferenceDTO[];
-}
-
-export interface IBiblicalReferenceDTO {
-    book: string;
-    chapter: number;
-    startVerse: number;
-    endVerse: number;
-}
 
 export interface IGuideDTO {
     id: string | null;

@@ -7,21 +7,6 @@ export class BiblicalReference {
         private readonly endVerse: number
     ) {}
 
-    static create(id: number | null, book: string, chapter: number, startVerse: number, endVerse: number): BiblicalReference {
-        if (!book) {
-            throw new Error('Book is required');
-        }
-        if (!chapter) {
-            throw new Error('Chapter is required');
-        }
-        if (!startVerse) {
-            throw new Error('Start verse is required');
-        }
-        if (!endVerse) {
-            throw new Error('End verse is required');
-        }
-        return new BiblicalReference(id ?? 0, book, chapter, startVerse, endVerse);
-    }
 
     getId(): number | null {
         return this.id ?? 0;

@@ -1,0 +1,65 @@
+summary: Add a reflection to a journey
+description: Adds a reflection to a journey with the given information
+parameters:
+  - name: journeyId
+    in: path
+    required: true
+    description: The ID of the journey to add a reflection to
+    schema:
+      type: integer
+      format: int64
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          content:
+            type: string
+          authorId:
+            type: number
+          guideSectionId:
+            type: number
+          biblicalReferences:
+            type: array
+            items:
+              type: object
+              properties:
+                book:
+                  type: string
+                chapter:
+                  type: number
+                startVerse:
+                  type: number
+                endVerse:
+                  type: number
+responses:
+  '201':
+    description: Reflection added successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            content:
+              type: string
+            authorId:
+              type: integer
+            guideSectionId:
+              type: integer
+            biblicalReferences:
+              type: array
+              items:
+                type: object
+                properties:
+                  book: 
+                    type: string
+                  chapter:
+                    type: number
+                  startVerse:
+                    type: number
+                  endVerse:
+                    type: number

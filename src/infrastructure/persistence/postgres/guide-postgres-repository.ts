@@ -3,7 +3,7 @@ import { GuideSection } from "@/domain/Guide/guide-section";
 import { IGuideRepository } from "@/domain/Guide/guide-repository.interface";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { GuideMapper } from "@/domain/Guide/guide.mapper";
-import { BiblicalReference } from "@/domain/shared/value-objects/BiblicalReference";
+import { BiblicalReference } from "@/domain/BiblicalReferences/biblical-reference";
 
 
 

@@ -1,0 +1,38 @@
+summary: Create a new reflection
+description: Creates a new reflection with the given information
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          journeyId:
+            type: number
+          content:
+            type: string
+          authorId: 
+            type: number
+          guideSectionId:
+            type: number
+          biblicalReferences:
+            type: array
+            items:
+              type: object
+              properties:
+                book:
+                  type: string
+                chapter:
+                  type: number
+                startVerse:
+                  type: number
+                endVerse:
+                  type: number
+responses:
+  '201':
+    description: Reflection created successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:

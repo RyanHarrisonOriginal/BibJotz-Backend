@@ -1,6 +1,6 @@
 import { Guide } from "@/domain/Guide/guide";
 import { GuideSection } from "@/domain/Guide/guide-section";
-import { BiblicalReference } from "@/domain/shared/value-objects/BiblicalReference";
+import { BiblicalReference } from "@/domain/BiblicalReferences/biblical-reference";
 
 export class GuideMapper {
 

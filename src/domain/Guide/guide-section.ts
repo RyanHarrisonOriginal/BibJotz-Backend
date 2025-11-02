@@ -1,4 +1,4 @@
-import { BiblicalReference } from "../shared/value-objects/BiblicalReference";
+import { BiblicalReference } from "../BiblicalReferences/biblical-reference";
 import { BaseEntity } from "../BaseEntity";
 
 export class GuideSection extends BaseEntity {
@@ -35,8 +35,8 @@ export class GuideSection extends BaseEntity {
         this.touch();
     }
 
-    addBiblicalReference(biblicalReference: BiblicalReference) {
-        this.biblicalReferences.push(biblicalReference);
+    addBiblicalReferences(biblicalReferences: BiblicalReference[]) {
+        this.biblicalReferences.push(...biblicalReferences);
         this.touch();
     }
 }

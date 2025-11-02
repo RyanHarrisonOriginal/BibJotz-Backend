@@ -8,12 +8,19 @@ import { CreateGuideCommandHandler } from '@/domain/Guide/commands/create-guide/
 import { AddGuideSectionCommandHandler } from '@/domain/Guide/commands/add-guide-section/add-guide-section-command.handler';
 import { AddBiblicalReferenceToGuideCommandHandler } from '@/domain/Guide/commands/add-biblical-reference-to-guide/add-biblical-reference-to-guide-command.handler';
 import { AddBiblicalReferenceToGuideSectionCommandHandler } from '@/domain/Guide/commands/add-biblical-reference-to-guide-section/add-biblical-reference-to-guide-section-command.handler';
+import { IJourneyRepository } from '@/domain/Jouney/journey-repository.interface';
+import { CreateJourneyCommandHandler } from '@/domain/Jouney/commands/create-journey/create-journey-command.handler';
+import { CreateReflectionCommandHandler } from '@/domain/Reflection/commands/create-reflection/create-reflection-command.handler';
+import { AddBiblicalReferencesToReflectionCommandHandler } from '@/domain/Reflection/commands/add-biblical-references-to-reflection/add-biblical-reference-to-reflection-command.handler';
+import { IReflectionRepository } from '@/domain/Reflection/reflection-repository.interface';
 
 
 interface ICommandBusSetup {
   userRepository: IUserRepository;
   churchRepository: IChurchRepository;
   guideRepository: IGuideRepository;
+  journeyRepository: IJourneyRepository;
+  reflectionRepository: IReflectionRepository;
 }
 
 export function setupCommandBus(commandBusSetup: ICommandBusSetup): CommandBus {
@@ -36,6 +43,15 @@ export function setupCommandBus(commandBusSetup: ICommandBusSetup): CommandBus {
 
   const addBiblicalReferenceToGuideSectionHandler = new AddBiblicalReferenceToGuideSectionCommandHandler(commandBusSetup.guideRepository);
   commandBus.registerHandler('AddBiblicalReferenceToGuideSectionCommand', addBiblicalReferenceToGuideSectionHandler);
+
+  const createJourneyHandler = new CreateJourneyCommandHandler(commandBusSetup.journeyRepository);
+  commandBus.registerHandler('CreateJourneyCommand', createJourneyHandler);
+
+  const createReflectionHandler = new CreateReflectionCommandHandler(commandBusSetup.reflectionRepository);
+  commandBus.registerHandler('CreateReflectionCommand', createReflectionHandler);
+
+  const addBiblicalReferencesToReflectionHandler = new AddBiblicalReferencesToReflectionCommandHandler(commandBusSetup.reflectionRepository);
+  commandBus.registerHandler('AddBiblicalReferencesToReflectionCommand', addBiblicalReferencesToReflectionHandler);
 
   return commandBus;
 }

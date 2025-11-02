@@ -1,12 +1,14 @@
 import { BaseEntity } from "../BaseEntity";
-import { BiblicalReference } from "../shared/value-objects/BiblicalReference";
+import { IBiblicalReferenceDTO } from "../BiblicalReferences/biblical-reference.dto";
+import { BiblicalReference } from "../BiblicalReferences/biblical-reference";
 
 export class Reflection extends BaseEntity {
     constructor(
         id: number | null,
         private readonly content: string,
-        private readonly userId: number,
+        private readonly authorId: number,
         private readonly journeyId: number,
+        private readonly guideSectionId: number,
         private readonly biblicalReferences: BiblicalReference[],
         createdAt: Date = new Date(),
         updatedAt: Date = new Date()
@@ -18,20 +20,24 @@ export class Reflection extends BaseEntity {
         return this.content;
     }
 
-    getUserId(): number {
-        return this.userId;
+    getAuthorId(): number {
+        return this.authorId;
     }
 
     getJourneyId(): number {
         return this.journeyId;
     }
 
+    getGuideSectionId(): number {
+        return this.guideSectionId;
+    }
+
     getBiblicalReferences(): BiblicalReference[] {
         return this.biblicalReferences;
     }
 
-    addBiblicalReference(biblicalReference: BiblicalReference) {
-        this.biblicalReferences.push(biblicalReference);
+    addBiblicalReferences(biblicalReferences: BiblicalReference[]) {
+        this.biblicalReferences.push(...biblicalReferences);
         this.touch();
     }
 }

@@ -1,9 +1,9 @@
-import { BiblicalReference } from "../shared/value-objects/BiblicalReference";
+import { BiblicalReference } from "../BiblicalReferences/biblical-reference";
 import { Guide } from "./guide";
-import { GuideSection } from "./guide-section";
-import { IBiblicalReferenceDTO } from "./guide.dto";
-import { IGuideSectionDTO } from "./guide.dto";
-import { GuideMapper } from "./guide.mapper";
+import { IBiblicalReferenceDTO } from "../BiblicalReferences/biblical-reference.dto";
+import { IGuideSectionDTO } from "./guide-section.dto";
+import { BiblicalReferenceMapper } from "../BiblicalReferences/biblical-reference.mapper";
+import { GuideSectionMapper } from "@/domain/Guide/guide-section.mapper";
 
 interface IGuideCreationProps {
     id: number | null;
@@ -30,8 +30,8 @@ export class GuideFactory {
             data.name,
             data.description, 
             data.isPublic, 
-            data.guideSections.map(section => GuideMapper.mapGuideSectionModelToDomain(section)),
-            data.biblicalReferences.map(reference => GuideMapper.mapBiblicalReferenceModelToDomain(reference)),
+            GuideSectionMapper.mapGuideSectionsToDomain(data.guideSections),
+            BiblicalReferenceMapper.mapBiblicalReferencesToDomain(data.biblicalReferences),
             data.authorId,
             data.createdAt,
             data.updatedAt

@@ -9,7 +9,7 @@ export class Journey extends BaseEntity {
         id: number | null,
         private readonly title: string,
         private readonly ownerId: number,
-        private readonly guide: IGuideDTO,
+        private readonly guideId: number,
         private readonly reflections: Reflection[] = [],
         createdAt: Date = new Date(),
         updatedAt: Date = new Date()
@@ -25,8 +25,8 @@ export class Journey extends BaseEntity {
         return this.ownerId;
     }
 
-    getGuide(): IGuideDTO {
-        return this.guide;
+    getGuideId(): number {
+        return this.guideId;
     }
 
     getReflections(): Reflection[] {

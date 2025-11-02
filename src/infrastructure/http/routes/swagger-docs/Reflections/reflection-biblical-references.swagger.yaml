@@ -1,0 +1,45 @@
+summary: Add biblical references to a reflection
+description: Adds one or more biblical references to a reflection with the given information
+parameters:
+  - name: reflectionId
+    in: path
+    required: true
+    description: The ID of the reflection to add biblical references to
+    schema:
+      type: integer
+      format: int64
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: array
+        items:
+          type: object
+          properties:
+            book:
+              type: string
+            chapter:
+              type: number
+            startVerse:
+              type: number
+            endVerse:
+              type: number
+responses:
+  '201':
+    description: Biblical references added successfully
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              book:
+                type: string
+              chapter:
+                type: number
+              startVerse:
+                type: number
+              endVerse:
+                type: number

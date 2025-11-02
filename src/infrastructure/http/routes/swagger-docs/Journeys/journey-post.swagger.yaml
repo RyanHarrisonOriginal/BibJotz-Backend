@@ -1,0 +1,31 @@
+summary: Create a new journey
+description: Creates a new journey with the given information
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          title:
+            type: string
+          ownerId:
+            type: number
+          guideId:
+            type: number
+responses:
+  '201':
+    description: Journey created successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            title:
+              type: string
+            ownerId:
+              type: integer
+            guideId:
+              type: integer

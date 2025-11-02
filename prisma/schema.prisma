@@ -119,6 +119,7 @@ model Journey {
   updatedAt DateTime @updatedAt @map("updated_at")
   guide Guide @relation(fields: [guideId], references: [id])
   reflections Reflection[]
+  
   @@map("journeys")
   @@schema("app")
 }
@@ -126,7 +127,7 @@ model Journey {
 model Reflection {
   id Int @id @default(autoincrement())
   content String
-  authorId Int @map("auther_id")
+  authorId Int @map("author_id")
   journeyId Int @map("journey_id")
   guideSectionId Int @map("guide_section_id")
   createdAt DateTime @default(now()) @map("created_at")
@@ -134,6 +135,22 @@ model Reflection {
 
   journey Journey @relation(fields: [journeyId], references: [id])
 
+  biblicalReferences ReflectionBiblicalReference[]
+
   @@map("reflections")
+  @@schema("app")
+} 
+
+model ReflectionBiblicalReference {
+  id Int @id @default(autoincrement())
+  reflectionId Int @map("reflection_id")
+  book String
+  chapter Int
+  startVerse Int @map("start_verse")
+  endVerse Int @map("end_verse")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  reflection Reflection @relation(fields: [reflectionId], references: [id])
+  @@map("reflection_biblical_references")
   @@schema("app")
 }

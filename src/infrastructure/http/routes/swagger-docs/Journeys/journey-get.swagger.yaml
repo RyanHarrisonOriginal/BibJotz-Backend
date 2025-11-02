@@ -1,0 +1,50 @@
+summary: Find a journey by id, ownerId, or guideId
+description: Finds a journey by id, ownerId, or guideId
+parameters:
+  - name: id
+    in: query
+    description: The id of the journey
+    required: false
+    schema:
+      type: integer
+  - name: ownerId
+    in: query
+    description: The id of the owner
+    required: false
+    schema:
+      type: integer
+  - name: guideId
+    in: query
+    description: The id of the guide
+    required: false
+    schema:
+      type: integer
+responses:
+  '200':
+    description: Journey found successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            title:
+              type: string
+            ownerId:
+              type: integer
+            guideId:
+              type: integer
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+            reflections:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer

@@ -13,7 +13,7 @@ export class CreateJourneyCommandHandler implements ICommandHandler<CreateJourne
             id: null,
             title: command.title,
             ownerId: command.ownerId,
-            guide: command.guide,
+            guideId: command.guideId,
             reflections: [],
             createdAt: new Date(),
             updatedAt: new Date(),

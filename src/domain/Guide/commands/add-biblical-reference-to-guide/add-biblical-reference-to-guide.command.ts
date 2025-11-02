@@ -1,5 +1,5 @@
 import { ICommand } from "@/domain/shared/interfaces/command.interface";
-import { IBiblicalReferenceDTO } from "@/domain/Guide/guide.dto";
+import { IBiblicalReferenceDTO } from "@/domain/BiblicalReferences/biblical-reference.dto";
 
 export class AddBiblicalReferenceToGuideCommand implements ICommand {
     readonly commandType = 'AddBiblicalReferenceToGuideCommand';

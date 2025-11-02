@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 import { Email } from "@/domain/shared/value-objects/Email";
 import { Subscription } from "@/domain/shared/value-objects/Subscription";
 import { UserFactory } from "@/domain/User/user-factory";
-import { UserMapper } from "../../../../mappers/user.mapper";
+import { UserMapper } from "@/domain/User/user.mapper";
 
 export class UserPostgresRepository implements IUserRepository {
     constructor(private readonly prisma: PrismaClient) {}
@@ -23,7 +23,7 @@ export class UserPostgresRepository implements IUserRepository {
             data: userData,
         });
 
-        return UserMapper.mapToDomain(savedUser);
+        return UserMapper.mapUserToDomain(savedUser);
     }
 
     async findById(id: number): Promise<User> {
@@ -36,7 +36,7 @@ export class UserPostgresRepository implements IUserRepository {
             throw new Error(`User with id ${id} not found`);
         }
 
-        return UserMapper.mapToDomain(user);
+        return UserMapper.mapUserToDomain(user);
     }
 
     async findByEmail(email: string): Promise<User | null> {
@@ -45,7 +45,7 @@ export class UserPostgresRepository implements IUserRepository {
 
         });
 
-        return user ? UserMapper.mapToDomain(user) : null;
+        return user ? UserMapper.mapUserToDomain(user) : null;
     }
 
     async findByUsername(username: string): Promise<User | null> {
@@ -54,7 +54,7 @@ export class UserPostgresRepository implements IUserRepository {
 
         });
 
-        return user ? UserMapper.mapToDomain(user) : null;
+        return user ? UserMapper.mapUserToDomain(user) : null;
     }
 
     async findAllSubscribedToGuide(guideId: number): Promise<User[]> {

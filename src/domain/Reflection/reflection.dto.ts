@@ -1,11 +1,10 @@
-import { IBiblicalReferenceDTO } from "../Guide/guide.dto";
+import { IBiblicalReferenceDTO } from "../BiblicalReferences/biblical-reference.dto";
 
 export interface IReflectionDTO {
-    id: number;
+    id: number | null;
     content: string;
-    userId: number;
+    authorId: number;
+    guideSectionId: number,
     journeyId: number;
     biblicalReferences: IBiblicalReferenceDTO[];
-    createdAt: Date;
-    updatedAt: Date;
 }

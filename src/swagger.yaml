@@ -15,7 +15,8 @@ tags:
     description: Guide section management operations
   - name: Biblical References
     description: Biblical reference management operations
-
+  - name: Journeys
+    description: Journey management operations
 paths:
   /api/v1/users:
     post:
@@ -90,3 +91,22 @@ paths:
       tags:
         - Biblical References
       $ref: './infrastructure/http/routes/swagger-docs/Guides/guide-section-biblical-references.swagger.yaml'
+  /api/v1/journeys:
+    post:
+      tags:
+        - Journeys
+      $ref: './infrastructure/http/routes/swagger-docs/Journeys/journey-post.swagger.yaml'
+    get:
+      tags:
+        - Journeys
+      $ref: './infrastructure/http/routes/swagger-docs/Journeys/journey-get.swagger.yaml'
+  /api/v1/reflections:
+    post:
+      tags:
+        - Reflections
+      $ref: './infrastructure/http/routes/swagger-docs/Reflections/reflection-post.swagger.yaml'
+  /api/v1/reflections/{reflectionId}/biblical-references:
+    post:
+      tags:
+        - Reflections
+      $ref: './infrastructure/http/routes/swagger-docs/Reflections/reflection-biblical-references.swagger.yaml'

@@ -6,11 +6,14 @@ import { GetChurchQueryHandler } from "@/domain/Church/queries/get-church/get-ch
 import { GetAllChurchesQueryHandler } from "@/domain/Church/queries/get-all-churches/get-all-churches.query.handler";
 import { GetGuideByIdCommandHandler } from "@/domain/Guide/queries/get-guide-by-id/get-guide-by-id-commnad.handler";
 import { IGuideRepository } from "@/domain/Guide/guide-repository.interface";
+import { IJourneyRepository } from "@/domain/Jouney/journey-repository.interface";
+import { FindJourneyQueryHandler } from "@/domain/Jouney/commands/queries/find-journey/find-journey-query.handler";
 
 interface IQueryBusSetup {
     userRepository: IUserRepository;
     churchRepository: IChurchRepository;
     guideRepository: IGuideRepository;
+    journeyRepository: IJourneyRepository;
 }
 
 export function setupQueryBus(queryBusSetup: IQueryBusSetup): QueryBus {
@@ -26,6 +29,9 @@ export function setupQueryBus(queryBusSetup: IQueryBusSetup): QueryBus {
 
     const getGuideByIdHandler = new GetGuideByIdCommandHandler(queryBusSetup.guideRepository);
     queryBus.registerHandler('GetGuideByIdQuery', getGuideByIdHandler);
+
+    const findJourneyHandler = new FindJourneyQueryHandler(queryBusSetup.journeyRepository);
+    queryBus.registerHandler('FindJourneyQuery', findJourneyHandler);
     
     return queryBus;
 }
