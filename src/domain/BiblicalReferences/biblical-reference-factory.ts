@@ -26,4 +26,14 @@ export class BiblicalReferenceFactory {
             biblicalReference.endVerse
         );
     }
+
+    public static createArray(data: IBiblicalReferenceDTO[]): BiblicalReference[] {
+        return data.map((item) => this.create({
+            id: item.id,
+            book: item.book,
+            chapter: item.chapter,
+            startVerse: item.startVerse,
+            endVerse: item.endVerse,
+        }));
+    }
 }

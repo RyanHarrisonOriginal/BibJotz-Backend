@@ -1,72 +1,14 @@
 import { Guide } from "@/domain/Guide/guide";
-import { GuideSection } from "@/domain/Guide/guide-section";
+import { GuideSection } from "@/domain/Guide/Sections/guide-section";
 import { BiblicalReference } from "@/domain/BiblicalReferences/biblical-reference";
+import { GuideFactory } from "./guide-factory";
 
 export class GuideMapper {
 
-    private static arrayMapper<T>(array: any[], mapper: (item: any) => T): T[] {
-        if (!array) {
-            return [];
-        }
-        return array.map((item: any) => mapper(item));
-    }
-
-    public static mapBiblicalReferenceModelToDomain(biblicalReference: any): BiblicalReference {
-        console.log(biblicalReference);
-        return new BiblicalReference(
-            biblicalReference.id,
-            biblicalReference.book, 
-            biblicalReference.chapter, 
-            biblicalReference.startVerse, 
-            biblicalReference.endVerse
-        );
-    }
-
-    public static mapGuideSectionModelToDomain(section: any): GuideSection {
-
-        const biblicalReferences = GuideMapper.arrayMapper(
-            section.biblicalReferences, 
-            GuideMapper.mapBiblicalReferenceModelToDomain
-        );
-
-        
-        return new GuideSection(
-            section.id,
-            section.title,
-            section.ordinalPosition,
-            section.description,
-            biblicalReferences
-        );
-    }
-
 
     public static mapGuideModelToDomain(prismaGuide: any): Guide {
-        if (!prismaGuide) {
-            throw new Error("Guide data is undefined or null");
-        }
-
-        const guideSections = GuideMapper.arrayMapper(
-            prismaGuide.guideSections, 
-            GuideMapper.mapGuideSectionModelToDomain
-        );
-        const biblicalReferences = GuideMapper.arrayMapper(
-            prismaGuide.biblicalReferences, 
-            GuideMapper.mapBiblicalReferenceModelToDomain
-        );
-
-        return new Guide(
-            prismaGuide.id,
-            prismaGuide.name,
-            prismaGuide.description,
-            prismaGuide.isPublic,
-            guideSections,
-            biblicalReferences,
-            prismaGuide.authorId,
-            prismaGuide.createdAt,
-            prismaGuide.updatedAt
-        );
+        return GuideFactory.create(prismaGuide);
     }
-
 
     private static mapBibleReferenceBase(biblicalReference: BiblicalReference): Record<string, any> {
         return {
@@ -88,7 +30,11 @@ export class GuideMapper {
             guideId,
         };
     }
-    
+
+    public static mapGuideBiblicalReferencesToPersistenceModel(biblicalReferences: BiblicalReference[], guideId: number | null): Record<string, any>[] {
+        return biblicalReferences.map((item) => this.mapGuideBiblicalReferenceToPersistenceModel(item, guideId));
+    }
+
 
     public static mapGuideSectionBiblicalReferenceToPersistenceModel(
         biblicalReference: BiblicalReference,
@@ -100,12 +46,12 @@ export class GuideMapper {
         };
     }
 
+    public static mapGuideSectionBiblicalReferencesToPersistenceModel(biblicalReferences: BiblicalReference[], guideSectionId: number | null): Record<string, any>[] {
+        return biblicalReferences.map((item) => this.mapGuideSectionBiblicalReferenceToPersistenceModel(item, guideSectionId));
+    }
 
     public static mapGuideSectionToPersistenceModel(section: GuideSection, guideId: number | null): any {
-        const biblicalReferences = GuideMapper.arrayMapper(
-            section.getBiblicalReferences(), 
-            (item) => GuideMapper.mapGuideSectionBiblicalReferenceToPersistenceModel(item, section.getId())
-        );
+        const biblicalReferences = GuideMapper.mapGuideSectionBiblicalReferencesToPersistenceModel(section.getBiblicalReferences(), section.getId());
 
         return {
             id: section.getId(),
@@ -117,16 +63,14 @@ export class GuideMapper {
         };
     }
 
+    public static mapGuideSectionsToPersistenceModel(guideSections: GuideSection[], guideId: number | null): any[] {
+        return guideSections.map((item) => this.mapGuideSectionToPersistenceModel(item, guideId));
+    }
+
 
     public static mapGuideToPersistencePrisma(guide: Guide): any {
-        const biblicalReferences = GuideMapper.arrayMapper(
-            guide.getBiblicalReferences(), 
-            (item) => GuideMapper.mapGuideBiblicalReferenceToPersistenceModel(item, guide.getId())
-        );
-        const guideSections = GuideMapper.arrayMapper(
-            guide.getGuideSections(), 
-            (item) => GuideMapper.mapGuideSectionToPersistenceModel(item, guide.getId())
-        );
+        const biblicalReferences = GuideMapper.mapGuideBiblicalReferencesToPersistenceModel(guide.getBiblicalReferences(), guide.getId());
+        const guideSections = GuideMapper.mapGuideSectionsToPersistenceModel(guide.getGuideSections(), guide.getId());
         return {
             guide: {
             id: guide.getId(),

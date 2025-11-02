@@ -4,7 +4,7 @@ import { QueryBus } from "@/infrastructure/CQRS/query-bus/query-bus";
 import { Request, Response } from "express";
 import { IGuideDTO } from "@/domain/Guide/guide.dto";
 import { IBiblicalReferenceDTO } from "@/domain/BiblicalReferences/biblical-reference.dto";
-import { IGuideSectionDTO } from "@/domain/Guide/guide-section.dto";
+import { IGuideSectionDTO } from "@/domain/Guide/Sections/guide-section.dto";
 import { AddGuideSectionCommand } from "@/domain/Guide/commands/add-guide-section/add-guide-section.command";
 import { GetGuideByIdQuery } from "@/domain/Guide/queries/get-guide-by-id/get-guide-by-id.command";
 import { AddBiblicalReferenceToGuideCommand } from "@/domain/Guide/commands/add-biblical-reference-to-guide/add-biblical-reference-to-guide.command";

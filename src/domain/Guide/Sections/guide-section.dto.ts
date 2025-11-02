@@ -1,4 +1,4 @@
-import { IBiblicalReferenceDTO } from "../BiblicalReferences/biblical-reference.dto";
+import { IBiblicalReferenceDTO } from "@/domain/BiblicalReferences/biblical-reference.dto";
 
 export interface IGuideSectionDTO {
     title: string;

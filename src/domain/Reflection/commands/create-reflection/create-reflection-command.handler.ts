@@ -10,6 +10,7 @@ export class CreateReflectionCommandHandler implements ICommandHandler<CreateRef
     constructor(private readonly reflectionRepository: IReflectionRepository) {}
     
     async execute(command: CreateReflectionCommand): Promise<Reflection> {
+        console.log('command', command);
         const reflection = ReflectionFactory.create({
             id: null,
             content: command.content,
@@ -18,6 +19,7 @@ export class CreateReflectionCommandHandler implements ICommandHandler<CreateRef
             journeyId: command.journeyId,
             biblicalReferences: command.biblicalReferences,
         });
+        console.log('reflection', reflection);
         return this.reflectionRepository.save(reflection);
     }
 }

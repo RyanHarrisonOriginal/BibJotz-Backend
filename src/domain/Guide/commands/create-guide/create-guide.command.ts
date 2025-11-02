@@ -1,6 +1,6 @@
 import { ICommand } from "@/domain/shared/interfaces/command.interface";
 import { IBiblicalReferenceDTO } from "@/domain/BiblicalReferences/biblical-reference.dto";
-import { IGuideSectionDTO } from "@/domain/Guide/guide-section.dto";
+import { IGuideSectionDTO } from "@/domain/Guide/Sections/guide-section.dto";
 
 export class CreateGuideCommand implements ICommand {
     readonly commandType = 'CreateGuideCommand';

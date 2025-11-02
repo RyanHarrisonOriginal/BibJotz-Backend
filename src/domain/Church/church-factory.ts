@@ -1,48 +1,61 @@
-import { ICreateChurchCommand } from "./commands/create-church/create-church-command.interface";
+
 import { Church } from "./church";
 import { URL } from "../shared/value-objects/URL";
 import { Email } from "../shared/value-objects/Email";
 import { Address } from "../shared/value-objects/Address";
 import { PhoneNumber } from "../shared/value-objects/PhoneNumber";
 import { State } from "../shared/value-objects/Address";
+
+
+interface IChurchFactory {
+    name: string;
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+    website: string;
+    email: string;
+    phone: string;
+}
+
 export class ChurchFactory {
-    static create(command: ICreateChurchCommand): Church {
-        if (!command.name) {
+    static create(data: IChurchFactory): Church {
+        if (!data.name) {
             throw new Error('Name is required');
         }
-        if (!command.street) {
+        if (!data.street) {
             throw new Error('Street is required');
         }
-        if (!command.city) {
+        if (!data.city) {
             throw new Error('City is required');
         }
-        if (!command.state) {
+        if (!data.state) {
             throw new Error('State is required');
         }
-        if (!command.zip) {
+        if (!data.zip) {
             throw new Error('Zip is required');
         }
-        if (!command.website) {
+        if (!data.website) {
             throw new Error('Website is required');
         }
-        if (!command.email) {
+        if (!data.email) {
             throw new Error('Email is required');
         }
-        if (!command.phone) {
+        if (!data.phone) {
             throw new Error('Phone is required');
         }
         return new Church(
             null,
-            command.name, 
+                data.name, 
             Address.create(
-                command.street, 
-                command.city,   
-                command.state as State, 
-                command.zip
+                data.street, 
+                data.city,   
+                data.state as State, 
+                data.zip
             ), 
-            URL.create(command.website), 
-            Email.create(command.email), 
-            PhoneNumber.create(command.phone),
+            URL.create(data.website), 
+            Email.create(data.email), 
+            PhoneNumber.create(data.phone),
             new Date(),
             new Date()
         );

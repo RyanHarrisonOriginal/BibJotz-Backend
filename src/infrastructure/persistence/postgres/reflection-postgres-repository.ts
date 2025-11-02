@@ -11,7 +11,12 @@ export class ReflectionPostgresRepository implements IReflectionRepository {
 
     private async createReflection(tx: Prisma.TransactionClient, reflectionData: any): Promise<any> {
         const savedReflection = await tx.reflection.create({
-            data: reflectionData,
+            data: {
+                content: reflectionData.content,
+                authorId: reflectionData.authorId,
+                guideSectionId: reflectionData.guideSectionId,
+                journeyId: reflectionData.journeyId
+            },
         });
         return savedReflection;
     }
@@ -19,14 +24,25 @@ export class ReflectionPostgresRepository implements IReflectionRepository {
     private async updateReflection(tx: Prisma.TransactionClient, reflectionData: any): Promise<any> {
         const savedReflection = await tx.reflection.update({
             where: { id: reflectionData.id },
-            data: reflectionData,
+            data: {
+                content: reflectionData.content,
+                authorId: reflectionData.authorId,
+                guideSectionId: reflectionData.guideSectionId,
+                journeyId: reflectionData.journeyId
+            },
         });
         return savedReflection;
     }
 
-    private async createReflectionBiblicalReference(tx: Prisma.TransactionClient, reflectionBiblicalReferenceData: any): Promise<any> {
+    private async createReflectionBiblicalReference(tx: Prisma.TransactionClient, reflectionBiblicalReferenceData: any, reflectionId: number | null): Promise<any> {
         const savedReflectionBiblicalReference = await tx.reflectionBiblicalReference.create({
-            data: reflectionBiblicalReferenceData,
+            data: {
+                reflectionId: reflectionId ?? 0,
+                book: reflectionBiblicalReferenceData.book,
+                chapter: reflectionBiblicalReferenceData.chapter,
+                startVerse: reflectionBiblicalReferenceData.startVerse,
+                endVerse: reflectionBiblicalReferenceData.endVerse,
+            },
         });
         return savedReflectionBiblicalReference;
     }
@@ -34,15 +50,23 @@ export class ReflectionPostgresRepository implements IReflectionRepository {
     private async updateReflectionBiblicalReference(tx: Prisma.TransactionClient, reflectionBiblicalReferenceData: any): Promise<any> {
         const savedReflectionBiblicalReference = await tx.reflectionBiblicalReference.update({
             where: { id: reflectionBiblicalReferenceData.id },
-            data: reflectionBiblicalReferenceData,
+            data: {
+                book: reflectionBiblicalReferenceData.book,
+                chapter: reflectionBiblicalReferenceData.chapter,
+                startVerse: reflectionBiblicalReferenceData.startVerse,
+                endVerse: reflectionBiblicalReferenceData.endVerse,
+            },
         });
         return savedReflectionBiblicalReference;
     }
 
-    async save(reflection: Reflection): Promise<Reflection> {
+    async save(reflection: Reflection): Promise<any> {
         const reflectionData = ReflectionMapper.mapReflectionToPersistencePrisma(reflection);
+        console.log('reflection', reflection);
+        console.log('reflectionData', reflectionData);
         const savedReflection = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-            let savedReflection: Reflection;
+            let savedReflection: any;
+
             savedReflection = await (reflectionData.id === 0 || !reflectionData.id
                 ? this.createReflection(tx, reflectionData)
                 : this.updateReflection(tx, reflectionData)
@@ -52,13 +76,13 @@ export class ReflectionPostgresRepository implements IReflectionRepository {
                 await Promise.all(
                     reflectionData.biblicalReferences.map((reference: any) =>
                         reference.id === 0 || !reference.id
-                            ? this.createReflectionBiblicalReference(tx, reference)
+                            ? this.createReflectionBiblicalReference(tx, reference, savedReflection.id)
                             : this.updateReflectionBiblicalReference(tx, reference)
                     )
                 );
             }
         });
-        return ReflectionMapper.mapReflectionToDomain(savedReflection);
+        return savedReflection;
     }
 
     private ReflectionQuery(where: any): any {

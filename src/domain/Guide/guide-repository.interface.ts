@@ -1,4 +1,4 @@
-import { Guide } from "./guide";
+import { Guide } from "@/domain/Guide/guide";
 
 export interface IGuideRepository {
     save(guide: Guide): Promise<Guide>;

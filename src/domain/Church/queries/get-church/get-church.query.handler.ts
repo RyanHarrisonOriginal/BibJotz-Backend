@@ -1,5 +1,5 @@
 import { IChurchRepository } from "@/domain/Church/church-repository.interface";
-import { GetChurchQuery } from "../get-church.query";
+import { GetChurchQuery } from "@/domain/Church/queries/get-church/get-church.query";
 import { Church } from "@/domain/Church/church";
 import { IQueryHandler } from "@/domain/shared/interfaces/query-handler.interface";
 

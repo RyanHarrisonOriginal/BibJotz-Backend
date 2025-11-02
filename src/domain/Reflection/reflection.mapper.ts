@@ -9,6 +9,7 @@ export class ReflectionMapper {
             authorId: reflection.getAuthorId(),
             guideSectionId: reflection.getGuideSectionId(),
             journeyId: reflection.getJourneyId(),
+            biblicalReferences: reflection.getBiblicalReferences(),
         };
     }
 

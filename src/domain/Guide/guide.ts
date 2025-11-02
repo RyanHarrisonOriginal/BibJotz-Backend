@@ -1,6 +1,6 @@
 import { BaseEntity } from "../BaseEntity";
 import { BiblicalReference } from "../BiblicalReferences/biblical-reference";
-import { GuideSection } from "./guide-section";
+import { GuideSection } from "./Sections/guide-section";
 
 export class Guide extends BaseEntity {
     constructor(

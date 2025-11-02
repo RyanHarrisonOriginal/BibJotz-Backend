@@ -1,5 +1,5 @@
-import { IBiblicalReferenceDTO } from "../BiblicalReferences/biblical-reference.dto";
-import { IGuideSectionDTO } from "./guide-section.dto";
+import { IBiblicalReferenceDTO } from "@/domain/BiblicalReferences/biblical-reference.dto";
+import { IGuideSectionDTO } from "@/domain/Guide/Sections/guide-section.dto";
 
 
 export interface IGuideDTO {

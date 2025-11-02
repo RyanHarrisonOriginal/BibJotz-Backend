@@ -1,4 +1,4 @@
-import { GuideSection } from "./guide-section";
+import { GuideSection } from "@/domain/Guide/Sections/guide-section";
 
 export class GuideSectionMapper {
     public static mapGuideSectionToDomain(guideSection: any): GuideSection {
