@@ -1,4 +1,4 @@
-import { IGuideDTO } from "../Guide/guide.dto";
+
 import { IReflectionDTO } from "../Reflection/reflection.dto";
 
 export interface IJourneyDTO {

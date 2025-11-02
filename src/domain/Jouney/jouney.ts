@@ -1,6 +1,5 @@
-import { BaseEntity } from "../BaseEntity";
-import { IGuideDTO } from "../Guide/guide.dto";
-import { Reflection } from "../Reflection/reflection";
+import { BaseEntity } from "@/domain/BaseEntity";
+import { Reflection } from "@/domain/Reflection/reflection";
 
 
 

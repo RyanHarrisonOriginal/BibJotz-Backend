@@ -2,8 +2,8 @@
 import { Guide } from "@/domain/Guide/guide";
 import { IBiblicalReferenceDTO } from "@/domain/BiblicalReferences/biblical-reference.dto";
 import { IGuideSectionDTO } from "@/domain/Guide/Sections/guide-section.dto";
-import { GuideSectionFactory } from "./Sections/guide-section-factory";
-import { BiblicalReferenceFactory } from "../BiblicalReferences/biblical-reference-factory";
+import { GuideSectionFactory } from "@/domain/Guide/Sections/guide-section-factory";
+import { BiblicalReferenceFactory } from "@/domain/BiblicalReferences/biblical-reference-factory";
 
 interface IGuideCreationProps {
     id: number | null;

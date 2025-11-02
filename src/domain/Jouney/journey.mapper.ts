@@ -1,17 +1,7 @@
 import { Reflection } from "../Reflection/reflection";
 import { Journey } from "./jouney";
-import { ReflectionFactory } from "../Reflection/reflection-factory";
-import { JourneyFactory } from "./journey-factory";
 
 export class JourneyMapper {
-
-    private static arrayMapper<T>(array: any[], mapper: (item: any) => T): T[] {
-        console.log('array', array);
-        if (!array) {
-            return [];
-        }
-        return array.map((item: any) => mapper(item));
-    }
 
     public static mapReflectionToPersistenceModel(reflection: Reflection, journeyId: number): any {
         return {
@@ -23,11 +13,12 @@ export class JourneyMapper {
         };
     }
 
+    public static mapReflectionsToPersistenceModel(reflections: Reflection[], journeyId: number): any[] {
+        return reflections.map((reflection) => JourneyMapper.mapReflectionToPersistenceModel(reflection, journeyId));
+    }
+
     public static mapJourneyToPersistencePrisma(journey: Journey): any {
-        const reflections = JourneyMapper.arrayMapper(
-            journey.getReflections(), 
-            (item) => JourneyMapper.mapReflectionToPersistenceModel(item, journey.getId() ?? 0)
-        );
+        const reflections = JourneyMapper.mapReflectionsToPersistenceModel(journey.getReflections(), journey.getId() ?? 0);
         return {
             id: journey.getId(),
             title: journey.getTitle(),
@@ -37,8 +28,4 @@ export class JourneyMapper {
         };
     }
 
-    public static mapJourneyModelToDomain(journey: any): Journey {
-        console.log('journey---->fricking', journey);
-        return JourneyFactory.create(journey);
-    }
 }

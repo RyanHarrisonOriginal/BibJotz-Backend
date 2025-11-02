@@ -1,14 +1,13 @@
-import { Reflection } from "../Reflection/reflection";
-import { Journey } from "./jouney";
-import { ReflectionFactory } from "../Reflection/reflection-factory";
-import { IReflectionDTO } from "../Reflection/reflection.dto";
+import { ReflectionFactory } from "@/domain/Reflection/reflection-factory";
+import { Journey } from "@/domain/Jouney/jouney";
+import { IReflectionDTO } from "@/domain/Reflection/reflection.dto";
 
 interface IJourneyCreationProps {
     id: number | null;
     title: string;
     ownerId: number;
     guideId: number;
-    reflections: Reflection[];
+    reflections: IReflectionDTO[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -19,7 +18,7 @@ export class JourneyFactory {
             data.title,
             data.ownerId,
             data.guideId,
-            data.reflections.map(reflection => ReflectionFactory.create(reflection as unknown as IReflectionDTO)),
+            ReflectionFactory.createArray(data.reflections),
             data.createdAt,
             data.updatedAt
         );

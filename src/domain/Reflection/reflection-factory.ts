@@ -1,7 +1,8 @@
 
 import { Reflection } from "./reflection";
-import { BiblicalReferenceMapper } from "../BiblicalReferences/biblical-reference.mapper";
 import { IBiblicalReferenceDTO } from "../BiblicalReferences/biblical-reference.dto";
+import { IReflectionDTO } from "./reflection.dto";
+import { BiblicalReferenceFactory } from "../BiblicalReferences/biblical-reference-factory";
 
 
 interface IReflectionCreationProps {
@@ -21,7 +22,18 @@ export class ReflectionFactory {
             data.authorId,
             data.journeyId,
             data.guideSectionId,
-            BiblicalReferenceMapper.mapBiblicalReferencesToDomain(data.biblicalReferences),
+            BiblicalReferenceFactory.createArray(data.biblicalReferences),
         );
+    }
+
+    public static createArray(data: IReflectionDTO[]): Reflection[] {
+        return data.map((item) => this.create({
+            id: item.id,
+            content: item.content,
+            authorId: item.authorId,
+            journeyId: item.journeyId,
+            guideSectionId: item.guideSectionId,
+            biblicalReferences: item.biblicalReferences,
+        }));
     }
 }
