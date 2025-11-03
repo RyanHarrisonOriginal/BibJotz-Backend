@@ -1,5 +1,5 @@
-import { Reflection } from "./reflection";
-import { ReflectionFactory } from "./reflection-factory";
+import { Reflection } from "@/domain/Reflection/reflection";
+import { ReflectionFactory } from "@/domain/Reflection/reflection-factory";
 
 export class ReflectionMapper {
     public static mapReflectionToPersistencePrisma(reflection: Reflection): any {

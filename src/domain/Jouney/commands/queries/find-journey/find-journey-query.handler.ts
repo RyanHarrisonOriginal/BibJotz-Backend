@@ -1,5 +1,5 @@
 import { IJourneyRepository } from "@/domain/Jouney/journey-repository.interface";
-import { FindJourneyQuery } from "./find-journey.query";
+import { FindJourneyQuery } from "@/domain/Jouney/commands/queries/find-journey/find-journey.query";
 import { Journey } from "@/domain/Jouney/jouney";
 import { IQueryHandler } from "@/domain/shared/interfaces/query-handler.interface";
 

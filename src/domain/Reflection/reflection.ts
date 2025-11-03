@@ -1,6 +1,5 @@
-import { BaseEntity } from "../BaseEntity";
-import { IBiblicalReferenceDTO } from "../BiblicalReferences/biblical-reference.dto";
-import { BiblicalReference } from "../BiblicalReferences/biblical-reference";
+import { BaseEntity } from "@/domain/BaseEntity";
+import { BiblicalReference } from "@/domain/BiblicalReferences/biblical-reference";
 
 export class Reflection extends BaseEntity {
     constructor(

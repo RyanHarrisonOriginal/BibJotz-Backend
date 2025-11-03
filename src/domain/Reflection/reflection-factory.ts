@@ -1,8 +1,7 @@
-
-import { Reflection } from "./reflection";
-import { IBiblicalReferenceDTO } from "../BiblicalReferences/biblical-reference.dto";
-import { IReflectionDTO } from "./reflection.dto";
-import { BiblicalReferenceFactory } from "../BiblicalReferences/biblical-reference-factory";
+import { Reflection } from "@/domain/Reflection/reflection";
+import { IBiblicalReferenceDTO } from "@/domain/BiblicalReferences/biblical-reference.dto";
+import { IReflectionDTO } from "@/domain/Reflection/reflection.dto";
+import { BiblicalReferenceFactory } from "@/domain/BiblicalReferences/biblical-reference-factory";
 
 
 interface IReflectionCreationProps {

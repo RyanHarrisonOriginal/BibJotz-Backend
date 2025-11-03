@@ -1,8 +1,6 @@
 import { ICommandHandler } from "@/domain/shared/interfaces/command-handler.interface";
-import { IJourneyRepository } from "../../../Jouney/journey-repository.interface";
-import { CreateReflectionCommand } from "./create-reflection.command";
+import { CreateReflectionCommand } from "@/domain/Reflection/commands/create-reflection/create-reflection.command";
 import { Reflection } from "@/domain/Reflection/reflection";
-import { ReflectionMapper } from "@/domain/Reflection/reflection.mapper";
 import { ReflectionFactory } from "@/domain/Reflection/reflection-factory";
 import { IReflectionRepository } from "@/domain/Reflection/reflection-repository.interface";
 

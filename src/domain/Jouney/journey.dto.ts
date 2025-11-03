@@ -1,5 +1,4 @@
-
-import { IReflectionDTO } from "../Reflection/reflection.dto";
+import { IReflectionDTO } from "@/domain/Reflection/reflection.dto";
 
 export interface IJourneyDTO {
     id: number;

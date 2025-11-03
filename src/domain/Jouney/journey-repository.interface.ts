@@ -1,4 +1,4 @@
-import { Journey } from "./jouney";
+import { Journey } from "@/domain/Jouney/jouney";
 
 export interface IJourneyRepository {
     save(journey: Journey): Promise<Journey>;

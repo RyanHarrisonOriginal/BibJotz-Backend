@@ -1,5 +1,5 @@
-import { Reflection } from "../Reflection/reflection";
-import { Journey } from "./jouney";
+import { Reflection } from "@/domain/Reflection/reflection";
+import { Journey } from "@/domain/Jouney/jouney";
 
 export class JourneyMapper {
 

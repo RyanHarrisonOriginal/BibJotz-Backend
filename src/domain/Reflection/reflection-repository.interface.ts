@@ -1,4 +1,4 @@
-import { Reflection } from "./reflection";
+import { Reflection } from "@/domain/Reflection/reflection";
 
 export interface IReflectionRepository {
     save(reflection: Reflection): Promise<Reflection>;

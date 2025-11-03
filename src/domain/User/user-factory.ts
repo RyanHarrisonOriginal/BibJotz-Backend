@@ -1,6 +1,6 @@
-import { User } from "./user";
-import { Email } from "../shared/value-objects/Email";
-import { Subscription } from "../shared/value-objects/Subscription";
+import { User } from "@/domain/User/user";
+import { Email } from "@/domain/shared/value-objects/Email";
+import { Subscription } from "@/domain/shared/value-objects/Subscription";
 
 interface IUserCreationProps {
     id: number | null;
