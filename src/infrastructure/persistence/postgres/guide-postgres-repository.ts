@@ -105,7 +105,7 @@ export class GuidePostgresRepository implements IGuideRepository {
 
     async save(guide: Guide): Promise<any> {
 
-        const guideData = GuideMapper.mapGuideToPersistencePrisma(guide);
+        const guideData = GuideMapper.mapGuideToPersistenceModel(guide);
 
          const result: Guide = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
 

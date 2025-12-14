@@ -13,6 +13,10 @@ import { CreateJourneyCommandHandler } from '@/domain/Jouney/commands/create-jou
 import { CreateReflectionCommandHandler } from '@/domain/Reflection/commands/create-reflection/create-reflection-command.handler';
 import { AddBiblicalReferencesToReflectionCommandHandler } from '@/domain/Reflection/commands/add-biblical-references-to-reflection/add-biblical-reference-to-reflection-command.handler';
 import { IReflectionRepository } from '@/domain/Reflection/reflection-repository.interface';
+import { IDraftRepository } from '@/domain/Drafts/draft-repository.interface';
+import { CreateDraftCommandHandler } from '@/domain/Drafts/commands/create-draft/create-draft-command.handler';
+import { UpdateDraftCommandHandler } from '@/domain/Drafts/commands/update-draft/update-draft-command.handler';
+import { DeleteDraftCommandHandler } from '@/domain/Drafts/commands/delete-draft/delete-draft-command.handler';
 
 
 interface ICommandBusSetup {
@@ -21,6 +25,7 @@ interface ICommandBusSetup {
   guideRepository: IGuideRepository;
   journeyRepository: IJourneyRepository;
   reflectionRepository: IReflectionRepository;
+  draftRepository: IDraftRepository;
 }
 
 export function setupCommandBus(commandBusSetup: ICommandBusSetup): CommandBus {
@@ -52,6 +57,15 @@ export function setupCommandBus(commandBusSetup: ICommandBusSetup): CommandBus {
 
   const addBiblicalReferencesToReflectionHandler = new AddBiblicalReferencesToReflectionCommandHandler(commandBusSetup.reflectionRepository);
   commandBus.registerHandler('AddBiblicalReferencesToReflectionCommand', addBiblicalReferencesToReflectionHandler);
+
+  const createDraftHandler = new CreateDraftCommandHandler(commandBusSetup.draftRepository);
+  commandBus.registerHandler('CreateDraftCommand', createDraftHandler);
+
+  const updateDraftHandler = new UpdateDraftCommandHandler(commandBusSetup.draftRepository);
+  commandBus.registerHandler('UpdateDraftCommand', updateDraftHandler);
+
+  const deleteDraftHandler = new DeleteDraftCommandHandler(commandBusSetup.draftRepository);
+  commandBus.registerHandler('DeleteDraftCommand', deleteDraftHandler);
 
   return commandBus;
 }

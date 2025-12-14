@@ -1,0 +1,40 @@
+summary: Get all drafts by user id
+description: Gets all drafts for a specific user
+parameters:
+  - name: userId
+    in: path
+    description: The id of the user
+    required: true
+    schema:
+      type: integer
+responses:
+  '200':
+    description: List of drafts retrieved successfully
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+              userId:
+                type: number
+              draftContent:
+                type: object
+                additionalProperties: true
+              updatedAt:
+                type: string
+                format: date-time
+  '500':
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+
+

@@ -17,12 +17,13 @@ import { ChurchPostgresRepository } from './infrastructure/persistence/postgres/
 import { GuidePostgresRepository } from './infrastructure/persistence/postgres/guide-postgres-repository';
 import { JourneyPostgresRepository } from './infrastructure/persistence/postgres/journey-postgres-repository';
 import { ReflectionPostgresRepository } from './infrastructure/persistence/postgres/reflection-postgres-repository';
+import { DraftPostgresRepository } from './infrastructure/persistence/postgres/draft-postgres-repository';
 
 // Load environment variables
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3002;
 
 
 
@@ -52,9 +53,20 @@ async function startServer() {
     const guideRepository = new GuidePostgresRepository(prisma);
     const journeyRepository = new JourneyPostgresRepository(prisma);
     const reflectionRepository = new ReflectionPostgresRepository(prisma);
+    const draftRepository = new DraftPostgresRepository(prisma);
+
+    const repositories = { 
+      userRepository, 
+      churchRepository, 
+      guideRepository, 
+      journeyRepository, 
+      reflectionRepository, 
+      draftRepository 
+    };
     
-    const commandBus = setupCommandBus({ userRepository, churchRepository, guideRepository, journeyRepository, reflectionRepository });
-    const queryBus = setupQueryBus({ userRepository, churchRepository, guideRepository, journeyRepository });
+    const commandBus = setupCommandBus(repositories);
+    const queryBus = setupQueryBus(repositories);
+
 
     // Routes
     app.use('/api', routes(commandBus, queryBus));

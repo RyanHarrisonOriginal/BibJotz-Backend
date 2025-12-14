@@ -17,6 +17,8 @@ tags:
     description: Biblical reference management operations
   - name: Journeys
     description: Journey management operations
+  - name: Drafts
+    description: Draft management operations
 paths:
   /api/v1/users:
     post:
@@ -110,3 +112,26 @@ paths:
       tags:
         - Reflections
       $ref: './infrastructure/http/routes/swagger-docs/Reflections/reflection-biblical-references.swagger.yaml'
+  /api/v1/guides/drafts:
+    post:
+      tags:
+        - Drafts
+      $ref: './infrastructure/http/routes/swagger-docs/Drafts/draft-post.swagger.yaml'
+  /api/v1/guides/drafts/{draftId}:
+    get:
+      tags:
+        - Drafts
+      $ref: './infrastructure/http/routes/swagger-docs/Drafts/draft-get.swagger.yaml'
+    put:
+      tags:
+        - Drafts
+      $ref: './infrastructure/http/routes/swagger-docs/Drafts/draft-put.swagger.yaml'
+    delete:
+      tags:
+        - Drafts
+      $ref: './infrastructure/http/routes/swagger-docs/Drafts/draft-delete.swagger.yaml'
+  /api/v1/guides/drafts/user/{userId}:
+    get:
+      tags:
+        - Drafts
+      $ref: './infrastructure/http/routes/swagger-docs/Drafts/draft-get-all-by-user.swagger.yaml'

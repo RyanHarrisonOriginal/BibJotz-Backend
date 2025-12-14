@@ -8,12 +8,16 @@ import { GetGuideByIdCommandHandler } from "@/domain/Guide/queries/get-guide-by-
 import { IGuideRepository } from "@/domain/Guide/guide-repository.interface";
 import { IJourneyRepository } from "@/domain/Jouney/journey-repository.interface";
 import { FindJourneyQueryHandler } from "@/domain/Jouney/commands/queries/find-journey/find-journey-query.handler";
+import { IDraftRepository } from "@/domain/Drafts/draft-repository.interface";
+import { GetDraftByDraftKeyQueryHandler } from "@/domain/Drafts/queries/get-draft-by-id/get-draft-by-id.query.handler";
+import { GetAllDraftsByAuthorQueryHandler } from "@/domain/Drafts/queries/get-all-drafts-by-author/get-all-drafts-by-author.query.handler";
 
 interface IQueryBusSetup {
     userRepository: IUserRepository;
     churchRepository: IChurchRepository;
     guideRepository: IGuideRepository;
     journeyRepository: IJourneyRepository;
+    draftRepository: IDraftRepository;
 }
 
 export function setupQueryBus(queryBusSetup: IQueryBusSetup): QueryBus {
@@ -32,6 +36,12 @@ export function setupQueryBus(queryBusSetup: IQueryBusSetup): QueryBus {
 
     const findJourneyHandler = new FindJourneyQueryHandler(queryBusSetup.journeyRepository);
     queryBus.registerHandler('FindJourneyQuery', findJourneyHandler);
+
+    const getDraftByDraftKeyHandler = new GetDraftByDraftKeyQueryHandler(queryBusSetup.draftRepository);
+    queryBus.registerHandler('GetDraftByDraftKeyQuery', getDraftByDraftKeyHandler);
+
+    const getAllDraftsByAuthorHandler = new GetAllDraftsByAuthorQueryHandler(queryBusSetup.draftRepository);
+    queryBus.registerHandler('GetAllDraftsByAuthorQuery', getAllDraftsByAuthorHandler);
     
     return queryBus;
 }

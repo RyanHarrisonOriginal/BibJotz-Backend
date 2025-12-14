@@ -1,0 +1,53 @@
+summary: Update a draft
+description: Updates an existing draft with new content
+parameters:
+  - name: draftId
+    in: path
+    description: The id of the draft to update
+    required: true
+    schema:
+      type: integer
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          draftContent:
+            type: object
+            description: The updated draft content as a JSON object
+            additionalProperties: true
+        required:
+          - draftContent
+responses:
+  '200':
+    description: Draft updated successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: number
+            userId:
+              type: number
+            draftContent:
+              type: object
+              additionalProperties: true
+            updatedAt:
+              type: string
+              format: date-time
+  '404':
+    description: Draft not found
+  '500':
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+
+

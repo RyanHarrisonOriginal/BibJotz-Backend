@@ -1,0 +1,40 @@
+summary: Get a draft by id
+description: Gets a draft by id
+parameters:
+  - name: draftId
+    in: path
+    description: The id of the draft
+    required: true
+    schema:
+      type: integer
+responses:
+  '200':
+    description: The draft was found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: number
+            userId:
+              type: number
+            draftContent:
+              type: object
+              additionalProperties: true
+            updatedAt:
+              type: string
+              format: date-time
+  '404':
+    description: Draft not found
+  '500':
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+
+

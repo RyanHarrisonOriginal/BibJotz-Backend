@@ -6,6 +6,7 @@ import { churchRoutes } from './church.routes';
 import { guideRoutes } from './guide.routes';
 import { journeyRoutes } from './journey.routes';
 import { reflectionRoutes } from './reflection.routes';
+import { draftRoutes } from './draft.routes';
 
 
 export const routes = (commandBus: CommandBus, queryBus: QueryBus) => {
@@ -30,6 +31,7 @@ router.use(`${API_VERSION}/churches`, churchRoutes(commandBus, queryBus));
 router.use(`${API_VERSION}/guides`, guideRoutes(commandBus, queryBus));
 router.use(`${API_VERSION}/journeys`, journeyRoutes(commandBus, queryBus));
 router.use(`${API_VERSION}/reflections`, reflectionRoutes(commandBus, queryBus));
+router.use(`${API_VERSION}/drafts`, draftRoutes(commandBus, queryBus));
 
 
 return router;

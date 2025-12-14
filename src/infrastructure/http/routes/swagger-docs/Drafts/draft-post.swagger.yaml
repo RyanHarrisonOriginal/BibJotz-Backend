@@ -1,0 +1,48 @@
+summary: Create a new draft
+description: Creates a new draft with the given information
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          userId:
+            type: number
+            description: The ID of the user creating the draft
+          draftContent:
+            type: object
+            description: The draft content as a JSON object
+            additionalProperties: true
+        required:
+          - userId
+          - draftContent
+responses:
+  '201':
+    description: Draft created successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: number
+            userId:
+              type: number
+            draftContent:
+              type: object
+              additionalProperties: true
+            updatedAt:
+              type: string
+              format: date-time
+  '500':
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+
+

@@ -68,7 +68,7 @@ export class GuideMapper {
     }
 
 
-    public static mapGuideToPersistencePrisma(guide: Guide): any {
+    public static mapGuideToPersistenceModel(guide: Guide): any {
         const biblicalReferences = GuideMapper.mapGuideBiblicalReferencesToPersistenceModel(guide.getBiblicalReferences(), guide.getId());
         const guideSections = GuideMapper.mapGuideSectionsToPersistenceModel(guide.getGuideSections(), guide.getId());
         return {

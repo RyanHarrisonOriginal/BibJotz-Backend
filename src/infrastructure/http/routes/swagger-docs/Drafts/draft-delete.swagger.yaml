@@ -1,0 +1,25 @@
+summary: Delete a draft
+description: Deletes a draft by id
+parameters:
+  - name: draftId
+    in: path
+    description: The id of the draft to delete
+    required: true
+    schema:
+      type: integer
+responses:
+  '204':
+    description: Draft deleted successfully
+  '404':
+    description: Draft not found
+  '500':
+    description: Internal server error
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+
+
