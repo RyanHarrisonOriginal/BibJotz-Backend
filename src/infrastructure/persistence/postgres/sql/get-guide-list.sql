@@ -13,6 +13,7 @@ with guide_list as (
 )
 
 SELECT 
+    g.id,
     g.name,
     g.description,
     g.is_public as isPublic,
@@ -23,6 +24,7 @@ SELECT
 FROM guide_list
 left join app.guides g on guide_list.id = g.id
 left join app.users u on g.created_by = u.id
+where g.created_by = $1 or g.is_public = true
 order by g.created_at desc
 ;
 

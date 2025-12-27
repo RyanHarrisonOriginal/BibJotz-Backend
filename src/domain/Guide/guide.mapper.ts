@@ -2,7 +2,7 @@ import { Guide } from "@/domain/Guide/guide";
 import { GuideSection } from "@/domain/Guide/Sections/guide-section";
 import { BiblicalReference } from "@/domain/BiblicalReferences/biblical-reference";
 import { GuideFactory } from "@/domain/Guide/guide-factory";
-import { GuideListItem } from "./guide.interface";
+import { GuideListItem, GuideListPayload } from "./guide.interface";
 
 export class GuideMapper {
 
@@ -100,5 +100,15 @@ export class GuideMapper {
 
     public static mapGuideListToDomain(guideList: any[]): GuideListItem[] {
         return guideList.map((item) => this.mapGuideListItemToDomain(item));
+    }
+
+    public static mapGuideListPayloadToDomain(guideList: any[], counts: any[]): GuideListPayload {
+        return {
+            guides: this.mapGuideListToDomain(guideList),
+            counts: {
+                myGuides: Number(counts[0].myguides),
+                communityGuides: Number(counts[0].communityguides),
+            },
+        };
     }
 }

@@ -9,3 +9,11 @@ export interface GuideListItem {
     numberOfReflections: number;
 
 }
+
+export interface GuideListPayload {
+    guides: GuideListItem[];
+    counts: {
+        myGuides: number;
+        communityGuides: number;
+    };
+}

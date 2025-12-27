@@ -20,6 +20,7 @@ import { DeleteDraftCommandHandler } from '@/domain/Drafts/commands/delete-draft
 import { GuideDraftRunner } from '@/infrastructure/transactions/runners/guide-draft.runner';
 import { GuideDraftPublishingRunner } from '@/infrastructure/transactions/runners/guide-draft-publishing.runner';
 import { PublishDraftCommandHandler } from '@/domain/Drafts/commands/publish-draft/publish-draft-commnad.handler';
+import { PermanentlyDeleteGuideCommandHandler } from '@/domain/Guide/commands/permanently-delete-guide/permanently-delete-guide-command.handler';
 
 
 interface ICommandBusSetup {
@@ -73,6 +74,9 @@ export function setupCommandBus(commandBusSetup: ICommandBusSetup): CommandBus {
 
   const publishDraftHandler = new PublishDraftCommandHandler(commandBusSetup.draftPublishingRunner);
   commandBus.registerHandler('PublishDraftCommand', publishDraftHandler);
+
+  const permanentlyDeleteGuideHandler = new PermanentlyDeleteGuideCommandHandler(commandBusSetup.guideRepository);
+  commandBus.registerHandler('PermanentlyDeleteGuideCommand', permanentlyDeleteGuideHandler);
 
   return commandBus;
 }

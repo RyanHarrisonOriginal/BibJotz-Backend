@@ -5,13 +5,14 @@ import { PrismaClient, Prisma } from "@prisma/client";
 import { GuideMapper } from "@/domain/Guide/guide.mapper";
 import { PrismaClientType } from "../types";
 import { isTransactionClient } from "../utils/prismaHelpers";
-import { GuideListItem } from "@/domain/Guide/guide.interface";
+import { GuideListItem, GuideListPayload } from "@/domain/Guide/guide.interface";
 import { readFileSync } from "fs";
 import { join } from "path";
 
 
 const SQL_DIR = join(process.cwd(), "src", "infrastructure", "persistence", "postgres", "sql");
 const GUIDE_LIST_SQL = readFileSync(join(SQL_DIR, "get-guide-list.sql"), "utf-8");
+const GUIDE_LIST_COUNTS_SQL = readFileSync(join(SQL_DIR, "get-guide-list-counts.sql"), "utf-8");
 
 export class GuidePostgresRepository implements IGuideRepository {
     constructor(private readonly client: PrismaClientType) { }
@@ -199,9 +200,44 @@ export class GuidePostgresRepository implements IGuideRepository {
         return GuideMapper.mapGuideModelToDomain(guide);
     }
 
-    async getGuideList(): Promise<GuideListItem[]> {
-        const guides = await this.client.$queryRawUnsafe<any[]>(GUIDE_LIST_SQL);
-        return GuideMapper.mapGuideListToDomain(guides);
+    async getGuideList(userId: number): Promise<GuideListPayload> {
+        const guides = await this.client.$queryRawUnsafe<any[]>(GUIDE_LIST_SQL, userId);
+        const counts = await this.client.$queryRawUnsafe<any[]>(GUIDE_LIST_COUNTS_SQL, userId);
+        return GuideMapper.mapGuideListPayloadToDomain(guides, counts);
+    }
+
+    async deleteGuide(guideId: number, userId: number): Promise<void> {
+        const deleteInTransaction = async (tx: Prisma.TransactionClient) => {
+            const guideExists = await tx.$executeRawUnsafe(
+                `select 1 FROM app.guides WHERE id = ${guideId} and created_by = ${userId}`
+            );
+
+            if (!guideExists) {
+                throw new Error('Guide not found or you do not have permission to delete it');
+            }
+
+            await tx.$executeRawUnsafe(
+                `DELETE FROM app.guide_section_biblical_references 
+                 WHERE guide_section_id IN (
+                     SELECT id FROM app.guide_sections WHERE guide_id = ${guideId}
+                 )`
+            );
+            await tx.$executeRawUnsafe(
+                `DELETE FROM app.guide_sections WHERE guide_id = ${guideId}`
+            );
+            await tx.$executeRawUnsafe(
+                `DELETE FROM app.guide_biblical_references WHERE guide_id = ${guideId}`
+            );
+            await tx.$executeRawUnsafe(
+                `DELETE FROM app.guides WHERE id = ${guideId}`
+            );
+        };
+        if (isTransactionClient(this.client)) {
+            await deleteInTransaction(this.client);
+        } else {
+            const prismaClient = this.client as PrismaClient;
+            await prismaClient.$transaction(deleteInTransaction);
+        }
     }
 
 }

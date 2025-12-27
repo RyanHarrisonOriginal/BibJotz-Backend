@@ -12,6 +12,7 @@ export const guideRoutes = (commandBus: CommandBus, queryBus: QueryBus) => {
     router.post('/:guideId/sections', guideController.addGuideSection);
     router.get('/:guideId', guideController.getGuideById);
     router.get('/', guideController.getGuideList);
+    router.delete('/:guideId', guideController.deleteGuide);
     router.post('/:guideId/biblical-references', guideController.addBiblicalReferenceToGuide);
     router.post('/:guideId/sections/:sectionId/biblical-references', guideController.addBiblicalReferenceToGuideSection);
     return router;

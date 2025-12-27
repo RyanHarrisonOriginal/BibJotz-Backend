@@ -55,7 +55,7 @@ model Guide {
   name      String
   description String
   biblicalReferences GuidBibleReference[]
-  guideSections GuideSection[]
+  guideSections GuideSection[] 
   journeys Journey[]
   isPublic Boolean @default(true) @map("is_public")
   authorId Int @map("created_by")
@@ -76,7 +76,7 @@ model GuidBibleReference {
   endVerse Int @map("end_verse")
   createdAt DateTime @default(now()) @map("created_at")
 
-  guide Guide @relation(fields: [guideId], references: [id])
+  guide Guide @relation(fields: [guideId], references: [id], onDelete: Cascade)
 
   @@map("guide_biblical_references")
   @@schema("app")
@@ -91,7 +91,7 @@ model GuideSectionBibleReference {
   endVerse Int @map("end_verse")
   createdAt DateTime @default(now()) @map("created_at")
 
-  guideSection GuideSection @relation(fields: [guideSectionId], references: [id])
+  guideSection GuideSection @relation(fields: [guideSectionId], references: [id], onDelete: Cascade)
 
   @@map("guide_section_biblical_references")
   @@schema("app")
@@ -107,7 +107,7 @@ model GuideSection {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  guide Guide @relation(fields: [guideId], references: [id])
+  guide Guide @relation(fields: [guideId], references: [id], onDelete: Cascade)
   biblicalReferences GuideSectionBibleReference[]
   @@map("guide_sections")
   @@schema("app")
@@ -120,7 +120,7 @@ model Journey {
   guideId Int @map("guide_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  guide Guide @relation(fields: [guideId], references: [id])
+  guide Guide @relation(fields: [guideId], references: [id], onDelete: Cascade)
   reflections Reflection[]
   
   @@map("journeys")

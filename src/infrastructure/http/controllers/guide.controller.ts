@@ -10,6 +10,7 @@ import { GetGuideByIdQuery } from "@/domain/Guide/queries/get-guide-by-id/get-gu
 import { AddBiblicalReferenceToGuideCommand } from "@/domain/Guide/commands/add-biblical-reference-to-guide/add-biblical-reference-to-guide.command";
 import { AddBiblicalReferenceToGuideSectionCommand } from "@/domain/Guide/commands/add-biblical-reference-to-guide-section/add-biblical-reference-to-guide-section.command";
 import { GetGuideListQuery } from "@/domain/Guide/queries/get-guide-list/get-guide-list.query";
+import { PermanentlyDeleteGuideCommand } from "@/domain/Guide/commands/permanently-delete-guide/permanently-delete-guide.command";
 
 
 export class GuideController {
@@ -89,8 +90,27 @@ export class GuideController {
 
     getGuideList = async (req: Request, res: Response) => {
         try {
-            const query = new GetGuideListQuery();
+            const userId = 1; // TODO: get userId from middleware
+            if (isNaN(userId)) {
+                res.status(400).json({ message: 'userId query parameter is required' });
+                return;
+            }
+            const query = new GetGuideListQuery(userId);
             const result = await this.queryBus.execute(query);
+            res.status(200).json(result);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: (error as Error).message });
+        }
+    }
+
+    deleteGuide = async (req: Request, res: Response) => {
+        try {
+            const guideId = parseInt(req.params.guideId);
+            console.log('Deleting guide', guideId, req.params.guideId);
+            const userId = 1; // TODO: get userId from middleware
+            const command = new PermanentlyDeleteGuideCommand(guideId, userId);
+            const result = await this.commandBus.execute(command);
             res.status(200).json(result);
         } catch (error) {
             console.error(error);
