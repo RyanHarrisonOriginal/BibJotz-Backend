@@ -2,32 +2,12 @@ import { IDraftRepository } from "@/domain/Drafts/draft-repository.interface";
 import { Draft } from "@/domain/Drafts/draft";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { DraftMapper } from "@/domain/Drafts/draft.mapper";
+import { PrismaClientType } from "../types";
+import { isTransactionClient } from "../utils/prismaHelpers";
 
 export class DraftPostgresRepository implements IDraftRepository {
-    constructor(private readonly prisma: PrismaClient) { }
+    constructor(private readonly prisma: PrismaClientType) { }
 
-    private async createDraft(tx: Prisma.TransactionClient, draftData: any): Promise<any> {
-        const savedDraft = await tx.guideDraft.create({
-            data: {
-                name: draftData.name,
-                userId: draftData.userId,
-                draftContent: draftData.draftContent,
-                draftKey: draftData.draftKey,
-            },
-        });
-        return savedDraft;
-    }
-
-    private async updateDraft(tx: Prisma.TransactionClient, draftData: any): Promise<any> {
-        const savedDraft = await tx.guideDraft.update({
-            where: { draftKey: draftData.draftKey },
-            data: {
-                userId: draftData.userId,
-                draftContent: draftData.draftContent,
-            },
-        });
-        return savedDraft;
-    }
 
     private async upsertDraft(tx: Prisma.TransactionClient, draftData: any): Promise<any> {
         return await tx.guideDraft.upsert({
@@ -36,6 +16,7 @@ export class DraftPostgresRepository implements IDraftRepository {
             },
             update: {
                 draftContent: draftData.draftContent,
+                publishedAt: draftData.publishedAt || null,
                 name: draftData.name || "",
             },
             create: {
@@ -43,18 +24,27 @@ export class DraftPostgresRepository implements IDraftRepository {
                 name: draftData.name || "",
                 userId: draftData.userId,
                 draftContent: draftData.draftContent,
+                publishedAt: draftData.publishedAt || null,
             },
         });
     }
 
     async save(draft: Draft): Promise<Draft> {
         const draftData = DraftMapper.mapDraftToPersistenceModel(draft);
+        if (isTransactionClient(this.prisma)) {
+            const savedDraft = await this.executeSave(this.prisma, draftData);
+            return DraftMapper.mapDraftModelToDomain(savedDraft);
+        } else {
+            const prismaClient = this.prisma as PrismaClient;
+            const savedDraft = await prismaClient.$transaction(async (tx: Prisma.TransactionClient) => {
+                return await this.executeSave(tx, draftData);
+            });
+            return DraftMapper.mapDraftModelToDomain(savedDraft);
+        }
+    }
 
-        const savedDraft = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-            return this.upsertDraft(tx, draftData);
-        });
-
-        return DraftMapper.mapDraftModelToDomain(savedDraft);
+    private async executeSave(tx: Prisma.TransactionClient, draftData: any): Promise<any> {
+        return await this.upsertDraft(tx, draftData);
     }
 
     async findDraftByDraftKey(draftKey: string): Promise<Draft> {
@@ -93,7 +83,7 @@ export class DraftPostgresRepository implements IDraftRepository {
                 userId: true,
                 id: true,
             },
-            where: { userId: userId },
+            where: { userId: userId, publishedAt: null },
             orderBy: { updatedAt: 'desc' },
         });
         return DraftMapper.mapDraftsModelToDomain(drafts);

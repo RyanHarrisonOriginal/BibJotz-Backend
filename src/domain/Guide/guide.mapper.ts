@@ -2,6 +2,7 @@ import { Guide } from "@/domain/Guide/guide";
 import { GuideSection } from "@/domain/Guide/Sections/guide-section";
 import { BiblicalReference } from "@/domain/BiblicalReferences/biblical-reference";
 import { GuideFactory } from "@/domain/Guide/guide-factory";
+import { GuideListItem } from "./guide.interface";
 
 export class GuideMapper {
 
@@ -82,5 +83,22 @@ export class GuideMapper {
             biblicalReferences: biblicalReferences,
             guideSections: guideSections,
         };
+    }
+
+    public static mapGuideListItemToDomain(guideListItem: any): GuideListItem {
+        return {
+            id: Number(guideListItem.id),
+            name: guideListItem.name,
+            description: guideListItem.description,
+            isPublic: guideListItem.ispublic,
+            authorName: guideListItem.authorname,
+            numberOfSections: Number(guideListItem.numberofsections),
+            numberOfJourneys: Number(guideListItem.numberofjourneys),
+            numberOfReflections: Number(guideListItem.numberofreflections),
+        };
+    }
+
+    public static mapGuideListToDomain(guideList: any[]): GuideListItem[] {
+        return guideList.map((item) => this.mapGuideListItemToDomain(item));
     }
 }

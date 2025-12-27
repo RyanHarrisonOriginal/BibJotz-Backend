@@ -4,5 +4,6 @@ export interface IDraftDTO {
     userId: number;
     draftContent: Record<string, any>;
     draftKey: string;
+    publishedAt: Date | null;
 }
 

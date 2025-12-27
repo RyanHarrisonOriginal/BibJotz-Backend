@@ -9,6 +9,7 @@ import { AddGuideSectionCommand } from "@/domain/Guide/commands/add-guide-sectio
 import { GetGuideByIdQuery } from "@/domain/Guide/queries/get-guide-by-id/get-guide-by-id.command";
 import { AddBiblicalReferenceToGuideCommand } from "@/domain/Guide/commands/add-biblical-reference-to-guide/add-biblical-reference-to-guide.command";
 import { AddBiblicalReferenceToGuideSectionCommand } from "@/domain/Guide/commands/add-biblical-reference-to-guide-section/add-biblical-reference-to-guide-section.command";
+import { GetGuideListQuery } from "@/domain/Guide/queries/get-guide-list/get-guide-list.query";
 
 
 export class GuideController {
@@ -80,6 +81,17 @@ export class GuideController {
         const query = new GetGuideByIdQuery(guideId);
         const result = await this.queryBus.execute(query);
         res.status(200).json(result);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: (error as Error).message });
+        }
+    }
+
+    getGuideList = async (req: Request, res: Response) => {
+        try {
+            const query = new GetGuideListQuery();
+            const result = await this.queryBus.execute(query);
+            res.status(200).json(result);
         } catch (error) {
             console.error(error);
             res.status(500).json({ message: (error as Error).message });

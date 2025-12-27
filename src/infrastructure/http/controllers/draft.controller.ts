@@ -7,6 +7,7 @@ import { UpdateDraftCommand } from "@/domain/Drafts/commands/update-draft/update
 import { DeleteDraftCommand } from "@/domain/Drafts/commands/delete-draft/delete-draft.command";
 import { GetDraftByDraftKeyQuery } from "@/domain/Drafts/queries/get-draft-by-id/get-draft-by-id.query";
 import { GetAllDraftsByAuthorQuery } from "@/domain/Drafts/queries/get-all-drafts-by-author/get-all-drafts-by-author.query";
+import { PublishDraftCommand } from "@/domain/Drafts/commands/publish-draft/publish-draft.command";
 
 export class DraftController {
     constructor(private readonly commandBus: CommandBus, private readonly queryBus: QueryBus) {}
@@ -44,8 +45,8 @@ export class DraftController {
 
     deleteDraft = async (req: Request, res: Response) => {
         try {
-            const draftId = parseInt(req.params.draftId);
-            const command = new DeleteDraftCommand(draftId);
+            const draftKey = req.params.draftKey;
+            const command = new DeleteDraftCommand(draftKey);
             await this.commandBus.execute(command);
             res.status(204).send();
         } catch (error) {
@@ -72,6 +73,18 @@ export class DraftController {
             const query = new GetAllDraftsByAuthorQuery(userId);
             const result = await this.queryBus.execute(query);
             console.log(result);
+            res.status(200).json(result);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: (error as Error).message });
+        }
+    }
+
+    publishDraft = async (req: Request, res: Response) => {
+        try {
+            const draftKey = req.params.draftKey;
+            const command = new PublishDraftCommand(draftKey);
+            const result = await this.commandBus.execute(command);
             res.status(200).json(result);
         } catch (error) {
             console.error(error);

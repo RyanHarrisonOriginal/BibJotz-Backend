@@ -7,6 +7,7 @@ interface IDraftCreationProps {
     draftKey: string;
     draftContent: Record<string, any>;
     updatedAt: Date;
+    publishedAt?: Date | null;
 }
 
 export class DraftFactory {
@@ -23,6 +24,7 @@ export class DraftFactory {
             data.userId,
             data.draftKey,
             data.draftContent,
+            data.publishedAt || null,
             data.updatedAt
         );
     }

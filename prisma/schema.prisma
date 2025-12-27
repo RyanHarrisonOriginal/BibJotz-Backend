@@ -25,6 +25,7 @@ model User {
   // Relations
   church              Church?              @relation(fields: [primaryChurchId], references: [id])
   guideDrafts         GuideDraft[]
+  guides              Guide[] 
   @@map("users")
   @@schema("app")
 }
@@ -58,6 +59,7 @@ model Guide {
   journeys Journey[]
   isPublic Boolean @default(true) @map("is_public")
   authorId Int @map("created_by")
+  author User @relation(fields: [authorId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @map("updated_at")
 
@@ -163,6 +165,7 @@ model GuideDraft {
   draftKey String   @map("draft_key") @id
   draftContent Json     @map("draft_json")
   updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+  publishedAt DateTime?  @map("published_at")
 
   user User @relation(fields: [userId], references: [id])
 

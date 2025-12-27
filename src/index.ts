@@ -18,6 +18,8 @@ import { GuidePostgresRepository } from './infrastructure/persistence/postgres/g
 import { JourneyPostgresRepository } from './infrastructure/persistence/postgres/journey-postgres-repository';
 import { ReflectionPostgresRepository } from './infrastructure/persistence/postgres/reflection-postgres-repository';
 import { DraftPostgresRepository } from './infrastructure/persistence/postgres/draft-postgres-repository';
+import { GuideDraftRunner } from './infrastructure/transactions/runners/guide-draft.runner';
+import { GuideDraftPublishingRunner } from './infrastructure/transactions/runners/guide-draft-publishing.runner';
 
 // Load environment variables
 dotenv.config();
@@ -54,18 +56,29 @@ async function startServer() {
     const journeyRepository = new JourneyPostgresRepository(prisma);
     const reflectionRepository = new ReflectionPostgresRepository(prisma);
     const draftRepository = new DraftPostgresRepository(prisma);
+    const draftRunner = new GuideDraftRunner(prisma);
+    const draftPublishingRunner = new GuideDraftPublishingRunner(prisma);
 
-    const repositories = { 
+    const commandBusSetup = { 
       userRepository, 
       churchRepository, 
       guideRepository, 
       journeyRepository, 
       reflectionRepository, 
-      draftRepository 
+      draftRunner,
+      draftPublishingRunner,
     };
     
-    const commandBus = setupCommandBus(repositories);
-    const queryBus = setupQueryBus(repositories);
+    const queryBusSetup = {
+      userRepository,
+      churchRepository,
+      guideRepository,
+      journeyRepository,
+      reflectionRepository,
+      draftRepository
+    };
+    const commandBus = setupCommandBus(commandBusSetup);
+    const queryBus = setupQueryBus(queryBusSetup);
 
 
     // Routes

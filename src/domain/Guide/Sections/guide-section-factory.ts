@@ -5,6 +5,7 @@ import { IGuideSectionDTO } from "@/domain/Guide/Sections/guide-section.dto";
 
 interface IGuideSectionCreationProps {
     id: number | null;
+    ordinalPosition: number;
     title: string;
     description: string;
     biblicalReferences: IBiblicalReferenceDTO[];
@@ -15,7 +16,7 @@ export class GuideSectionFactory {
         return new GuideSection(
             data.id,
             data.title,
-            0,
+            data.ordinalPosition,
             data.description,
             BiblicalReferenceFactory.createArray(data.biblicalReferences),
         );
@@ -24,6 +25,7 @@ export class GuideSectionFactory {
     public static createArray(data: IGuideSectionDTO[]): GuideSection[] {
         return data.map((item) => this.create({
             id: null,
+            ordinalPosition: item.ordinalPosition,
             title: item.title,
             description: item.description,
             biblicalReferences: item.biblicalReferences,

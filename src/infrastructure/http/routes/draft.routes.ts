@@ -9,6 +9,7 @@ export const draftRoutes = (commandBus: CommandBus, queryBus: QueryBus) => {
     
     router.post('/', draftController.createDraft);
     router.get('/:draftKey', draftController.getDraftByDraftKey);
+    router.post('/:draftKey/publish', draftController.publishDraft);
     router.put('/:draftKey', draftController.updateDraft);
     router.delete('/:draftKey', draftController.deleteDraft);
     router.get('/user/:userId', draftController.getAllDraftsByUserId);

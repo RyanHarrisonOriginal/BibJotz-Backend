@@ -3,9 +3,19 @@ import { GuideSection } from "@/domain/Guide/Sections/guide-section";
 import { IGuideRepository } from "@/domain/Guide/guide-repository.interface";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { GuideMapper } from "@/domain/Guide/guide.mapper";
+import { PrismaClientType } from "../types";
+import { isTransactionClient } from "../utils/prismaHelpers";
+import { GuideListItem } from "@/domain/Guide/guide.interface";
+import { readFileSync } from "fs";
+import { join } from "path";
+
+
+const SQL_DIR = join(process.cwd(), "src", "infrastructure", "persistence", "postgres", "sql");
+const GUIDE_LIST_SQL = readFileSync(join(SQL_DIR, "get-guide-list.sql"), "utf-8");
 
 export class GuidePostgresRepository implements IGuideRepository {
-    constructor(private readonly prisma: PrismaClient) { }
+    constructor(private readonly client: PrismaClientType) { }
+
 
     private async createGuide(tx: Prisma.TransactionClient, guideData: any): Promise<any> {
         const savedGuide = await tx.guide.create({
@@ -32,7 +42,11 @@ export class GuidePostgresRepository implements IGuideRepository {
         return savedGuide;
     }
 
-    private async createGuideSection(tx: Prisma.TransactionClient, guideSectionData: any, guideId: number | null): Promise<any> {
+    private async createGuideSection(
+        tx: Prisma.TransactionClient, 
+        guideSectionData: any, 
+        guideId: number | null
+    ): Promise<any> {
         const savedGuideSection = await tx.guideSection.create({
             data: {
                 guideId: guideId ?? 0,
@@ -52,7 +66,10 @@ export class GuidePostgresRepository implements IGuideRepository {
         return savedGuideSection;
     }
 
-    private async updateGuideSection(tx: Prisma.TransactionClient, guideSectionData: any): Promise<any> {
+    private async updateGuideSection(
+        tx: Prisma.TransactionClient, 
+        guideSectionData: any
+    ): Promise<any> {
         const savedGuideSection = await tx.guideSection.update({
             where: { id: guideSectionData.id },
             data: {
@@ -64,7 +81,11 @@ export class GuidePostgresRepository implements IGuideRepository {
         return savedGuideSection;
     }
 
-    private async createGuideSectionBibleReference(tx: Prisma.TransactionClient, guideSectionBibleReferenceData: any, guideSectionId: number | null): Promise<any> {
+    private async createGuideSectionBibleReference(
+        tx: Prisma.TransactionClient, 
+        guideSectionBibleReferenceData: any, 
+        guideSectionId: number | null
+    ): Promise<any> {
         const savedGuideSectionBibleReference = await tx.guideSectionBibleReference.create({
             data: {
                 guideSectionId: guideSectionId ?? 0,
@@ -77,7 +98,11 @@ export class GuidePostgresRepository implements IGuideRepository {
         return savedGuideSectionBibleReference;
     }
 
-    private async createGuidBibleReference(tx: Prisma.TransactionClient, guidBibleReferenceData: any, guideId: number | null): Promise<any> {
+    private async createGuidBibleReference(
+        tx: Prisma.TransactionClient, 
+        guidBibleReferenceData: any, 
+        guideId: number | null
+    ): Promise<any> {
         const savedGuidBibleReference = await tx.guidBibleReference.create({
             data: {
                 guideId: guideId ?? 0,
@@ -90,7 +115,10 @@ export class GuidePostgresRepository implements IGuideRepository {
         return savedGuidBibleReference;
     }
 
-    private async updateGuidBibleReference(tx: Prisma.TransactionClient, guidBibleReferenceData: any): Promise<any> {
+    private async updateGuidBibleReference(
+        tx: Prisma.TransactionClient, 
+        guidBibleReferenceData: any
+    ): Promise<any> {
         const savedGuidBibleReference = await tx.guidBibleReference.update({
             where: { id: guidBibleReferenceData.id },
             data: {
@@ -104,54 +132,53 @@ export class GuidePostgresRepository implements IGuideRepository {
     }
 
     async save(guide: Guide): Promise<any> {
-
         const guideData = GuideMapper.mapGuideToPersistenceModel(guide);
+        if (isTransactionClient(this.client)) {
+            return await this.executeSave(this.client, guideData);
+        } else {
+            const prismaClient = this.client as PrismaClient;
+            return await prismaClient.$transaction(async (tx: Prisma.TransactionClient) => {
+                return await this.executeSave(tx, guideData);
+            });
+        }
+    }
 
-         const result: Guide = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    private async executeSave(tx: Prisma.TransactionClient, guideData: any): Promise<any> {
+        let savedGuide: any;
 
-            let savedGuide: any;
+        savedGuide = await (
+            guideData.guide.id === 0 || !guideData.guide.id
+                ? this.createGuide(tx, guideData.guide)
+                : this.updateGuide(tx, guideData.guide)
+        );
+        
+        guideData.guide = savedGuide;
 
-            savedGuide = await (
-                guideData.guide.id === 0 || !guideData.guide.id
-                    ? this.createGuide(tx, guideData.guide)
-                    : this.updateGuide(tx, guideData.guide)
+        if (guideData.guideSections.length > 0) {
+            guideData.guideSections = await Promise.all(
+                guideData.guideSections.map((section: any) =>
+                    section.id === 0 || !section.id
+                        ? this.createGuideSection(tx, section, guideData.guide.id)
+                        : this.updateGuideSection(tx, section)
+                )
             );
+        }
             
-            guideData.guide = savedGuide;
+        if (guideData.biblicalReferences.length > 0) {
+            guideData.biblicalReferences = await Promise.all(
+                guideData.biblicalReferences.map((reference: any) =>
+                    reference.id === 0 || !reference.id
+                        ? this.createGuidBibleReference(tx, reference, guideData.guide.id)
+                        : this.updateGuidBibleReference(tx, reference)
+                )
+            );
+        }
 
-
-            if (guideData.guideSections.length > 0) {
-                guideData.guideSections = await Promise.all(
-                    guideData.guideSections.map((section: any) =>
-                        section.id === 0 || !section.id
-                            ? this.createGuideSection(tx, section, guideData.guide.id)
-                            : this.updateGuideSection(tx, section)
-                    )
-                );
-            }
-                
-            if (guideData.biblicalReferences.length > 0) {
-                guideData.biblicalReferences = await Promise.all(
-                    guideData.biblicalReferences.map((reference: any) =>
-                        reference.id === 0 || !reference.id
-                            ? this.createGuidBibleReference(tx, reference, guideData.guide.id)
-                            : this.updateGuidBibleReference(tx, reference)
-                    )
-                );
-            }
-            
-
-            return guideData;
-
-
-        });
-
-
-        return result;
+        return guideData;
     }
 
     async findGuideById(id: number): Promise<Guide> {
-        const guide = await this.prisma.guide.findFirst({
+        const guide = await this.client.guide.findFirst({
             where: { id },
             include: {
                 guideSections: {
@@ -166,16 +193,15 @@ export class GuidePostgresRepository implements IGuideRepository {
     }
 
     async findGuideByName(name: string): Promise<Guide> {
-        const guide = await this.prisma.guide.findFirst({
+        const guide = await this.client.guide.findFirst({
             where: { name },
         });
         return GuideMapper.mapGuideModelToDomain(guide);
     }
 
-
-    async findAllGuides(): Promise<Guide[]> {
-        const guides = await this.prisma.guide.findMany();
-        return guides.map(guide => GuideMapper.mapGuideModelToDomain(guide));
+    async getGuideList(): Promise<GuideListItem[]> {
+        const guides = await this.client.$queryRawUnsafe<any[]>(GUIDE_LIST_SQL);
+        return GuideMapper.mapGuideListToDomain(guides);
     }
 
 }
