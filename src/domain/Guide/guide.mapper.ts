@@ -20,7 +20,7 @@ export class GuideMapper {
             endVerse: biblicalReference.getEndVerse(),
         };
     }
-    
+
 
     public static mapGuideBiblicalReferenceToPersistenceModel(
         biblicalReference: BiblicalReference,
@@ -32,9 +32,7 @@ export class GuideMapper {
         };
     }
 
-    public static mapGuideBiblicalReferencesToPersistenceModel(biblicalReferences: BiblicalReference[], guideId: number | null): Record<string, any>[] {
-        return biblicalReferences.map((item) => this.mapGuideBiblicalReferenceToPersistenceModel(item, guideId));
-    }
+    
 
 
     public static mapGuideSectionBiblicalReferenceToPersistenceModel(
@@ -51,12 +49,12 @@ export class GuideMapper {
         return biblicalReferences.map((item) => this.mapGuideSectionBiblicalReferenceToPersistenceModel(item, guideSectionId));
     }
 
-    public static mapGuideSectionToPersistenceModel(section: GuideSection, guideId: number | null): any {
+    public static mapGuideSectionToPersistenceModel(section: GuideSection, guideVersionId: number | null): any {
         const biblicalReferences = GuideMapper.mapGuideSectionBiblicalReferencesToPersistenceModel(section.getBiblicalReferences(), section.getId());
 
         return {
             id: section.getId(),
-            guideId: guideId,
+            guideVersionId: guideVersionId,
             title: section.getTitle(),
             ordinalPosition: section.getOrdinalPosition(),
             description: section.getDescription(),
@@ -64,26 +62,39 @@ export class GuideMapper {
         };
     }
 
-    public static mapGuideSectionsToPersistenceModel(guideSections: GuideSection[], guideId: number | null): any[] {
-        return guideSections.map((item) => this.mapGuideSectionToPersistenceModel(item, guideId));
-    }
-
-
-    public static mapGuideToPersistenceModel(guide: Guide): any {
-        const biblicalReferences = GuideMapper.mapGuideBiblicalReferencesToPersistenceModel(guide.getBiblicalReferences(), guide.getId());
-        const guideSections = GuideMapper.mapGuideSectionsToPersistenceModel(guide.getGuideSections(), guide.getId());
+    public static mapGuidetoRootPeristenceModel(guide: Guide): any {
         return {
-            guide: {
             id: guide.getId(),
-            name: guide.getName(),
-            description: guide.getDescription(),
             isPublic: guide.getIsPublic(),
             authorId: guide.getAuthorId(),
-            },
-            biblicalReferences: biblicalReferences,
-            guideSections: guideSections,
         };
     }
+
+    public static mapGuideToGuideVersionPersistenceModel(guide: any, guideId: number | null): any {
+        return {
+            guideId: guideId,
+            isCurrent: true,    
+            name: guide.name,
+            description: guide.description,
+        };
+    }
+
+    public static mapGuideBiblicalReferencesToPersistenceModel(
+        biblicalReferences: BiblicalReference[],
+        guideVersionId: number | null
+    ): Record<string, any>[] {
+        return biblicalReferences.map(
+            (item) => this.mapGuideBiblicalReferenceToPersistenceModel(item, guideVersionId));
+    }
+
+    public static mapGuideSectionsToPersistenceModel(
+        guideSections: GuideSection[],
+        guideVersionId: number | null
+    ): any[] {
+        return guideSections.map(
+            (item) => this.mapGuideSectionToPersistenceModel(item, guideVersionId));
+    }
+
 
     public static mapGuideListItemToDomain(guideListItem: any): GuideListItem {
         return {

@@ -1,5 +1,5 @@
 select 
-  count( case when created_by = $1 then id else null end) as myGuides
-  , count( case when created_by != $1 then id else null end ) as communityGuides
+  count( case when author_id = $1 then id else null end) as myGuides
+  , count( case when author_id != $1 then id else null end ) as communityGuides
 from app.guides
-where created_by = $1 or is_public = true
+where author_id = $1 or is_public = true

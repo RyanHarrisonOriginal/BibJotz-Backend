@@ -25,7 +25,7 @@ model User {
   // Relations
   church              Church?              @relation(fields: [primaryChurchId], references: [id])
   guideDrafts         GuideDraft[]
-  guides              Guide[] 
+  guides              Guide[]
   @@map("users")
   @@schema("app")
 }
@@ -52,37 +52,69 @@ model Church {
 
 model Guide {
   id        Int      @id @default(autoincrement())
-  name      String
-  description String
-  biblicalReferences GuidBibleReference[]
-  guideSections GuideSection[] 
-  journeys Journey[]
+  authorId Int @map("author_id")
   isPublic Boolean @default(true) @map("is_public")
-  authorId Int @map("created_by")
   author User @relation(fields: [authorId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
+
+  versions GuideVersion[]
 
   @@map("guides")
   @@schema("app")
 }
 
-model GuidBibleReference {
+model GuideVersion {
   id        Int      @id @default(autoincrement())
   guideId Int @map("guide_id")
+  name String
+  description String
+  isCurrent Boolean @default(true) @map("is_current")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  guide Guide @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  sections GuideSection[]
+  biblicalReferences GuideBiblicalReference[]
+  journeys Journey[]
+
+  @@index([guideId])
+  @@map("guide_versions")
+  @@schema("app")
+}
+
+model GuideBiblicalReference {
+  id        Int      @id @default(autoincrement())
+  guideVersionId Int @map("guide_version_id")
   book String
   chapter Int
   startVerse Int @map("start_verse")
   endVerse Int @map("end_verse")
   createdAt DateTime @default(now()) @map("created_at")
 
-  guide Guide @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  guideVersion GuideVersion @relation(fields: [guideVersionId], references: [id], onDelete: Cascade)
 
-  @@map("guide_biblical_references")
+  @@map("guide_biblical_refs")
   @@schema("app")
 }
 
-model GuideSectionBibleReference {
+model GuideSection {
+  id Int @id @default(autoincrement())
+  guideVersionId Int @map("guide_version_id")
+  title String
+  description String?
+  ordinalPosition Int @map("ordinal_position")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  guideVersion GuideVersion @relation(fields: [guideVersionId], references: [id], onDelete: Cascade)
+  biblicalReferences GuideSectionBiblicalReference[]
+  reflections Reflection[]
+
+  @@unique([guideVersionId, ordinalPosition])
+  @@index([guideVersionId])
+  @@map("guide_sections")
+  @@schema("app")
+}
+
+model GuideSectionBiblicalReference {
   id        Int      @id @default(autoincrement())
   guideSectionId Int @map("guide_section_id")
   book String
@@ -93,53 +125,61 @@ model GuideSectionBibleReference {
 
   guideSection GuideSection @relation(fields: [guideSectionId], references: [id], onDelete: Cascade)
 
-  @@map("guide_section_biblical_references")
-  @@schema("app")
-}
-
-
-model GuideSection {
-  id Int @id @default(autoincrement())
-  guideId Int @map("guide_id")
-  ordinalPosition Int @map("ordinal_position")
-  title String
-  description String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  guide Guide @relation(fields: [guideId], references: [id], onDelete: Cascade)
-  biblicalReferences GuideSectionBibleReference[]
-  @@map("guide_sections")
+  @@map("guide_section_biblical_refs")
   @@schema("app")
 }
 
 model Journey {
   id Int @id @default(autoincrement())
+  guideVersionId Int @map("guide_version_id")
+  name String
+  description String?
+  ownerId Int? @map("owner_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  guideVersion GuideVersion @relation(fields: [guideVersionId], references: [id], onDelete: Restrict)
+  personalSections PersonalJourneySection[]
+  reflections Reflection[]
+
+  @@index([guideVersionId])
+  @@map("journeys")
+  @@schema("app")
+}
+
+model PersonalJourneySection {
+  id Int @id @default(autoincrement())
+  journeyId Int @map("journey_id")
   title String
-  ownerId Int @map("owner_id")
-  guideId Int @map("guide_id")
+  description String?
+  ordinalPosition Int @map("ordinal_position")
+  ownerId Int? @map("owner_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  guide Guide @relation(fields: [guideId], references: [id], onDelete: Cascade)
+
+  journey Journey @relation(fields: [journeyId], references: [id], onDelete: Cascade)
   reflections Reflection[]
-  
-  @@map("journeys")
+
+  @@unique([journeyId, ordinalPosition])
+  @@map("personal_journey_sections")
   @@schema("app")
 }
 
 model Reflection {
   id Int @id @default(autoincrement())
-  content String
-  authorId Int @map("author_id")
   journeyId Int @map("journey_id")
-  guideSectionId Int @map("guide_section_id")
+  guideSectionId Int? @map("guide_section_id")
+  personalSectionId Int? @map("personal_section_id")
+  content String
+  authorId Int? @map("author_id")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  journey Journey @relation(fields: [journeyId], references: [id])
-
+  journey Journey @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  guideSection GuideSection? @relation(fields: [guideSectionId], references: [id])
+  personalSection PersonalJourneySection? @relation(fields: [personalSectionId], references: [id])
   biblicalReferences ReflectionBiblicalReference[]
 
+  @@index([journeyId])
   @@map("reflections")
   @@schema("app")
 } 
@@ -153,8 +193,8 @@ model ReflectionBiblicalReference {
   endVerse Int @map("end_verse")
   createdAt DateTime @default(now()) @map("created_at")
 
-  reflection Reflection @relation(fields: [reflectionId], references: [id])
-  @@map("reflection_biblical_references")
+  reflection Reflection @relation(fields: [reflectionId], references: [id], onDelete: Cascade)
+  @@map("reflection_biblical_refs")
   @@schema("app")
 }
 
