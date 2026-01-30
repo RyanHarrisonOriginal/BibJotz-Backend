@@ -1,11 +1,11 @@
 import { User } from "@/domain/User/user";
 
 export interface IUserRepository {
-    save(user: User): Promise<User>;
-    findById(id: number): Promise<User>;
-    findByEmail(email: string): Promise<User | null>;
-    findByUsername(username: string): Promise<User | null>;
-    findAllSubscribedToGuide(guideId: number): Promise<User[]>;
-    findAllSubscribedToJourney(journeyId: number): Promise<User[]>;
+    save(user: User): Promise<any>;
+    findById(id: number): Promise<any>;
+    findByEmail(email: string): Promise<any | null>;
+    findByUsername(username: string): Promise<any | null>;
+    findAllSubscribedToGuide(guideId: number): Promise<any[]>;
+    findAllSubscribedToJourney(journeyId: number): Promise<any[]>;
     exists(email: string, username: string): Promise<boolean>;
     }

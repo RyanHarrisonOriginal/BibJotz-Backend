@@ -8,7 +8,6 @@ import { isTransactionClient } from "../utils/prismaHelpers";
 export class DraftPostgresRepository implements IDraftRepository {
     constructor(private readonly prisma: PrismaClientType) { }
 
-
     private async upsertDraft(tx: Prisma.TransactionClient, draftData: any): Promise<any> {
         return await tx.guideDraft.upsert({
             where: {
@@ -29,17 +28,15 @@ export class DraftPostgresRepository implements IDraftRepository {
         });
     }
 
-    async save(draft: Draft): Promise<Draft> {
+    async save(draft: Draft): Promise<any> {
         const draftData = DraftMapper.mapDraftToPersistenceModel(draft);
         if (isTransactionClient(this.prisma)) {
-            const savedDraft = await this.executeSave(this.prisma, draftData);
-            return DraftMapper.mapDraftModelToDomain(savedDraft);
+            return await this.executeSave(this.prisma, draftData);
         } else {
             const prismaClient = this.prisma as PrismaClient;
-            const savedDraft = await prismaClient.$transaction(async (tx: Prisma.TransactionClient) => {
+            return await prismaClient.$transaction(async (tx: Prisma.TransactionClient) => {
                 return await this.executeSave(tx, draftData);
             });
-            return DraftMapper.mapDraftModelToDomain(savedDraft);
         }
     }
 
@@ -47,7 +44,7 @@ export class DraftPostgresRepository implements IDraftRepository {
         return await this.upsertDraft(tx, draftData);
     }
 
-    async findDraftByDraftKey(draftKey: string): Promise<Draft> {
+    async findDraftByDraftKey(draftKey: string): Promise<any> {
         const draft = await this.prisma.guideDraft.findUnique({
             where: { draftKey: draftKey },
         });
@@ -56,16 +53,14 @@ export class DraftPostgresRepository implements IDraftRepository {
             throw new Error(`Draft with draftKey ${draftKey} not found`);
         }
 
-        return DraftMapper.mapDraftModelToDomain(draft);
+        return draft;
     }
 
-    async findAllDraftsByDraftKey(draftKey: string): Promise<Draft[]> {
-        const drafts = await this.prisma.guideDraft.findMany({
+    async findAllDraftsByDraftKey(draftKey: string): Promise<any[]> {
+        return await this.prisma.guideDraft.findMany({
             where: { draftKey: draftKey },
             orderBy: { name: 'asc' },
         });
-
-        return drafts.map(draft => DraftMapper.mapDraftModelToDomain(draft));
     }
 
     async delete(draftKey: string): Promise<void> {
@@ -74,19 +69,11 @@ export class DraftPostgresRepository implements IDraftRepository {
         });
     }
     
-    async findAllDraftsByUserId(userId: number): Promise<Partial<Draft>[]> {
-        const drafts = await this.prisma.guideDraft.findMany({
-            select: {
-                draftKey: true,
-                name: true,
-                updatedAt: true,
-                userId: true,
-                id: true,
-            },
+    async findAllDraftsByUserId(userId: number): Promise<any[]> {
+        return await this.prisma.guideDraft.findMany({
             where: { userId: userId, publishedAt: null },
             orderBy: { updatedAt: 'desc' },
         });
-        return DraftMapper.mapDraftsModelToDomain(drafts);
     }
 }
 

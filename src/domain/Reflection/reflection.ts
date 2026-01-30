@@ -7,7 +7,6 @@ export class Reflection extends BaseEntity {
         private readonly content: string,
         private readonly authorId: number,
         private readonly journeyId: number,
-        private readonly guideSectionId: number,
         private readonly biblicalReferences: BiblicalReference[],
         createdAt: Date = new Date(),
         updatedAt: Date = new Date()
@@ -25,10 +24,6 @@ export class Reflection extends BaseEntity {
 
     getJourneyId(): number {
         return this.journeyId;
-    }
-
-    getGuideSectionId(): number {
-        return this.guideSectionId;
     }
 
     getBiblicalReferences(): BiblicalReference[] {

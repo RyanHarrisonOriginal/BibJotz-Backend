@@ -1,10 +1,9 @@
 import { Guide } from "@/domain/Guide/guide";
-import { GuideListPayload } from "@/domain/Guide/guide.interface";
 
 export interface IGuideRepository {
-    save(guide: Guide): Promise<Guide>;
-    findGuideById(id: number): Promise<Guide>;
-    findGuideByName(name: string): Promise<Guide>;
+    save(guide: Guide): Promise<any>;
+    findGuideById(id: number): Promise<any>;
+    findGuideByName(name: string): Promise<any>;
     deleteGuide(guideId: number, userId: number): Promise<void>;
-    getGuideList(userId: number): Promise<GuideListPayload>;
-}
+    getGuideInfoListRaw(userId: number): Promise<{ guides: any[]; counts: any[] }>;
+}   

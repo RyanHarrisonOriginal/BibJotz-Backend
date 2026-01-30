@@ -11,7 +11,7 @@ import { FindJourneyQueryHandler } from "@/domain/Jouney/commands/queries/find-j
 import { IDraftRepository } from "@/domain/Drafts/draft-repository.interface";
 import { GetDraftByDraftKeyQueryHandler } from "@/domain/Drafts/queries/get-draft-by-id/get-draft-by-id.query.handler";
 import { GetAllDraftsByAuthorQueryHandler } from "@/domain/Drafts/queries/get-all-drafts-by-author/get-all-drafts-by-author.query.handler";
-import { GetGuideListQueryHandler } from "@/domain/Guide/queries/get-guide-list/get-guide-list-query.handler";
+import { GetGuideInfoListQueryHandler } from "@/domain/Guide/queries/get-guide-list/get-guide_info-list-query.handler";
 
 interface IQueryBusSetup {
     userRepository: IUserRepository;
@@ -44,8 +44,10 @@ export function setupQueryBus(queryBusSetup: IQueryBusSetup): QueryBus {
     const getAllDraftsByAuthorHandler = new GetAllDraftsByAuthorQueryHandler(queryBusSetup.draftRepository);
     queryBus.registerHandler('GetAllDraftsByAuthorQuery', getAllDraftsByAuthorHandler);
     
-    const getGuideListHandler = new GetGuideListQueryHandler(queryBusSetup.guideRepository);
-    queryBus.registerHandler('GetGuideListQuery', getGuideListHandler);
+    const getGuideInfoListHandler = new GetGuideInfoListQueryHandler(queryBusSetup.guideRepository);
+    queryBus.registerHandler('GetGuideInfoListQuery', getGuideInfoListHandler);
+
+ 
 
     return queryBus;
 }

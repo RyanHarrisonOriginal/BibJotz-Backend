@@ -5,37 +5,63 @@ import { Reflection } from "@/domain/Reflection/reflection";
 import { JourneyMapper } from "@/domain/Jouney/journey.mapper";
 import { ReflectionFactory } from "@/domain/Reflection/reflection-factory";
 import { IBiblicalReferenceDTO } from "@/domain/BiblicalReferences/biblical-reference.dto";
+import { PrismaClientType } from "../types";
+import { isTransactionClient } from "../utils/prismaHelpers";
 
 
 export class JourneyPostgresRepository implements IJourneyRepository {
-    constructor(private readonly prisma: PrismaClient) { }
+    constructor(private readonly client: PrismaClientType) { }
 
-    private async createJourney(tx: Prisma.TransactionClient, journeyData: any): Promise<Journey> {
-        const savedJourney = await tx.journey.create({
+    private async createJourney(tx: Prisma.TransactionClient, journeyData: any): Promise<any> {
+        return await tx.journey.create({
             data: {
-                title: journeyData.title,
+                name: journeyData.name,
                 ownerId: journeyData.ownerId,
-                guideId: journeyData.guideId,
+                guideVersionId: journeyData.guideVersionId,
+                description: journeyData.description,
                 createdAt: journeyData.createdAt,
-                updatedAt: journeyData.updatedAt,
             },
+            include: {
+                guideVersion: {
+                    include: {
+                        guide: true,
+                        sections: {
+                            include: {
+                                biblicalReferences: true
+                            }
+                        },
+                        biblicalReferences: true
+                    }
+                },
+                personalSections: true
+            }
         });
-        return JourneyMapper.mapJourneyModelToDomain(savedJourney);
     }
 
     private async updateJourney(tx: Prisma.TransactionClient, journeyData: any): Promise<any> {
-        const savedJourney = await tx.journey.update({
+        return await tx.journey.update({
             where: { id: journeyData.id },
             data: {
-                title: journeyData.title,
+                name: journeyData.name,
                 ownerId: journeyData.ownerId,
-                guideId: journeyData.guideId,
-                updatedAt: journeyData.updatedAt,
-
+                guideVersionId: journeyData.guideVersionId,
+                description: journeyData.description,
             },
+            include: {
+                guideVersion: {
+                    include: {
+                        guide: true,
+                        sections: {
+                            include: {
+                                biblicalReferences: true
+                            }
+                        },
+                        biblicalReferences: true
+                    }
+                },
+                personalSections: true
+            }
         });
-        console.log('savedJourney---->frickingsaved', savedJourney);
-        return savedJourney;
     }
 
     private async createReflection(tx: Prisma.TransactionClient, reflectionData: any, journeyId: number): Promise<any> {
@@ -67,34 +93,30 @@ export class JourneyPostgresRepository implements IJourneyRepository {
         return savedReflection;
     }
 
-    async save(journey: Journey): Promise<Journey> {
+    async save(journey: Journey): Promise<any> {
+        if (isTransactionClient(this.client)) {
+            return await this.executeSave(this.client, journey);
+        } else {
+            const prismaClient = this.client as PrismaClient;
+            return await prismaClient.$transaction(async (tx: Prisma.TransactionClient) => {
+                return await this.executeSave(tx, journey);
+            });
+        }
+    }
+
+    private async executeSave(tx: Prisma.TransactionClient, journey: Journey): Promise<any> {
         try {
             const journeyData = JourneyMapper.mapJourneyToPersistencePrisma(journey);
 
-            console.log('journeyData', journeyData);
+            const savedJourney = await (
+                journeyData.id === 0 || !journeyData.id
+                    ? this.createJourney(tx, journeyData)
+                    : this.updateJourney(tx, journeyData)
+            );
 
-            const savedJourney = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-                let savedJourney: Journey;
+            // Note: Reflections are managed separately through ReflectionRepository
+            // They are not part of the Journey aggregate root's save operation
 
-                savedJourney = await (
-                    journeyData.id === 0 || !journeyData.id
-                        ? this.createJourney(tx, journeyData)
-                        : this.updateJourney(tx, journeyData)
-                );
-
-
-                if (journeyData.reflections.length > 0) {
-                    journeyData.reflections = await Promise.all(
-                        journeyData.reflections.map((reflection: any) =>
-                            reflection.id === 0 || !reflection.id
-                                ? this.createReflection(tx, reflection, journeyData.id)
-                                : this.updateReflection(tx, reflection)
-                        )
-                    );
-                }
-
-                return savedJourney;
-            });
             return savedJourney;
         } catch (error) {
             console.error(error);
@@ -109,23 +131,44 @@ export class JourneyPostgresRepository implements IJourneyRepository {
             where,
             include: {
                 reflections: true,
-                guide: { include: { guideSections: { include: { biblicalReferences: true } } } }
+                guideVersion: {
+                    include: {
+                        guide: true,
+                        sections: {
+                            include: {
+                                biblicalReferences: true
+                            }
+                        },
+                        biblicalReferences: true
+                    }
+                },
+                personalSections: true
             }
         }
     }
 
     async findJourney(journeyId?: number): Promise<any> {
-        const journey = await this.prisma.journey.findUnique(this.JourneyQuery({ id: journeyId }));
+        if (!journeyId) {
+            throw new Error('Journey ID is required');
+        }
+        const journey = await this.client.journey.findUnique(this.JourneyQuery({ id: journeyId }));
+        if (!journey) {
+            throw new Error(`Journey with id ${journeyId} not found`);
+        }
         return journey;
     }
 
     async findJourneys(journeyId?: number, ownerId?: number, guideId?: number): Promise<any[]> {
-        const where = {
-            id: journeyId ?? undefined,
-            ownerId: ownerId ?? undefined,
-            guideId: guideId ?? undefined,
+        const where: any = {};
+        if (journeyId) {
+            where.id = journeyId;
         }
-        const journey = await this.prisma.journey.findMany(this.JourneyQuery(where));
-        return journey;
+        if (ownerId) {
+            where.ownerId = ownerId;
+        }
+        if (guideId) {
+            where.guideVersionId = guideId;
+        }
+        return await this.client.journey.findMany(this.JourneyQuery(where));
     }
 }

@@ -6,10 +6,8 @@ export class CreateJourneyCommand implements ICommand {
     readonly commandType = 'CreateJourneyCommand';
 
     constructor(
-        public readonly title: string,
+        public readonly name: string,
         public readonly ownerId: number,
-        public readonly createdAt: Date,
-        public readonly updatedAt: Date,
         public readonly guideId: number,
     ) {}
 }

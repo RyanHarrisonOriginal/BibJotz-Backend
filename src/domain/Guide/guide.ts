@@ -60,7 +60,4 @@ export class Guide extends BaseEntity {
         this.biblicalReferences.push(...biblicalReferences);
         this.touch();
     }
-
-    
-    
 }

@@ -1,11 +1,10 @@
 import { Guide } from "@/domain/Guide/guide";
-import { GuideSection } from "@/domain/Guide/Sections/guide-section";
 import { IGuideRepository } from "@/domain/Guide/guide-repository.interface";
 import { PrismaClient, Prisma } from "@prisma/client";
 import { GuideMapper } from "@/domain/Guide/guide.mapper";
 import { PrismaClientType } from "../types";
 import { isTransactionClient } from "../utils/prismaHelpers";
-import { GuideListItem, GuideListPayload } from "@/domain/Guide/guide.interface";
+import { IGuideListItem, IGuideListPayload } from "@/domain/Guide/guide.interface";
 import { readFileSync } from "fs";
 import { join } from "path";
 
@@ -238,8 +237,8 @@ export class GuidePostgresRepository implements IGuideRepository {
     
     }
 
-    async findGuideById(id: number): Promise<Guide> {
-        const guide = await this.client.guide.findFirst({
+    async findGuideById(id: number): Promise<any> {
+        return await this.client.guide.findFirst({
             where: { id },
             include: {
                 versions: {
@@ -255,11 +254,10 @@ export class GuidePostgresRepository implements IGuideRepository {
                 },
             },
         });
-        return GuideMapper.mapGuideModelToDomain(guide);
     }
 
-    async findGuideByName(name: string): Promise<Guide> {
-        const guide = await this.client.guide.findFirst({
+    async findGuideByName(name: string): Promise<any> {
+        return await this.client.guide.findFirst({
             where: { versions: { some: { name } } },
             include: {
                 versions: {
@@ -271,14 +269,14 @@ export class GuidePostgresRepository implements IGuideRepository {
                 },
             },
         });
-        return GuideMapper.mapGuideModelToDomain(guide);
     }
 
-    async getGuideList(userId: number): Promise<GuideListPayload> {
+    async getGuideInfoListRaw(userId: number): Promise<{ guides: any[]; counts: any[] }> {
         const guides = await this.client.$queryRawUnsafe<any[]>(GUIDE_LIST_SQL, userId);
         const counts = await this.client.$queryRawUnsafe<any[]>(GUIDE_LIST_COUNTS_SQL, userId);
-        return GuideMapper.mapGuideListPayloadToDomain(guides, counts);
+        return { guides, counts };
     }
+
 
     async deleteGuide(guideId: number, userId: number): Promise<void> {
         const deleteInTransaction = async (tx: Prisma.TransactionClient) => {

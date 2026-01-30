@@ -3,6 +3,7 @@ import { CreateUserCommand } from "@/domain/User/commands/create-user/create-use
 import { User } from "@/domain/User/user";
 import { UserFactory } from "@/domain/User/user-factory";
 import { ICommandHandler } from "@/domain/shared/interfaces/command-handler.interface";
+import { UserMapper } from "@/domain/User/user.mapper";
 
 export class CreateUserCommandHandler implements ICommandHandler<CreateUserCommand, User> {
     constructor(private readonly userRepository: IUserRepository) {}
@@ -21,7 +22,7 @@ export class CreateUserCommandHandler implements ICommandHandler<CreateUserComma
             createdAt: new Date(),
             updatedAt: new Date(),
         });
-        const savedUser = await this.userRepository.save(user);
-        return savedUser;
+        const savedUserData = await this.userRepository.save(user);
+        return UserMapper.mapUserToDomain(savedUserData);
     }
 }

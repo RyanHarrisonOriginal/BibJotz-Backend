@@ -1,7 +1,7 @@
 import { IQuery } from "@/domain/shared/interfaces/query.interface";
 
-export class GetGuideListQuery implements IQuery {
-    readonly queryType = 'GetGuideListQuery';
+export class GetGuideInfoListQuery implements IQuery {
+    readonly queryType = 'GetGuideInfoListQuery';
     
     constructor(public readonly userId: number) {}
 }

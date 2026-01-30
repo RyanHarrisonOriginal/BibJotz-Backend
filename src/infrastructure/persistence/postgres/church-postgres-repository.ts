@@ -7,17 +7,14 @@ import { Address, State } from "@/domain/shared/value-objects/Address";
 export class ChurchPostgresRepository implements IChurchRepository {
     constructor(private readonly prisma: PrismaClient) {}
 
-    async save(church: Church): Promise<Church> {
+    async save(church: Church): Promise<any> {
         const churchData = ChurchMapper.mapChurchToPersistence(church);
-
-        const savedChurch = await this.prisma.church.create({
+        return await this.prisma.church.create({
             data: churchData,
         });
-
-        return ChurchMapper.mapChurchToDomain(savedChurch);   
     }
 
-    async findById(id: number): Promise<Church> {
+    async findById(id: number): Promise<any> {
         const church = await this.prisma.church.findUnique({
             where: { id },
         });
@@ -26,10 +23,10 @@ export class ChurchPostgresRepository implements IChurchRepository {
             throw new Error(`Church with id ${id} not found`);
         }
 
-        return ChurchMapper.mapChurchToDomain(church);
+        return church;
     }
     
-    async findByName(name: string): Promise<Church> {
+    async findByName(name: string): Promise<any> {
         const church = await this.prisma.church.findFirst({
             where: { name },
         });
@@ -38,10 +35,10 @@ export class ChurchPostgresRepository implements IChurchRepository {
             throw new Error(`Church with name ${name} not found`);
         }
 
-        return ChurchMapper.mapChurchToDomain(church);
+        return church;
     }
 
-    async findByCity(city: string): Promise<Church> {
+    async findByCity(city: string): Promise<any> {
         const church = await this.prisma.church.findFirst({
             where: { city },
         });
@@ -50,10 +47,10 @@ export class ChurchPostgresRepository implements IChurchRepository {
             throw new Error(`Church with city ${city} not found`);
         }
 
-        return ChurchMapper.mapChurchToDomain(church);
+        return church;
     }
 
-    async findByState(state: State): Promise<Church> {
+    async findByState(state: State): Promise<any> {
         const church = await this.prisma.church.findFirst({
             where: { state },
         });
@@ -62,10 +59,10 @@ export class ChurchPostgresRepository implements IChurchRepository {
             throw new Error(`Church with state ${state} not found`);
         }
 
-        return ChurchMapper.mapChurchToDomain(church);
+        return church;
     }
 
-    async findByZip(zip: string): Promise<Church> {
+    async findByZip(zip: string): Promise<any> {
         const church = await this.prisma.church.findFirst({
             where: { zip },
         });
@@ -74,10 +71,10 @@ export class ChurchPostgresRepository implements IChurchRepository {
             throw new Error(`Church with zip ${zip} not found`);
         }
 
-        return ChurchMapper.mapChurchToDomain(church);
+        return church;
     }
 
-    async findByAddress(address: Address): Promise<Church> {
+    async findByAddress(address: Address): Promise<any> {
         const church = await this.prisma.church.findFirst({
             where: { 
                 state: address.getState(), 
@@ -91,12 +88,11 @@ export class ChurchPostgresRepository implements IChurchRepository {
             throw new Error(`Church with address ${address.toString()} not found`);
         }
 
-        return ChurchMapper.mapChurchToDomain(church);
+        return church;
     }
 
-    async findAll(): Promise<Church[]> {
-        const churches = await this.prisma.church.findMany();
-        return churches.map(church => ChurchMapper.mapChurchToDomain(church));
+    async findAll(): Promise<any[]> {
+        return await this.prisma.church.findMany();
     }
             
 }

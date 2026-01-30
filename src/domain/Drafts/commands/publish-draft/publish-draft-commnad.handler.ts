@@ -11,17 +11,17 @@ export class PublishDraftCommandHandler implements ICommandHandler<PublishDraftC
 
     async execute(command: PublishDraftCommand): Promise<void> {
         await this.runner.run(async (uow) => {
-        const draft = await uow.drafts.findDraftByDraftKey(command.draftKey);
-        if (!draft) {
-            throw new Error('Draft not found');
-        }
-        draft.publish();
-        const guide = DraftMapper.mapDraftToGuide(draft);
-        console.log(guide);
-        console.log(draft);
-        await uow.guides.save(guide);
-        await uow.drafts.save(draft);
-        return;
-    });
+            const draftData = await uow.drafts.findDraftByDraftKey(command.draftKey);
+            if (!draftData) {
+                throw new Error('Draft not found');
+            }
+            const draft = DraftMapper.mapDraftModelToDomain(draftData);
+            draft.publish();
+            const guide = DraftMapper.mapDraftToGuide(draft);
+            const savedGuideData = await uow.guides.save(guide);
+            const fullGuideData = await uow.guides.findGuideById(savedGuideData.guideRoot || savedGuideData.guideVersion?.guideId);
+            await uow.drafts.save(draft);
+            return;
+        });
     }
 }

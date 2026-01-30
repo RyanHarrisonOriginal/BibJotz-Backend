@@ -3,12 +3,12 @@ import { CreateReflectionCommand } from "@/domain/Reflection/commands/create-ref
 import { Reflection } from "@/domain/Reflection/reflection";
 import { ReflectionFactory } from "@/domain/Reflection/reflection-factory";
 import { IReflectionRepository } from "@/domain/Reflection/reflection-repository.interface";
+import { ReflectionMapper } from "@/domain/Reflection/reflection.mapper";
 
 export class CreateReflectionCommandHandler implements ICommandHandler<CreateReflectionCommand, Reflection> {
     constructor(private readonly reflectionRepository: IReflectionRepository) {}
     
     async execute(command: CreateReflectionCommand): Promise<Reflection> {
-        console.log('command', command);
         const reflection = ReflectionFactory.create({
             id: null,
             content: command.content,
@@ -17,7 +17,7 @@ export class CreateReflectionCommandHandler implements ICommandHandler<CreateRef
             journeyId: command.journeyId,
             biblicalReferences: command.biblicalReferences,
         });
-        console.log('reflection', reflection);
-        return this.reflectionRepository.save(reflection);
+        const savedReflectionData = await this.reflectionRepository.save(reflection);
+        return ReflectionMapper.mapReflectionToDomain(savedReflectionData);
     }
 }

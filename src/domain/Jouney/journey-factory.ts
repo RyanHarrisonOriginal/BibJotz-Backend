@@ -1,13 +1,14 @@
 import { ReflectionFactory } from "@/domain/Reflection/reflection-factory";
 import { Journey } from "@/domain/Jouney/jouney";
-import { IReflectionDTO } from "@/domain/Reflection/reflection.dto";
+import { IGuide } from "../Guide/guide.interface";
+import { JourneySection } from "./Sections/journey-section";
 
 interface IJourneyCreationProps {
     id: number | null;
-    title: string;
+    name: string;
     ownerId: number;
-    guideId: number;
-    reflections: IReflectionDTO[];
+    sourceGuide: IGuide;
+    sections: JourneySection[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -15,10 +16,10 @@ export class JourneyFactory {
     static create(data: IJourneyCreationProps): Journey {
         return new Journey(
             data.id,
-            data.title,
+            data.name,
             data.ownerId,
-            data.guideId,
-            ReflectionFactory.createArray(data.reflections),
+            data.sourceGuide,
+            data.sections ?? [],
             data.createdAt,
             data.updatedAt
         );

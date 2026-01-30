@@ -2,7 +2,9 @@ import { Guide } from "@/domain/Guide/guide";
 import { GuideSection } from "@/domain/Guide/Sections/guide-section";
 import { BiblicalReference } from "@/domain/BiblicalReferences/biblical-reference";
 import { GuideFactory } from "@/domain/Guide/guide-factory";
-import { GuideListItem, GuideListPayload } from "./guide.interface";
+import { IGuide, IGuideListItem, IGuideListPayload } from "./guide.interface";
+import { IGuideSection } from "./Sections/guide-section.interface";
+import { IBiblicalReference } from "@/domain/BiblicalReferences/biblical-references.interface";
 
 export class GuideMapper {
 
@@ -32,9 +34,6 @@ export class GuideMapper {
         };
     }
 
-    
-
-
     public static mapGuideSectionBiblicalReferenceToPersistenceModel(
         biblicalReference: BiblicalReference,
         guideSectionId?: number | null
@@ -45,12 +44,20 @@ export class GuideMapper {
         };
     }
 
-    public static mapGuideSectionBiblicalReferencesToPersistenceModel(biblicalReferences: BiblicalReference[], guideSectionId: number | null): Record<string, any>[] {
-        return biblicalReferences.map((item) => this.mapGuideSectionBiblicalReferenceToPersistenceModel(item, guideSectionId));
+    public static mapGuideSectionBiblicalReferencesToPersistenceModel(
+        biblicalReferences: BiblicalReference[],
+        guideSectionId: number | null): Record<string, any>[] {
+        return biblicalReferences.map((item) => this.mapGuideSectionBiblicalReferenceToPersistenceModel(
+            item, 
+            guideSectionId));
     }
 
-    public static mapGuideSectionToPersistenceModel(section: GuideSection, guideVersionId: number | null): any {
-        const biblicalReferences = GuideMapper.mapGuideSectionBiblicalReferencesToPersistenceModel(section.getBiblicalReferences(), section.getId());
+    public static mapGuideSectionToPersistenceModel(
+        section: GuideSection,
+        guideVersionId: number | null): any {
+        const biblicalReferences = GuideMapper.mapGuideSectionBiblicalReferencesToPersistenceModel(
+            section.getBiblicalReferences(), 
+            section.getId());
 
         return {
             id: section.getId(),
@@ -73,7 +80,7 @@ export class GuideMapper {
     public static mapGuideToGuideVersionPersistenceModel(guide: any, guideId: number | null): any {
         return {
             guideId: guideId,
-            isCurrent: true,    
+            isCurrent: true,
             name: guide.name,
             description: guide.description,
         };
@@ -96,7 +103,7 @@ export class GuideMapper {
     }
 
 
-    public static mapGuideListItemToDomain(guideListItem: any): GuideListItem {
+    public static mapGuideListItemToDomain(guideListItem: any): IGuideListItem {
         return {
             id: Number(guideListItem.id),
             name: guideListItem.name,
@@ -109,11 +116,11 @@ export class GuideMapper {
         };
     }
 
-    public static mapGuideListToDomain(guideList: any[]): GuideListItem[] {
+    public static mapGuideListToDomain(guideList: any[]): IGuideListItem[] {
         return guideList.map((item) => this.mapGuideListItemToDomain(item));
     }
 
-    public static mapGuideListPayloadToDomain(guideList: any[], counts: any[]): GuideListPayload {
+    public static mapGuideListPayloadToDomain(guideList: any[], counts: any[]): IGuideListPayload {
         return {
             guides: this.mapGuideListToDomain(guideList),
             counts: {
@@ -122,4 +129,35 @@ export class GuideMapper {
             },
         };
     }
+
+    public static mapGuideToInterface(guide: Guide): IGuide {
+        return {
+            id: guide.getId()?.toString() ?? null,
+            name: guide.getName(),
+            description: guide.getDescription(),
+            isPublic: guide.getIsPublic(),
+            biblicalReferences: guide.getBiblicalReferences().map((ref): IBiblicalReference => ({
+                id: ref.getId() ?? 0,
+                book: ref.getBook(),
+                chapter: ref.getChapter(),
+                startVerse: ref.getStartVerse(),
+                endVerse: ref.getEndVerse(),
+            })),
+            guideSections: guide.getGuideSections().map((section): IGuideSection => ({
+                id: section.getId() ?? 0,
+                ordinalPosition: section.getOrdinalPosition(),
+                title: section.getTitle(),
+                description: section.getDescription(),
+                biblicalReferences: section.getBiblicalReferences().map((ref): IBiblicalReference => ({
+                    id: ref.getId() ?? 0,
+                    book: ref.getBook(),
+                    chapter: ref.getChapter(),
+                    startVerse: ref.getStartVerse(),
+                    endVerse: ref.getEndVerse(),
+                })),
+            })),
+            authorId: guide.getAuthorId(),
+        };
+    }
+
 }

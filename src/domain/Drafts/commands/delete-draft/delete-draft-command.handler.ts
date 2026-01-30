@@ -4,10 +4,13 @@ import { ICommandHandler } from "@/domain/shared/interfaces/command-handler.inte
 import { GuideDraftRunner } from "@/infrastructure/transactions/runners/guide-draft.runner";
 
 export class DeleteDraftCommandHandler implements ICommandHandler<DeleteDraftCommand, void> {
-    constructor(private readonly draftRunner: GuideDraftRunner) {}
+    
+    constructor(
+        private readonly runner: GuideDraftRunner
+    ) {}
 
     async execute(command: DeleteDraftCommand): Promise<void> {
-        await this.draftRunner.run(async (uow) => {
+        await this.runner.run(async (uow) => {
             await uow.drafts.delete(command.draftKey);
             return;
         });

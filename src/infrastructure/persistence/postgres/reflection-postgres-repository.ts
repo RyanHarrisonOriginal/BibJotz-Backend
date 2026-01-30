@@ -62,9 +62,7 @@ export class ReflectionPostgresRepository implements IReflectionRepository {
 
     async save(reflection: Reflection): Promise<any> {
         const reflectionData = ReflectionMapper.mapReflectionToPersistencePrisma(reflection);
-        console.log('reflection', reflection);
-        console.log('reflectionData', reflectionData);
-        const savedReflection = await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+        return await this.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
             let savedReflection: any;
 
             savedReflection = await (reflectionData.id === 0 || !reflectionData.id
@@ -81,8 +79,9 @@ export class ReflectionPostgresRepository implements IReflectionRepository {
                     )
                 );
             }
+            
+            return savedReflection;
         });
-        return savedReflection;
     }
 
     private ReflectionQuery(where: any): any {
@@ -94,13 +93,11 @@ export class ReflectionPostgresRepository implements IReflectionRepository {
         };
     }
 
-    async findReflection(id: number): Promise<Reflection> {
-        const reflection = await this.prisma.reflection.findUnique(this.ReflectionQuery({ id }));
-        return ReflectionMapper.mapReflectionToDomain(reflection);
+    async findReflection(id: number): Promise<any> {
+        return await this.prisma.reflection.findUnique(this.ReflectionQuery({ id }));
     }
 
-    async findReflections(journeyId?: number, guideSectionId?: number, authorId?: number): Promise<Reflection[]> {
-        const reflections = await this.prisma.reflection.findMany(this.ReflectionQuery({ journeyId, guideSectionId, authorId }));
-        return reflections.map(ReflectionMapper.mapReflectionToDomain);
+    async findReflections(journeyId?: number, guideSectionId?: number, authorId?: number): Promise<any[]> {
+        return await this.prisma.reflection.findMany(this.ReflectionQuery({ journeyId, guideSectionId, authorId }));
     }
 }

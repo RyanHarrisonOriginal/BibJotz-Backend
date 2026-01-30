@@ -9,7 +9,7 @@ import { UserMapper } from "@/domain/User/user.mapper";
 export class UserPostgresRepository implements IUserRepository {
     constructor(private readonly prisma: PrismaClient) {}
 
-    async save(user: User): Promise<User> {
+    async save(user: User): Promise<any> {
         const userData = {
             email: user.getEmail().getValue(),
             username: user.getUsername(),
@@ -19,42 +19,33 @@ export class UserPostgresRepository implements IUserRepository {
             primaryChurchId: user.getPrimaryChurchId(),
         };
 
-        const savedUser = await this.prisma.user.create({
+        return await this.prisma.user.create({
             data: userData,
         });
-
-        return UserMapper.mapUserToDomain(savedUser);
     }
 
-    async findById(id: number): Promise<User> {
+    async findById(id: number): Promise<any> {
         const user = await this.prisma.user.findUnique({
             where: { id },
-
         });
 
         if (!user) {
             throw new Error(`User with id ${id} not found`);
         }
 
-        return UserMapper.mapUserToDomain(user);
+        return user;
     }
 
-    async findByEmail(email: string): Promise<User | null> {
-        const user = await this.prisma.user.findUnique({
+    async findByEmail(email: string): Promise<any | null> {
+        return await this.prisma.user.findUnique({
             where: { email },
-
         });
-
-        return user ? UserMapper.mapUserToDomain(user) : null;
     }
 
-    async findByUsername(username: string): Promise<User | null> {
-        const user = await this.prisma.user.findUnique({
+    async findByUsername(username: string): Promise<any | null> {
+        return await this.prisma.user.findUnique({
             where: { username },
-
         });
-
-        return user ? UserMapper.mapUserToDomain(user) : null;
     }
 
     async findAllSubscribedToGuide(guideId: number): Promise<User[]> {

@@ -1,41 +1,39 @@
 import { BaseEntity } from "@/domain/BaseEntity";
 import { Reflection } from "@/domain/Reflection/reflection";
+import { IGuide } from "@/domain/Guide/guide.interface";
+import { JourneySection } from "./Sections/journey-section";
 
 
 
 export class Journey extends BaseEntity {
     constructor(
         id: number | null,
-        private readonly title: string,
+        private readonly name: string,
         private readonly ownerId: number,
-        private readonly guideId: number,
-        private readonly reflections: Reflection[] = [],
+        private readonly sourceGuide: IGuide,
+        private readonly sections: JourneySection[] = [],
         createdAt: Date = new Date(),
         updatedAt: Date = new Date()
     ){
         super(id ?? 0, createdAt, updatedAt);
     }
 
-    getTitle(): string {
-        return this.title;
+    getName(): string {
+        return this.name;
     }
 
     getOwnerId(): number {
         return this.ownerId;
     }
 
-    getGuideId(): number {
-        return this.guideId;
+    getSourceGuide(): IGuide {
+        return this.sourceGuide;
     }
 
-    getReflections(): Reflection[] {
-        return this.reflections;
+    getSections(): JourneySection[] {
+        return this.sections;
     }
 
-    addReflection(reflection: Reflection) {
-        this.reflections.push(reflection);
-        this.touch();
-    }
 
 
 }
