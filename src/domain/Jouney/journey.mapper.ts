@@ -5,81 +5,63 @@ import { GuideMapper } from "@/domain/Guide/guide.mapper";
 export class JourneyMapper {
 
     public static mapJourneyToPersistencePrisma(journey: Journey): any {
-        // Note: Journey domain model doesn't have reflections directly
-        // Reflections are managed separately through ReflectionRepository
-        // The sourceGuide contains the guideVersionId we need
-        const sourceGuide = journey.getSourceGuide();
-        // We need to extract guideVersionId from the sourceGuide
-        // This is a limitation - we may need to store guideVersionId separately in Journey
         return {
             id: journey.getId(),
             name: journey.getName(),
             ownerId: journey.getOwnerId(),
-            guideVersionId: sourceGuide.id ? parseInt(sourceGuide.id) : null, // TODO: Fix this - guideVersionId should be stored in Journey
-            reflections: [], // Reflections are managed separately
+            guideVersionId: journey.getGuideVersionId(),
+            description: null,
+            createdAt: new Date(),
         };
     }
 
+    /**
+     * Map Prisma journey (with include: guideVersion + guide + sections + biblicalReferences) to domain Journey.
+     * Prisma shape: id, guideVersionId, name, description, ownerId, createdAt, guideVersion?: { guide, sections, biblicalReferences }.
+     * Journey schema has no updatedAt; use createdAt for both.
+     */
     public static mapJourneyModelToDomain(prismaJourney: any): Journey {
         if (!prismaJourney) {
-            throw new Error('Journey data is required');
+            throw new Error("Journey data is required");
         }
 
-        // Map the guide from the guideVersion relation
-        // The guideVersion has a guide relation, so we need to construct the full guide structure
+        // Relation is guideVersion (object); guideVersionId is the FK number
         const guideVersion = prismaJourney.guideVersion;
-        if (!guideVersion || !guideVersion.guide) {
-            throw new Error('Journey must have an associated guide version and guide');
+        if (!guideVersion?.guide) {
+            throw new Error("Journey must have guideVersion relation loaded (include guideVersion with guide, sections, biblicalReferences)");
         }
 
-        // Construct guide data from guideVersion structure to match GuideFactory.create expectations
-        // GuideFactory expects: id, name, description, isPublic, biblicalReferences, guideSections, authorId, createdAt, updatedAt
-        const guideData = {
+        // Build persistence-like shape for GuideMapper.mapGuidePersistenceToInterface (guide root + current version)
+        const guidePersistence = {
             id: guideVersion.guide.id,
-            name: guideVersion.name,
-            description: guideVersion.description,
             isPublic: guideVersion.guide.isPublic,
             authorId: guideVersion.guide.authorId,
-            guideSections: (guideVersion.sections || []).map((section: any) => ({
-                id: section.id,
-                ordinalPosition: section.ordinalPosition,
-                title: section.title,
-                description: section.description,
-                biblicalReferences: (section.biblicalReferences || []).map((ref: any) => ({
-                    id: ref.id,
-                    book: ref.book,
-                    chapter: ref.chapter,
-                    startVerse: ref.startVerse,
-                    endVerse: ref.endVerse,
-                })),
-            })),
-            biblicalReferences: (guideVersion.biblicalReferences || []).map((ref: any) => ({
-                id: ref.id,
-                book: ref.book,
-                chapter: ref.chapter,
-                startVerse: ref.startVerse,
-                endVerse: ref.endVerse,
-            })),
-            createdAt: guideVersion.guide.createdAt || new Date(),
-            updatedAt: guideVersion.guide.updatedAt || new Date(),
+            versions: [
+                {
+                    name: guideVersion.name,
+                    description: guideVersion.description,
+                    sections: guideVersion.sections ?? [],
+                    biblicalReferences: guideVersion.biblicalReferences ?? [],
+                },
+            ],
         };
+        const sourceGuide = GuideMapper.mapGuidePersistenceToInterface(guidePersistence);
 
-        const guide = GuideMapper.mapGuideModelToDomain(guideData);
-        const sourceGuide = GuideMapper.mapGuideToInterface(guide);
-        
-        // Map journey sections if they exist (PersonalJourneySection)
-        // TODO: Implement PersonalJourneySection mapping when JourneySection domain model is available
+        // Prisma Journey has no updatedAt; use createdAt for both
+        const createdAt = prismaJourney.createdAt ? new Date(prismaJourney.createdAt) : new Date();
+
+        // personalSections could be mapped to JourneySection[] here if needed; currently not on domain factory
         const sections: any[] = [];
 
         return JourneyFactory.create({
             id: prismaJourney.id,
-            name: prismaJourney.name,
+            guideVersionId: prismaJourney.guideVersionId,
+            name: prismaJourney.name ?? "",
             ownerId: prismaJourney.ownerId ?? 0,
-            sourceGuide: sourceGuide,
-            sections: sections,
-            createdAt: prismaJourney.createdAt,
-            updatedAt: prismaJourney.updatedAt || prismaJourney.createdAt,
+            sourceGuide,
+            sections,
+            createdAt,
+            updatedAt: createdAt,
         });
     }
-
 }

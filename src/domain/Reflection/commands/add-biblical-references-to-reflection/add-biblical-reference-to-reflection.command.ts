@@ -1,5 +1,6 @@
 import { IBiblicalReferenceDTO } from "@/domain/BiblicalReferences/biblical-reference.dto";
 import { ICommand } from "@/domain/shared/interfaces/command.interface";
+import { IAddBiblicalReferencesToReflectionRequestDTO } from "@/domain/Reflection/reflection.dto";
 
 export class AddBiblicalReferencesToReflectionCommand implements ICommand {
     readonly commandType = 'AddBiblicalReferencesToReflectionCommand';
@@ -8,4 +9,13 @@ export class AddBiblicalReferencesToReflectionCommand implements ICommand {
         public readonly reflectionId: number,
         public readonly biblicalReferences: IBiblicalReferenceDTO[],
     ) {}
+
+    /** Parse HTTP request (params + body). Controllers call AddBiblicalReferencesToReflectionCommand.from({ reflectionId: req.params.reflectionId, biblicalReferences: req.body }). */
+    static from(dto: IAddBiblicalReferencesToReflectionRequestDTO): AddBiblicalReferencesToReflectionCommand {
+        const reflectionId = parseInt(dto.reflectionId ?? "0", 10);
+        return new AddBiblicalReferencesToReflectionCommand(
+            Number.isNaN(reflectionId) ? 0 : reflectionId,
+            dto.biblicalReferences,
+        );
+    }
 }

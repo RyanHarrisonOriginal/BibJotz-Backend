@@ -160,4 +160,37 @@ export class GuideMapper {
         };
     }
 
+    /**
+     * Map raw persistence (findGuideById result) to IGuide.
+     * Use when you need an IGuide from the DB without building the full Guide domain entity.
+     */
+    public static mapGuidePersistenceToInterface(persistence: any): IGuide {
+        const version = persistence?.versions?.[0];
+        if (!version) {
+            throw new Error("Guide has no current version");
+        }
+        const mapRef = (r: any): IBiblicalReference => ({
+            id: r?.id ?? 0,
+            book: r?.book ?? "",
+            chapter: Number(r?.chapter) ?? 0,
+            startVerse: Number(r?.startVerse) ?? 0,
+            endVerse: Number(r?.endVerse) ?? 0,
+        });
+        const mapSection = (s: any): IGuideSection => ({
+            id: s?.id ?? 0,
+            ordinalPosition: Number(s?.ordinalPosition) ?? 0,
+            title: s?.title ?? "",
+            description: s?.description ?? "",
+            biblicalReferences: (s?.biblicalReferences ?? []).map(mapRef),
+        });
+        return {
+            id: persistence?.id != null ? String(persistence.id) : null,
+            name: version.name ?? "",
+            description: version.description ?? "",
+            isPublic: Boolean(persistence?.isPublic),
+            biblicalReferences: (version.biblicalReferences ?? []).map(mapRef),
+            guideSections: (version.sections ?? []).map(mapSection),
+            authorId: Number(persistence?.authorId) ?? 0,
+        };
+    }
 }

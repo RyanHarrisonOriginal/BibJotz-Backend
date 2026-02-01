@@ -13,16 +13,19 @@ export class CreateJourneyCommandHandler implements ICommandHandler<CreateJourne
     async execute(command: CreateJourneyCommand): Promise<Journey> {
         return await this.runner.run(async (uow) => {
             const sourceGuideData = await uow.guides.findGuideById(command.guideId);
-            const sourceGuide = GuideMapper.mapGuideModelToDomain(sourceGuideData);
+            const sourceGuideVersionId = sourceGuideData.versions[0].id;
+            const sourceGuideInterface = GuideMapper.mapGuidePersistenceToInterface(sourceGuideData);
             const journey = JourneyFactory.create({
                 id: null,
                 name: command.name,
                 ownerId: command.ownerId,
-                sourceGuide: GuideMapper.mapGuideToInterface(sourceGuide),
+                guideVersionId: sourceGuideVersionId,
+                sourceGuide: sourceGuideInterface,
                 sections: [],
                 createdAt: new Date(),
                 updatedAt: new Date(),
             });
+            console.log('journey', journey);
             const savedJourneyData = await uow.journeys.save(journey);
             return JourneyMapper.mapJourneyModelToDomain(savedJourneyData);
         });

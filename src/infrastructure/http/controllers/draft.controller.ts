@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { CommandBus } from "@/infrastructure/CQRS/command-bus/command-bus";
 import { QueryBus } from "@/infrastructure/CQRS/query-bus/query-bus";
-import { IDraftDTO } from "@/domain/Drafts/draft.dto";
 import { CreateDraftCommand } from "@/domain/Drafts/commands/create-draft/create-draft.command";
 import { UpdateDraftCommand } from "@/domain/Drafts/commands/update-draft/update-draft.command";
 import { DeleteDraftCommand } from "@/domain/Drafts/commands/delete-draft/delete-draft.command";
@@ -14,14 +13,7 @@ export class DraftController {
 
     createDraft = async (req: Request, res: Response) => {
         try {
-            
-            //console.log(JSON.stringify(req.body));
-            const command = new CreateDraftCommand(
-                req.body.userId,
-                req.body.name,
-                req.body.draftKey,
-                req.body.draftContent
-            );
+            const command = CreateDraftCommand.from(req.body);
             const result = await this.commandBus.execute(command);
             res.status(201).json(result);
         } catch (error) {
@@ -32,9 +24,10 @@ export class DraftController {
 
     updateDraft = async (req: Request, res: Response) => {
         try {
-            const draftKey = req.params.draftKey;
-            const { draftContent }: { draftContent?: Record<string, any> } = req.body;
-            const command = new UpdateDraftCommand(draftKey, draftContent);
+            const command = UpdateDraftCommand.from({
+                draftKey: req.params.draftKey,
+                draftContent: req.body.draftContent,
+            });
             const result = await this.commandBus.execute(command);
             res.status(200).json(result);
         } catch (error) {
@@ -45,8 +38,7 @@ export class DraftController {
 
     deleteDraft = async (req: Request, res: Response) => {
         try {
-            const draftKey = req.params.draftKey;
-            const command = new DeleteDraftCommand(draftKey);
+            const command = DeleteDraftCommand.from(req.params);
             await this.commandBus.execute(command);
             res.status(204).send();
         } catch (error) {
@@ -57,8 +49,7 @@ export class DraftController {
 
     getDraftByDraftKey = async (req: Request, res: Response) => {
         try {
-            const draftKey = req.params.draftKey;
-            const query = new GetDraftByDraftKeyQuery(draftKey);
+            const query = GetDraftByDraftKeyQuery.from(req.params);
             const result = await this.queryBus.execute(query);
             res.status(200).json(result);
         } catch (error) {
@@ -69,10 +60,8 @@ export class DraftController {
 
     getAllDraftsByUserId = async (req: Request, res: Response) => {
         try {
-            const userId = parseInt(req.params.userId);
-            const query = new GetAllDraftsByAuthorQuery(userId);
+            const query = GetAllDraftsByAuthorQuery.from(req.params);
             const result = await this.queryBus.execute(query);
-            console.log(result);
             res.status(200).json(result);
         } catch (error) {
             console.error(error);
@@ -82,8 +71,7 @@ export class DraftController {
 
     publishDraft = async (req: Request, res: Response) => {
         try {
-            const draftKey = req.params.draftKey;
-            const command = new PublishDraftCommand(draftKey);
+            const command = PublishDraftCommand.from(req.params);
             const result = await this.commandBus.execute(command);
             res.status(200).json(result);
         } catch (error) {

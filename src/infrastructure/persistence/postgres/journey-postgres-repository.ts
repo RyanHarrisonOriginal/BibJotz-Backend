@@ -18,8 +18,8 @@ export class JourneyPostgresRepository implements IJourneyRepository {
                 name: journeyData.name,
                 ownerId: journeyData.ownerId,
                 guideVersionId: journeyData.guideVersionId,
-                description: journeyData.description,
-                createdAt: journeyData.createdAt,
+                description: journeyData.description ?? null,
+                createdAt: journeyData.createdAt ?? new Date(),
             },
             include: {
                 guideVersion: {
@@ -27,14 +27,14 @@ export class JourneyPostgresRepository implements IJourneyRepository {
                         guide: true,
                         sections: {
                             include: {
-                                biblicalReferences: true
-                            }
+                                biblicalReferences: true,
+                            },
                         },
-                        biblicalReferences: true
-                    }
+                        biblicalReferences: true,
+                    },
                 },
-                personalSections: true
-            }
+                personalSections: true,
+            },
         });
     }
 
@@ -64,34 +64,6 @@ export class JourneyPostgresRepository implements IJourneyRepository {
         });
     }
 
-    private async createReflection(tx: Prisma.TransactionClient, reflectionData: any, journeyId: number): Promise<any> {
-        const savedReflection = await tx.reflection.create({
-            data: {
-                content: reflectionData.content,
-                authorId: reflectionData.authorId,
-                guideSectionId: reflectionData.guideSectionId,
-                journeyId: journeyId,
-                createdAt: reflectionData.createdAt,
-                updatedAt: reflectionData.updatedAt,
-            },
-        });
-        return savedReflection;
-    }
-
-    private async updateReflection(tx: Prisma.TransactionClient, reflectionData: any): Promise<any> {
-        const savedReflection = await tx.reflection.update({
-            where: { id: reflectionData.id },
-            data: {
-                content: reflectionData.content,
-                authorId: reflectionData.authorId,
-                guideSectionId: reflectionData.guideSectionId,
-                journeyId: reflectionData.journeyId,
-                createdAt: reflectionData.createdAt,
-                updatedAt: reflectionData.updatedAt,
-            },
-        });
-        return savedReflection;
-    }
 
     async save(journey: Journey): Promise<any> {
         if (isTransactionClient(this.client)) {
@@ -123,8 +95,6 @@ export class JourneyPostgresRepository implements IJourneyRepository {
             throw new Error('Failed to save journey');
         }
     }
-
-
 
     private JourneyQuery(where: any): any {
         return {

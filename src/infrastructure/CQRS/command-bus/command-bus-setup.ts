@@ -21,6 +21,7 @@ import { GuideDraftRunner } from '@/infrastructure/transactions/runners/guide-dr
 import { GuideDraftPublishingRunner } from '@/infrastructure/transactions/runners/guide-draft-publishing.runner';
 import { PublishDraftCommandHandler } from '@/domain/Drafts/commands/publish-draft/publish-draft-commnad.handler';
 import { PermanentlyDeleteGuideCommandHandler } from '@/domain/Guide/commands/permanently-delete-guide/permanently-delete-guide-command.handler';
+import { JourneyWriteRunner } from '@/infrastructure/transactions/runners/journey-write.runner';
 
 
 interface ICommandBusSetup {
@@ -31,6 +32,7 @@ interface ICommandBusSetup {
   reflectionRepository: IReflectionRepository;
   draftRunner: GuideDraftRunner;
   draftPublishingRunner: GuideDraftPublishingRunner;
+  journeyWriteRunner: JourneyWriteRunner;
 }
 
 export function setupCommandBus(commandBusSetup: ICommandBusSetup): CommandBus {
@@ -54,7 +56,7 @@ export function setupCommandBus(commandBusSetup: ICommandBusSetup): CommandBus {
   const addBiblicalReferenceToGuideSectionHandler = new AddBiblicalReferenceToGuideSectionCommandHandler(commandBusSetup.guideRepository);
   commandBus.registerHandler('AddBiblicalReferenceToGuideSectionCommand', addBiblicalReferenceToGuideSectionHandler);
 
-  const createJourneyHandler = new CreateJourneyCommandHandler(commandBusSetup.journeyRepository);
+  const createJourneyHandler = new CreateJourneyCommandHandler(commandBusSetup.journeyWriteRunner);
   commandBus.registerHandler('CreateJourneyCommand', createJourneyHandler);
 
   const createReflectionHandler = new CreateReflectionCommandHandler(commandBusSetup.reflectionRepository);

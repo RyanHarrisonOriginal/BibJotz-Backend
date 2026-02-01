@@ -8,3 +8,9 @@ export interface IReflectionDTO {
     journeyId: number;
     biblicalReferences: IBiblicalReferenceDTO[];
 }
+
+/** Request DTO: add biblical refs to reflection = params + body. Pass { reflectionId, biblicalReferences } from controller. */
+export interface IAddBiblicalReferencesToReflectionRequestDTO {
+    reflectionId?: string;
+    biblicalReferences: IBiblicalReferenceDTO[];
+}

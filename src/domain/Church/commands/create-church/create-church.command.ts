@@ -1,4 +1,5 @@
 import { ICommand } from "@/domain/shared/interfaces/command.interface";
+import { IChurchDTO } from "@/domain/Church/church.dto";
 
 export class CreateChurchCommand implements ICommand {
     readonly commandType = 'CreateChurchCommand';
@@ -13,4 +14,18 @@ export class CreateChurchCommand implements ICommand {
         public readonly email: string,
         public readonly phone: string,
     ) {}
+
+    /** Parse HTTP body DTO. Controllers call CreateChurchCommand.from(req.body). */
+    static from(dto: IChurchDTO): CreateChurchCommand {
+        return new CreateChurchCommand(
+            dto.name,
+            dto.street,
+            dto.city,
+            dto.state,
+            dto.zip,
+            dto.website,
+            dto.email,
+            dto.phone,
+        );
+    }
 }

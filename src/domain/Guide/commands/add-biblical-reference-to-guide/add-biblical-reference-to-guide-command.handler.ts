@@ -6,7 +6,9 @@ import { BiblicalReferenceFactory } from "@/domain/BiblicalReferences/biblical-r
 import { GuideMapper } from "@/domain/Guide/guide.mapper";
 
 export class AddBiblicalReferenceToGuideCommandHandler implements ICommandHandler<AddBiblicalReferenceToGuideCommand, Guide> {
-    constructor(private readonly guideRepository: IGuideRepository) {}
+    constructor(
+        private readonly guideRepository: IGuideRepository
+    ) {}
 
     async execute(command: AddBiblicalReferenceToGuideCommand): Promise<Guide> {
         const biblicalReferences =  BiblicalReferenceFactory.createArray(command.biblicalReferences);
@@ -14,7 +16,6 @@ export class AddBiblicalReferenceToGuideCommandHandler implements ICommandHandle
         const guide = GuideMapper.mapGuideModelToDomain(guideData);
         guide.addBiblicalReferences(biblicalReferences);
         const savedGuideData = await this.guideRepository.save(guide);
-        // Fetch the full guide after save
         const fullGuideData = await this.guideRepository.findGuideById(savedGuideData.guideRoot || savedGuideData.guideVersion?.guideId);
         return GuideMapper.mapGuideModelToDomain(fullGuideData);
     }

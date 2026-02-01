@@ -1,4 +1,5 @@
 import { IQuery } from "@/domain/shared/interfaces/query.interface";
+import { IFindJourneyQueryParamsDTO } from "@/domain/Jouney/journey.dto";
 
 export class FindJourneyQuery implements IQuery {
     readonly queryType = 'FindJourneyQuery';
@@ -8,4 +9,18 @@ export class FindJourneyQuery implements IQuery {
         public readonly ownerId?: number,
         public readonly guideId?: number,
     ) {}
+
+    /** Parse HTTP query DTO (strings) into query. Controllers call FindJourneyQuery.from(req.query). */
+    static from(dto: IFindJourneyQueryParamsDTO): FindJourneyQuery {
+        const parse = (v: string | string[] | undefined): number | undefined => {
+            if (v == null || v === "") return undefined;
+            const n = parseInt(String(v), 10);
+            return Number.isNaN(n) ? undefined : n;
+        };
+        return new FindJourneyQuery(
+            parse(dto.id),
+            parse(dto.ownerId),
+            parse(dto.guideId),
+        );
+    }
 }

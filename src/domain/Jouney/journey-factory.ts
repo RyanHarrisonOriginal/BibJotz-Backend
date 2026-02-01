@@ -7,6 +7,7 @@ interface IJourneyCreationProps {
     id: number | null;
     name: string;
     ownerId: number;
+    guideVersionId: number;
     sourceGuide: IGuide;
     sections: JourneySection[];
     createdAt: Date;
@@ -18,10 +19,11 @@ export class JourneyFactory {
             data.id,
             data.name,
             data.ownerId,
+            data.guideVersionId,
             data.sourceGuide,
             data.sections ?? [],
             data.createdAt,
             data.updatedAt
         );
     }
-}
+}   

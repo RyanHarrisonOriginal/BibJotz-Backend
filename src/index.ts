@@ -20,6 +20,7 @@ import { ReflectionPostgresRepository } from './infrastructure/persistence/postg
 import { DraftPostgresRepository } from './infrastructure/persistence/postgres/draft-postgres-repository';
 import { GuideDraftRunner } from './infrastructure/transactions/runners/guide-draft.runner';
 import { GuideDraftPublishingRunner } from './infrastructure/transactions/runners/guide-draft-publishing.runner';
+import { JourneyWriteRunner } from './infrastructure/transactions/runners/journey-write.runner';
 
 // Load environment variables
 dotenv.config();
@@ -58,16 +59,17 @@ async function startServer() {
     const draftRepository = new DraftPostgresRepository(prisma);
     const draftRunner = new GuideDraftRunner(prisma);
     const draftPublishingRunner = new GuideDraftPublishingRunner(prisma);
+    const journeyWriteRunner = new JourneyWriteRunner(prisma);
 
-    const commandBusSetup = { 
-      userRepository, 
-      churchRepository, 
-      guideRepository, 
-      journeyRepository, 
-      reflectionRepository, 
-
+    const commandBusSetup = {
+      userRepository,
+      churchRepository,
+      guideRepository,
+      journeyRepository,
+      reflectionRepository,
       draftRunner,
       draftPublishingRunner,
+      journeyWriteRunner,
     };
     
     const queryBusSetup = {

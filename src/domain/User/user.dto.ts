@@ -9,3 +9,8 @@ export interface IUserDTO {
     lastName: string;
     primaryChurchId: number | null;
 }
+
+/** Request DTO: route params for GET /users/:id */
+export interface IGetUserParamsDTO {
+    id?: string;
+}
