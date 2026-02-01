@@ -15,7 +15,6 @@ export class CreateGuideCommand implements ICommand {
         public readonly authorId: number,
     ) {}
 
-    /** Parse HTTP body DTO. Controllers call CreateGuideCommand.from(req.body). */
     static from(dto: IGuideDTO): CreateGuideCommand {
         return new CreateGuideCommand(
             dto.name,

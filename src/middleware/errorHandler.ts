@@ -1,8 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 
-/**
- * Custom error class for application errors
- */
 export class AppError extends Error {
   public readonly statusCode: number;
   public readonly isOperational: boolean;
@@ -16,10 +13,6 @@ export class AppError extends Error {
   }
 }
 
-/**
- * Error handler middleware
- * Handles all errors thrown in the application
- */
 export const errorHandler = (
   error: Error | AppError,
   req: Request,
@@ -29,12 +22,10 @@ export const errorHandler = (
   let statusCode = 500;
   let message = 'Internal Server Error';
 
-  // If it's our custom AppError, use its properties
   if (error instanceof AppError) {
     statusCode = error.statusCode;
     message = error.message;
   } else {
-    // Handle other types of errors
     if (error.name === 'ValidationError') {
       statusCode = 400;
       message = error.message;
@@ -56,7 +47,6 @@ export const errorHandler = (
     timestamp: new Date().toISOString(),
   });
 
-  // Send error response
   res.status(statusCode).json({
     success: false,
     error: {

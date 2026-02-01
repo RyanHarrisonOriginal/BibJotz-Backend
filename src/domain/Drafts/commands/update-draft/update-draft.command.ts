@@ -9,7 +9,6 @@ export class UpdateDraftCommand implements ICommand {
         public readonly draftContent?: Record<string, unknown>,
     ) {}
 
-    /** Parse HTTP request (params + body). Controllers call UpdateDraftCommand.from({ draftKey: req.params.draftKey, draftContent: req.body.draftContent }). */
     static from(dto: IUpdateDraftRequestDTO): UpdateDraftCommand {
         return new UpdateDraftCommand(dto.draftKey ?? "", dto.draftContent);
     }

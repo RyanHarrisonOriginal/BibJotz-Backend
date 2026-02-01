@@ -160,10 +160,6 @@ export class GuideMapper {
         };
     }
 
-    /**
-     * Map raw persistence (findGuideById result) to IGuide.
-     * Use when you need an IGuide from the DB without building the full Guide domain entity.
-     */
     public static mapGuidePersistenceToInterface(persistence: any): IGuide {
         const version = persistence?.versions?.[0];
         if (!version) {

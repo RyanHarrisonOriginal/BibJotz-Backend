@@ -6,7 +6,6 @@ import { JourneyWriteRunner } from "@/infrastructure/transactions/runners/journe
 import { GuideMapper } from "@/domain/Guide/guide.mapper";
 import { JourneyMapper } from "@/domain/Jouney/journey.mapper";
 
-// TODO: Create a Journey Unit of Work
 export class CreateJourneyCommandHandler implements ICommandHandler<CreateJourneyCommand, Journey> {
     constructor(private readonly runner: JourneyWriteRunner) { }
 

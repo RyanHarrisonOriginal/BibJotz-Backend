@@ -1,12 +1,6 @@
 import { prisma, connectPrisma, disconnectPrisma } from './prisma-client';
 
-/**
- * Database setup and connection management
- */
 export class DatabaseSetup {
-  /**
-   * Initialize database connection
-   */
   static async initialize(): Promise<void> {
     try {
       await connectPrisma();
@@ -17,9 +11,6 @@ export class DatabaseSetup {
     }
   }
 
-  /**
-   * Gracefully shutdown database connection
-   */
   static async shutdown(): Promise<void> {
     try {
       await disconnectPrisma();
@@ -44,9 +35,6 @@ export class DatabaseSetup {
     }
   }
 
-  /**
-   * Get database health status
-   */
   static async getHealthStatus(): Promise<{
     status: 'healthy' | 'unhealthy';
     message: string;

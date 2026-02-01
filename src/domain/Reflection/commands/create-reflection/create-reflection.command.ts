@@ -13,7 +13,6 @@ export class CreateReflectionCommand implements ICommand {
         public readonly biblicalReferences: IBiblicalReferenceDTO[],
     ) {}
 
-    /** Parse HTTP body DTO. Controllers call CreateReflectionCommand.from(req.body). */
     static from(dto: IReflectionDTO): CreateReflectionCommand {
         return new CreateReflectionCommand(
             dto.journeyId,

@@ -86,9 +86,6 @@ export class JourneyPostgresRepository implements IJourneyRepository {
                     : this.updateJourney(tx, journeyData)
             );
 
-            // Note: Reflections are managed separately through ReflectionRepository
-            // They are not part of the Journey aggregate root's save operation
-
             return savedJourney;
         } catch (error) {
             console.error(error);

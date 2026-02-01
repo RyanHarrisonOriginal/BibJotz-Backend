@@ -9,7 +9,6 @@ export class GetUserQuery implements IQuery {
         this.userId = userId;
     }
 
-    /** Parse HTTP params DTO. Controllers call GetUserQuery.from(req.params). */
     static from(dto: IGetUserParamsDTO): GetUserQuery {
         return new GetUserQuery(dto.id ?? "");
     }

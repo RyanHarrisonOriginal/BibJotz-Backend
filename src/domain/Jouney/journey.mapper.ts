@@ -15,23 +15,16 @@ export class JourneyMapper {
         };
     }
 
-    /**
-     * Map Prisma journey (with include: guideVersion + guide + sections + biblicalReferences) to domain Journey.
-     * Prisma shape: id, guideVersionId, name, description, ownerId, createdAt, guideVersion?: { guide, sections, biblicalReferences }.
-     * Journey schema has no updatedAt; use createdAt for both.
-     */
     public static mapJourneyModelToDomain(prismaJourney: any): Journey {
         if (!prismaJourney) {
             throw new Error("Journey data is required");
         }
 
-        // Relation is guideVersion (object); guideVersionId is the FK number
         const guideVersion = prismaJourney.guideVersion;
         if (!guideVersion?.guide) {
             throw new Error("Journey must have guideVersion relation loaded (include guideVersion with guide, sections, biblicalReferences)");
         }
 
-        // Build persistence-like shape for GuideMapper.mapGuidePersistenceToInterface (guide root + current version)
         const guidePersistence = {
             id: guideVersion.guide.id,
             isPublic: guideVersion.guide.isPublic,
@@ -47,10 +40,7 @@ export class JourneyMapper {
         };
         const sourceGuide = GuideMapper.mapGuidePersistenceToInterface(guidePersistence);
 
-        // Prisma Journey has no updatedAt; use createdAt for both
         const createdAt = prismaJourney.createdAt ? new Date(prismaJourney.createdAt) : new Date();
-
-        // personalSections could be mapped to JourneySection[] here if needed; currently not on domain factory
         const sections: any[] = [];
 
         return JourneyFactory.create({

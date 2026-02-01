@@ -25,8 +25,6 @@ export class CommandBus {
     try {
       return await handler.execute(command);
     } catch (error) {
-      // Log the error or handle it as needed
-      // TODO: Replace with proper logging service
       throw error;
     }
   }

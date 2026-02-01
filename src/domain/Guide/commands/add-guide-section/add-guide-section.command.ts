@@ -16,7 +16,6 @@ export class AddGuideSectionCommand implements ICommand {
         public readonly guideSection: IGuideSectionDTO,
     ) {}
 
-    /** Parse HTTP request (params + body). Controllers call AddGuideSectionCommand.from({ guideId: req.params.guideId, guideSection: req.body }). */
     static from(dto: IAddGuideSectionRequestDTO): AddGuideSectionCommand {
         return new AddGuideSectionCommand(parseId(dto.guideId), dto.guideSection);
     }

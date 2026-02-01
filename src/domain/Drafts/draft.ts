@@ -10,7 +10,6 @@ export class Draft extends BaseEntity {
         private publishedAt: Date | null,
         updatedAt: Date = new Date()
     ) {
-        // Use updatedAt as createdAt since the schema doesn't have created_at
         super(id ?? 0, updatedAt, updatedAt);
     }
 

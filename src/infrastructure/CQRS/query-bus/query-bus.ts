@@ -21,8 +21,6 @@ export class QueryBus {
         try {
             return handler.execute(query);
         } catch (error) {
-            // Log the error or handle it as needed
-            // TODO: Replace with proper logging service
             throw error;
         }
     }

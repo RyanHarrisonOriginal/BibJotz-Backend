@@ -13,7 +13,6 @@ export class CreateUserCommand implements ICommand {
         public readonly isPublic: boolean,
     ) {}
 
-    /** Parse HTTP body DTO. Controllers call CreateUserCommand.from(req.body). */
     static from(dto: IUserDTO): CreateUserCommand {
         const primaryChurchId = dto.primaryChurchId ?? 0;
         return new CreateUserCommand(

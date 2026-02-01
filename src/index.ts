@@ -22,7 +22,6 @@ import { GuideDraftRunner } from './infrastructure/transactions/runners/guide-dr
 import { GuideDraftPublishingRunner } from './infrastructure/transactions/runners/guide-draft-publishing.runner';
 import { JourneyWriteRunner } from './infrastructure/transactions/runners/journey-write.runner';
 
-// Load environment variables
 dotenv.config();
 
 const app = express();
@@ -31,7 +30,6 @@ const PORT = process.env.PORT || 3002;
 
 
 
-// Middleware
 app.use(helmet());
 app.use(cors());
 app.use(morgan('combined'));
@@ -84,10 +82,8 @@ async function startServer() {
     const queryBus = setupQueryBus(queryBusSetup);
 
 
-    // Routes
     app.use('/api', routes(commandBus, queryBus));
 
-    // Health check endpoint
     app.get('/health', async (req, res) => {
       try {
         const dbHealth = await DatabaseSetup.getHealthStatus();
@@ -119,19 +115,15 @@ async function startServer() {
 
 
 
-    // Error handling middleware
     app.use(notFoundHandler);
     app.use(errorHandler);
-    // Initialize database connection
     await DatabaseSetup.initialize();
 
-    // Test database connection
     const isConnected = await DatabaseSetup.testConnection();
     if (!isConnected) {
       throw new Error('Failed to connect to database');
     }
 
-    // Start server
     const server = app.listen(PORT, () => {
       console.log(`🚀 Server is running on port ${PORT}`);
       console.log(`📚 API Documentation available at http://localhost:${PORT}/api-docs`);
@@ -139,7 +131,6 @@ async function startServer() {
       console.log(`🗄️  Database connected successfully`);
     });
 
-    // Graceful shutdown
     process.on('SIGTERM', async () => {
       console.log('🛑 SIGTERM received, shutting down gracefully');
       server.close(async () => {

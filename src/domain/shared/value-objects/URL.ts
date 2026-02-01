@@ -5,9 +5,7 @@ export class URL {
         if (!value) {
             throw new Error('URL is required');
         }
-        // Basic URL validation using the URL constructor
         try {
-            // Throws if invalid
             new URL(value);
         } catch {
             throw new Error('Invalid URL');

@@ -288,8 +288,6 @@ export class GuidePostgresRepository implements IGuideRepository {
                 throw new Error('Guide not found or you do not have permission to delete it');
             }
 
-            // Delete guide section biblical references for unreferenced versions
-            // (versions that are not referenced by any Journey)
             await tx.$executeRawUnsafe(
                 `DELETE FROM app.guide_section_biblical_refs
                  WHERE guide_section_id IN (
@@ -304,7 +302,6 @@ export class GuidePostgresRepository implements IGuideRepository {
                  )`
             );
 
-            // Delete guide sections for unreferenced versions
             await tx.$executeRawUnsafe(
                 `DELETE FROM app.guide_sections
                  WHERE guide_version_id IN (
@@ -330,7 +327,6 @@ export class GuidePostgresRepository implements IGuideRepository {
                  )`
             );
 
-            // Delete unreferenced guide versions
             await tx.$executeRawUnsafe(
                 `DELETE FROM app.guide_versions
                  WHERE guide_id = ${guideId}
@@ -347,7 +343,6 @@ export class GuidePostgresRepository implements IGuideRepository {
 
             const remainingCount = remainingVersions[0]?.count || 0;
 
-            // Only delete the guide if all versions have been deleted
             if (remainingCount === 0) {
                 await tx.$executeRawUnsafe(
                     `DELETE FROM app.guides WHERE id = ${guideId}`

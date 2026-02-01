@@ -10,7 +10,6 @@ export interface IJourneyDTO {
     updatedAt: Date;
 }
 
-/** Request DTO: query string shape for GET /journeys (find journey). Values are strings from the request. */
 export interface IFindJourneyQueryParamsDTO {
     id?: string | string[];
     ownerId?: string | string[];

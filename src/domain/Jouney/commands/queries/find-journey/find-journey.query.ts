@@ -10,7 +10,6 @@ export class FindJourneyQuery implements IQuery {
         public readonly guideId?: number,
     ) {}
 
-    /** Parse HTTP query DTO (strings) into query. Controllers call FindJourneyQuery.from(req.query). */
     static from(dto: IFindJourneyQueryParamsDTO): FindJourneyQuery {
         const parse = (v: string | string[] | undefined): number | undefined => {
             if (v == null || v === "") return undefined;

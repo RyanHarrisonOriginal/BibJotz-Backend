@@ -15,7 +15,6 @@ export class PermanentlyDeleteGuideCommand implements ICommand {
         public readonly userId: number,
     ) {}
 
-    /** Parse HTTP request (params + userId from auth). Controllers call PermanentlyDeleteGuideCommand.from({ guideId: req.params.guideId, userId }). */
     static from(dto: IDeleteGuideRequestDTO): PermanentlyDeleteGuideCommand {
         return new PermanentlyDeleteGuideCommand(parseId(dto.guideId), dto.userId);
     }

@@ -10,7 +10,6 @@ export class AddBiblicalReferencesToReflectionCommand implements ICommand {
         public readonly biblicalReferences: IBiblicalReferenceDTO[],
     ) {}
 
-    /** Parse HTTP request (params + body). Controllers call AddBiblicalReferencesToReflectionCommand.from({ reflectionId: req.params.reflectionId, biblicalReferences: req.body }). */
     static from(dto: IAddBiblicalReferencesToReflectionRequestDTO): AddBiblicalReferencesToReflectionCommand {
         const reflectionId = parseInt(dto.reflectionId ?? "0", 10);
         return new AddBiblicalReferencesToReflectionCommand(

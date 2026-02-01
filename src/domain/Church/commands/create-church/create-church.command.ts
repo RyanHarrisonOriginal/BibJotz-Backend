@@ -15,7 +15,6 @@ export class CreateChurchCommand implements ICommand {
         public readonly phone: string,
     ) {}
 
-    /** Parse HTTP body DTO. Controllers call CreateChurchCommand.from(req.body). */
     static from(dto: IChurchDTO): CreateChurchCommand {
         return new CreateChurchCommand(
             dto.name,

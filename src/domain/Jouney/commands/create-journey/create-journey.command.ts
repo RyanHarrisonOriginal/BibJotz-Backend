@@ -10,7 +10,6 @@ export class CreateJourneyCommand implements ICommand {
         public readonly guideId: number,
     ) {}
 
-    /** Parse HTTP body DTO. Controllers call CreateJourneyCommand.from(req.body). */
     static from(dto: IJourneyDTO): CreateJourneyCommand {
         return new CreateJourneyCommand(
             dto.name,

@@ -17,7 +17,6 @@ export class AddBiblicalReferenceToGuideSectionCommand implements ICommand {
         public readonly biblicalReferences: IBiblicalReferenceDTO[],
     ) {}
 
-    /** Parse HTTP request (params + body). Controllers call AddBiblicalReferenceToGuideSectionCommand.from({ guideId, sectionId, biblicalReferences }). */
     static from(dto: IAddBiblicalReferenceToGuideSectionRequestDTO): AddBiblicalReferenceToGuideSectionCommand {
         return new AddBiblicalReferenceToGuideSectionCommand(
             parseId(dto.guideId),

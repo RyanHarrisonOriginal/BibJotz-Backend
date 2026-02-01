@@ -12,7 +12,6 @@ export class GetChurchQuery implements IQuery {
         public readonly zip?: string
     ) {}
 
-    /** Parse HTTP query DTO (strings). Controllers call GetChurchQuery.from(req.query). */
     static from(dto: IGetChurchQueryParamsDTO): GetChurchQuery {
         const parseId = (v: string | string[] | undefined): number | undefined => {
             if (v == null || v === "") return undefined;

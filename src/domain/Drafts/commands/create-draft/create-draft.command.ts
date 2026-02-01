@@ -11,7 +11,6 @@ export class CreateDraftCommand implements ICommand {
         public readonly draftContent: Record<string, unknown>,
     ) {}
 
-    /** Parse HTTP body DTO. Controllers call CreateDraftCommand.from(req.body). */
     static from(dto: ICreateDraftBodyDTO): CreateDraftCommand {
         const userId = typeof dto.userId === "string" ? parseInt(dto.userId, 10) : (dto.userId ?? 0);
         return new CreateDraftCommand(

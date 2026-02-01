@@ -10,9 +10,8 @@ function parseId(v: string | undefined): number {
 export class GetGuideByIdQuery implements IQuery {
     readonly queryType = 'GetGuideByIdQuery';
 
-    constructor(public readonly guideId: number) {}
+    constructor(public readonly guideId: number    ) {}
 
-    /** Parse HTTP params DTO. Controllers call GetGuideByIdQuery.from(req.params). */
     static from(dto: IGuideIdParamsDTO): GetGuideByIdQuery {
         return new GetGuideByIdQuery(parseId(dto.guideId));
     }
