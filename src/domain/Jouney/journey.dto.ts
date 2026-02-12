@@ -16,12 +16,19 @@ export interface IFindJourneyQueryParamsDTO {
     guideId?: string | string[];
 }
 
-/** Reflection in journey library response */
-export type LibraryReflection = {
+/** Single reflection entry in a section (library response). */
+export type LibraryReflectionEntry = {
     id: string;
+    entry_key: string;
     content: string;
-    sectionTitle: string;
     createdAt: string;
+};
+
+/** Section with its reflection entries (library response). */
+export type LibrarySectionReflections = {
+    sectionId: string;
+    sectionTitle: string;
+    entries: LibraryReflectionEntry[];
 };
 
 /** Section in journey library response */
@@ -30,13 +37,13 @@ export type LibraryJourneySection = {
     title: string;
 };
 
-/** Journey in journey library response */
+/** Journey in journey library response (reflections grouped by section). */
 export type LibraryJourney = {
     id: string;
     title: string;
     guideTitle: string;
     sections: LibraryJourneySection[];
-    reflections: LibraryReflection[];
+    sectionReflections: LibrarySectionReflections[];
 };
 
 /** Response payload for get journey library */

@@ -13,7 +13,7 @@ export interface JourneyLibraryItem {
     guideId: number;
     guideTitle: string;
     sections: { id: number; title: string }[] | null;
-    reflections: { id: number; entry_key: string; content: string; sectionTitle: string | null; createdAt: string }[] | null;
+    sectionReflections: { sectionId: number; sectionTitle: string; entries: { id: number; entry_key: string; content: string; createdAt: string }[] }[] | null;
 }
 
 export class JourneyMapper {
@@ -79,7 +79,7 @@ export class JourneyMapper {
 
     private static mapJourneyLibraryRowToItem(row: any): JourneyLibraryItem {
         const sections = Array.isArray(row.sections) ? row.sections : (row.sections ? [row.sections] : null);
-        const reflections = Array.isArray(row.reflections) ? row.reflections : (row.reflections ? [row.reflections] : null);
+        const sectionReflections = Array.isArray(row.reflections) ? row.reflections : (row.reflections ? [row.reflections] : null);
         return {
             id: row.id,
             title: row.title ?? '',
@@ -87,12 +87,15 @@ export class JourneyMapper {
             guideId: row.guide_id ?? 0,
             guideTitle: row.guide_title ?? '',
             sections: sections?.filter((s: any) => s?.id != null).map((s: any) => ({ id: s.id, title: s.title ?? '' })) ?? null,
-            reflections: reflections?.filter((r: any) => r?.id != null).map((r: any) => ({
-                id: r.id,
-                entry_key: r.entry_key ?? '',
-                content: r.content ?? '',
-                sectionTitle: r.sectionTitle ?? null,
-                createdAt: r.createdAt ?? new Date().toISOString(),
+            sectionReflections: sectionReflections?.filter((sr: any) => sr?.sectionId != null).map((sr: any) => ({
+                sectionId: sr.sectionId,
+                sectionTitle: sr.sectionTitle ?? '',
+                entries: Array.isArray(sr.entries) ? sr.entries.map((e: any) => ({
+                    id: e.id,
+                    entry_key: e.entry_key ?? '',
+                    content: e.content ?? '',
+                    createdAt: e.createdAt ?? new Date().toISOString(),
+                })) : [],
             })) ?? null,
         };
     }
@@ -111,12 +114,15 @@ export class JourneyMapper {
                     id: String(s.id),
                     title: s.title,
                 })),
-                reflections: (item.reflections ?? []).map((r) => ({
-                    id: String(r.id),
-                    entry_key: r.entry_key,
-                    content: r.content,
-                    sectionTitle: r.sectionTitle ?? '',
-                    createdAt: r.createdAt,
+                sectionReflections: (item.sectionReflections ?? []).map((sr) => ({
+                    sectionId: String(sr.sectionId),
+                    sectionTitle: sr.sectionTitle ?? '',
+                    entries: sr.entries.map((e) => ({
+                        id: String(e.id),
+                        entry_key: e.entry_key,
+                        content: e.content,
+                        createdAt: e.createdAt,
+                    })),
                 })),
             })),
         };

@@ -32,20 +32,44 @@ sections_agg as (
 
 reflections_agg as (
     select
-        refl.journey_id,
+        sg.journey_id,
+
         json_agg(
-            distinct jsonb_build_object(
-                'id', refl.id,
-                'entry_key', refl.entry_key,
-                'content', refl.content,
-                'sectionTitle', refl_sect.title,
-                'createdAt', refl.created_at
+            jsonb_build_object(
+                'sectionId', sg.section_id,
+                'sectionTitle', sg.section_title,
+                'entries', sg.entries
             )
-        ) filter (where refl.id is not null) as reflections
-    from app.reflections refl
-    left join app.guide_sections refl_sect
-        on refl.guide_section_id = refl_sect.id
-    group by refl.journey_id
+            order by sg.section_id
+        ) as reflections
+
+    from (
+        select
+            refl.journey_id,
+            refl.guide_section_id as section_id,
+            refl_sect.title as section_title,
+
+            json_agg(
+                jsonb_build_object(
+                    'id', refl.id,
+                    'entry_key', refl.entry_key,
+                    'content', refl.content,
+                    'createdAt', refl.created_at
+                )
+                order by refl.created_at desc
+            ) filter (where refl.id is not null) as entries
+
+        from app.reflections refl
+        left join app.guide_sections refl_sect
+            on refl.guide_section_id = refl_sect.id
+
+        group by
+            refl.journey_id,
+            refl.guide_section_id,
+            refl_sect.title
+    ) sg
+
+    group by sg.journey_id
 )
 
 select
