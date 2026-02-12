@@ -11,6 +11,8 @@ import { AddBiblicalReferenceToGuideSectionCommandHandler } from '@/domain/Guide
 import { IJourneyRepository } from '@/domain/Jouney/journey-repository.interface';
 import { CreateJourneyCommandHandler } from '@/domain/Jouney/commands/create-journey/create-journey-command.handler';
 import { CreateReflectionCommandHandler } from '@/domain/Reflection/commands/create-reflection/create-reflection-command.handler';
+import { SaveReflectionCommandHandler } from '@/domain/Reflection/commands/save-reflection/save-reflection-command.handler';
+import { UpsertReflectionCommandHandler } from '@/domain/Reflection/commands/upsert-reflection/upsert-reflection-command.handler';
 import { AddBiblicalReferencesToReflectionCommandHandler } from '@/domain/Reflection/commands/add-biblical-references-to-reflection/add-biblical-reference-to-reflection-command.handler';
 import { IReflectionRepository } from '@/domain/Reflection/reflection-repository.interface';
 import { IDraftRepository } from '@/domain/Drafts/draft-repository.interface';
@@ -61,6 +63,12 @@ export function setupCommandBus(commandBusSetup: ICommandBusSetup): CommandBus {
 
   const createReflectionHandler = new CreateReflectionCommandHandler(commandBusSetup.reflectionRepository);
   commandBus.registerHandler('CreateReflectionCommand', createReflectionHandler);
+
+  const saveReflectionHandler = new SaveReflectionCommandHandler(commandBusSetup.reflectionRepository);
+  commandBus.registerHandler('SaveReflectionCommand', saveReflectionHandler);
+
+  const upsertReflectionHandler = new UpsertReflectionCommandHandler(commandBusSetup.reflectionRepository);
+  commandBus.registerHandler('UpsertReflectionCommand', upsertReflectionHandler);
 
   const addBiblicalReferencesToReflectionHandler = new AddBiblicalReferencesToReflectionCommandHandler(commandBusSetup.reflectionRepository);
   commandBus.registerHandler('AddBiblicalReferencesToReflectionCommand', addBiblicalReferencesToReflectionHandler);

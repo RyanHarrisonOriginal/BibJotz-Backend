@@ -7,6 +7,8 @@ export const reflectionRoutes = (commandBus: CommandBus, queryBus: QueryBus) => 
     const router = Router();
     const reflectionController = new ReflectionController(commandBus, queryBus);
     router.post('/', reflectionController.createReflection);
+    router.put('/', reflectionController.upsertReflection);
+    router.patch('/:reflectionId', reflectionController.saveReflection);
     router.post('/:reflectionId/biblical-references', reflectionController.addBiblicalReferencesToReflection);
     return router;
 }

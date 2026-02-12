@@ -1,12 +1,14 @@
 import { IJourneyRepository } from "@/domain/Jouney/journey-repository.interface";
 import { Prisma, PrismaClient, } from "@prisma/client";
 import { Journey } from "@/domain/Jouney/jouney";
-import { Reflection } from "@/domain/Reflection/reflection";
 import { JourneyMapper } from "@/domain/Jouney/journey.mapper";
-import { ReflectionFactory } from "@/domain/Reflection/reflection-factory";
-import { IBiblicalReferenceDTO } from "@/domain/BiblicalReferences/biblical-reference.dto";
 import { PrismaClientType } from "../types";
 import { isTransactionClient } from "../utils/prismaHelpers";
+import { readFileSync } from "fs";
+import { join } from "path";
+
+const SQL_DIR = join(process.cwd(), "src", "infrastructure", "persistence", "postgres", "sql");
+const GET_JOURNEY_LIBRARY_SQL = readFileSync(join(SQL_DIR, "get-journey-library.sql"), "utf-8");
 
 
 export class JourneyPostgresRepository implements IJourneyRepository {
@@ -137,5 +139,17 @@ export class JourneyPostgresRepository implements IJourneyRepository {
             where.guideVersionId = guideId;
         }
         return await this.client.journey.findMany(this.JourneyQuery(where));
+    }
+
+    async getJourneyLibrary(ownerId: number | null): Promise<any[]> {
+        const runRead = async (tx: Prisma.TransactionClient) => {
+            const rows = await tx.$queryRawUnsafe<any[]>(GET_JOURNEY_LIBRARY_SQL, ownerId);
+            return rows ?? [];
+        };
+        if (isTransactionClient(this.client)) {
+            return runRead(this.client);
+        }
+        const prismaClient = this.client as PrismaClient;
+        return prismaClient.$transaction(runRead);
     }
 }

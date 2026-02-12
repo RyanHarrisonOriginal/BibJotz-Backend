@@ -179,6 +179,7 @@ model Reflection {
   personalSection PersonalJourneySection? @relation(fields: [personalSectionId], references: [id])
   biblicalReferences ReflectionBiblicalReference[]
 
+  @@unique([journeyId, guideSectionId, authorId])
   @@index([journeyId])
   @@map("reflections")
   @@schema("app")

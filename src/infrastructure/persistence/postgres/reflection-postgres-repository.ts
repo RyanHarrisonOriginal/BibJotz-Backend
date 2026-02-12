@@ -100,4 +100,24 @@ export class ReflectionPostgresRepository implements IReflectionRepository {
     async findReflections(journeyId?: number, guideSectionId?: number, authorId?: number): Promise<any[]> {
         return await this.prisma.reflection.findMany(this.ReflectionQuery({ journeyId, guideSectionId, authorId }));
     }
+
+    async upsertReflection(journeyId: number, guideSectionId: number, authorId: number, content: string): Promise<any> {
+        return await this.prisma.reflection.upsert({
+            where: {
+                journeyId_guideSectionId_authorId: {
+                    journeyId,
+                    guideSectionId,
+                    authorId,
+                },
+            },
+            create: {
+                journeyId,
+                guideSectionId,
+                authorId,
+                content,
+            },
+            update: { content },
+            include: { biblicalReferences: true },
+        });
+    }
 }

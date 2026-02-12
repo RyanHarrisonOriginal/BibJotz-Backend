@@ -102,11 +102,21 @@ paths:
       tags:
         - Journeys
       $ref: './infrastructure/http/routes/swagger-docs/Journeys/journey-get.swagger.yaml'
+  /api/v1/journeys/library:
+    get:
+      tags:
+        - Journeys
+      $ref: './infrastructure/http/routes/swagger-docs/Journeys/journey-library-get.swagger.yaml'
   /api/v1/reflections:
     post:
       tags:
         - Reflections
       $ref: './infrastructure/http/routes/swagger-docs/Reflections/reflection-post.swagger.yaml'
+  /api/v1/reflections/{reflectionId}:
+    patch:
+      tags:
+        - Reflections
+      $ref: './infrastructure/http/routes/swagger-docs/Reflections/reflection-save.swagger.yaml'
   /api/v1/reflections/{reflectionId}/biblical-references:
     post:
       tags:

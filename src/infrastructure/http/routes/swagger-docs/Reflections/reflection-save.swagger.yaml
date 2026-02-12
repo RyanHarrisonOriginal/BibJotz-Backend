@@ -1,0 +1,60 @@
+summary: Save (update) a reflection
+description: Partially updates an existing reflection by ID. Send only the fields to update (e.g. content).
+parameters:
+  - name: reflectionId
+    in: path
+    required: true
+    description: The ID of the reflection to update
+    schema:
+      type: integer
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          content:
+            type: string
+            description: Updated reflection content
+responses:
+  '200':
+    description: Reflection updated successfully
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            content:
+              type: string
+            authorId:
+              type: integer
+            journeyId:
+              type: integer
+            guideSectionId:
+              type: integer
+            biblicalReferences:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  book:
+                    type: string
+                  chapter:
+                    type: integer
+                  startVerse:
+                    type: integer
+                  endVerse:
+                    type: integer
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+  '500':
+    description: Server error

@@ -13,3 +13,28 @@ export interface IAddBiblicalReferencesToReflectionRequestDTO {
     reflectionId?: string;
     biblicalReferences: IBiblicalReferenceDTO[];
 }
+
+/** PATCH body for save (update) reflection */
+export interface ISaveReflectionRequestDTO {
+    content?: string;
+}
+
+/** PUT body for upsert reflection (idempotent create-or-update by journey + section + author) */
+export interface IUpsertReflectionRequestDTO {
+    journey_id: string;
+    guide_section_id: string;
+    content: string;
+    author_id: number;
+}
+
+/** Response shape for reflection (HTTP response body) */
+export interface IReflectionResponseDTO {
+    id: number;
+    content: string;
+    authorId: number;
+    journeyId: number;
+    guideSectionId: number;
+    biblicalReferences: IBiblicalReferenceDTO[];
+    createdAt: string;
+    updatedAt: string;
+}

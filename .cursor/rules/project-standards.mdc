@@ -1,0 +1,29 @@
+---
+description: Project standards for mapping, DTOs, and Command/Query parsing. Enforce mapper-only mapping, DTOs only at HTTP boundary in controllers, and from(dto) parsing in commands/queries.
+globs: src/**/*.ts
+alwaysApply: false
+---
+
+# Project Standards (Mapping, DTOs, Commands/Queries)
+
+Follow these rules. Full details: `docs/MAPPING_AND_DTO_STANDARD.md` and `docs/COMMAND_STANDARD.md`.
+
+## Mapping
+
+- **All** logic that translates object shape from one type to another lives in a **Mapper class** in the owning domain folder (e.g. `JourneyMapper`, `GuideMapper`).
+- **No mapping** in repositories, handlers, controllers, factories, or other services.
+- Repositories return **raw/persistence** shapes only. Handlers use the Mapper to convert to domain/internal type. Controllers use the Mapper to convert handler result to **response DTO** before `res.json()`.
+
+## DTOs
+
+- DTOs describe **data transferred across the HTTP boundary** (request and response payloads only).
+- **Only used in controllers:** request DTO passed into `Command.from(dto)` / `Query.from(dto)`; response DTO produced via Mapper and passed to `res.json(responseDto)`.
+- Do **not** use DTO types in repository interfaces, handler return types, or domain entities.
+
+## Commands and Queries
+
+- The Command/Query static **`from(dto)`** method parses the request DTO (from the controller) into the shape required by the handler’s **execute** method. All parsing and coercion happen inside `from()`.
+
+## API documentation (Swagger)
+
+- All endpoints must be documented in the swagger docs folder. See `docs/SWAGGER_STANDARD.md` for the current method (root spec, folder layout, operation files, $ref usage).

@@ -8,6 +8,7 @@ export const journeyRoutes = (commandBus: CommandBus, queryBus: QueryBus) => {
     const router = Router();
     const journeyController = new JourneyController(commandBus, queryBus);
     router.post('/', journeyController.createJourney);
+    router.get('/library', journeyController.getJourneyLibrary);
     router.get('/', journeyController.findJourney);
     return router;
 }   
