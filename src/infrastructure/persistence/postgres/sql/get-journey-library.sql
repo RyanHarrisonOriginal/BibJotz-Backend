@@ -36,6 +36,7 @@ reflections_agg as (
         json_agg(
             distinct jsonb_build_object(
                 'id', refl.id,
+                'entry_key', refl.entry_key,
                 'content', refl.content,
                 'sectionTitle', refl_sect.title,
                 'createdAt', refl.created_at

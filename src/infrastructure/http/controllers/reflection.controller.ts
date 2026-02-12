@@ -34,7 +34,7 @@ export class ReflectionController {
         }
     }
 
-    /** PUT upsert: idempotent create-or-update by journey_id + guide_section_id + author_id. */
+    /** PUT upsert: idempotent create-or-update by entry_key. */
     upsertReflection = async (req: Request, res: Response) => {
         try {
             const command = UpsertReflectionCommand.from(req.body);

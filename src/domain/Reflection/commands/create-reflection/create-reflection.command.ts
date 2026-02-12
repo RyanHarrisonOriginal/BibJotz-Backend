@@ -6,6 +6,7 @@ export class CreateReflectionCommand implements ICommand {
     readonly commandType = 'CreateReflectionCommand';
 
     constructor(
+        public readonly entryKey: string,
         public readonly journeyId: number,
         public readonly content: string,
         public readonly authorId: number,
@@ -13,8 +14,11 @@ export class CreateReflectionCommand implements ICommand {
         public readonly biblicalReferences: IBiblicalReferenceDTO[],
     ) {}
 
-    static from(dto: IReflectionDTO): CreateReflectionCommand {
+    static from(dto: IReflectionDTO & { entry_key?: string }): CreateReflectionCommand {
+        const entryKey = (dto.entryKey ?? (dto as { entry_key?: string }).entry_key)?.trim();
+        if (!entryKey) throw new Error('entry_key is required');
         return new CreateReflectionCommand(
+            entryKey,
             dto.journeyId,
             dto.content,
             dto.authorId,

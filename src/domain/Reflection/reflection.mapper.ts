@@ -7,6 +7,7 @@ export class ReflectionMapper {
     public static mapReflectionToPersistencePrisma(reflection: Reflection): any {
         return {
             id: reflection.getId(),
+            entryKey: reflection.getEntryKey(),
             content: reflection.getContent(),
             authorId: reflection.getAuthorId(),
             guideSectionId: reflection.getGuideSectionId(),
@@ -18,6 +19,7 @@ export class ReflectionMapper {
     public static mapReflectionToDomain(reflection: any): Reflection {
         return ReflectionFactory.create({
             id: reflection.id,
+            entryKey: reflection.entryKey ?? reflection.entry_key ?? '',
             content: reflection.content,
             authorId: reflection.authorId,
             guideSectionId: reflection.guideSectionId,
@@ -29,6 +31,7 @@ export class ReflectionMapper {
     public static mapReflectionToResponseDTO(reflection: Reflection): IReflectionResponseDTO {
         return {
             id: reflection.getId() ?? 0,
+            entry_key: reflection.getEntryKey(),
             content: reflection.getContent(),
             authorId: reflection.getAuthorId(),
             journeyId: reflection.getJourneyId(),

@@ -13,7 +13,7 @@ export interface JourneyLibraryItem {
     guideId: number;
     guideTitle: string;
     sections: { id: number; title: string }[] | null;
-    reflections: { id: number; content: string; sectionTitle: string | null; createdAt: string }[] | null;
+    reflections: { id: number; entry_key: string; content: string; sectionTitle: string | null; createdAt: string }[] | null;
 }
 
 export class JourneyMapper {
@@ -89,6 +89,7 @@ export class JourneyMapper {
             sections: sections?.filter((s: any) => s?.id != null).map((s: any) => ({ id: s.id, title: s.title ?? '' })) ?? null,
             reflections: reflections?.filter((r: any) => r?.id != null).map((r: any) => ({
                 id: r.id,
+                entry_key: r.entry_key ?? '',
                 content: r.content ?? '',
                 sectionTitle: r.sectionTitle ?? null,
                 createdAt: r.createdAt ?? new Date().toISOString(),
@@ -112,6 +113,7 @@ export class JourneyMapper {
                 })),
                 reflections: (item.reflections ?? []).map((r) => ({
                     id: String(r.id),
+                    entry_key: r.entry_key,
                     content: r.content,
                     sectionTitle: r.sectionTitle ?? '',
                     createdAt: r.createdAt,

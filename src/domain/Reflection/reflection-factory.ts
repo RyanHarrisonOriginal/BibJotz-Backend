@@ -6,6 +6,7 @@ import { IReflectionDTO } from "@/domain/Reflection/reflection.dto";
 /** Domain creation props: no DTOs; biblicalReferences are already domain objects. */
 interface IReflectionCreationProps {
     id: number | null;
+    entryKey: string;
     content: string;
     authorId: number;
     journeyId: number;
@@ -17,6 +18,7 @@ export class ReflectionFactory {
     static create(data: IReflectionCreationProps): Reflection {
         return new Reflection(
             data.id,
+            data.entryKey,
             data.content,
             data.authorId,
             data.journeyId,
@@ -30,6 +32,7 @@ export class ReflectionFactory {
         return data.map((item) =>
             this.create({
                 id: item.id,
+                entryKey: item.entryKey,
                 content: item.content,
                 authorId: item.authorId,
                 journeyId: item.journeyId,

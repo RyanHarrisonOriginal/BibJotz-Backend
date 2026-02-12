@@ -2,9 +2,10 @@ import { IBiblicalReferenceDTO } from "@/domain/BiblicalReferences/biblical-refe
 
 export interface IReflectionDTO {
     id: number | null;
+    entryKey: string;
     content: string;
     authorId: number;
-    guideSectionId: number,
+    guideSectionId: number;
     journeyId: number;
     biblicalReferences: IBiblicalReferenceDTO[];
 }
@@ -19,8 +20,9 @@ export interface ISaveReflectionRequestDTO {
     content?: string;
 }
 
-/** PUT body for upsert reflection (idempotent create-or-update by journey + section + author) */
+/** PUT body for upsert reflection (idempotent create-or-update by entry_key) */
 export interface IUpsertReflectionRequestDTO {
+    entry_key: string;
     journey_id: string;
     guide_section_id: string;
     content: string;
@@ -30,6 +32,7 @@ export interface IUpsertReflectionRequestDTO {
 /** Response shape for reflection (HTTP response body) */
 export interface IReflectionResponseDTO {
     id: number;
+    entry_key: string;
     content: string;
     authorId: number;
     journeyId: number;

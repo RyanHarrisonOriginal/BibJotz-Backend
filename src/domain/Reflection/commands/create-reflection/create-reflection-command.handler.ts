@@ -12,6 +12,7 @@ export class CreateReflectionCommandHandler implements ICommandHandler<CreateRef
     async execute(command: CreateReflectionCommand): Promise<Reflection> {
         const reflection = ReflectionFactory.create({
             id: null,
+            entryKey: command.entryKey,
             content: command.content,
             authorId: command.authorId,
             guideSectionId: command.guideSectionId,

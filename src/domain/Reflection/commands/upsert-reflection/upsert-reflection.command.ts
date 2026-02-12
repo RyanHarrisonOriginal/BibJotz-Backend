@@ -5,6 +5,7 @@ export class UpsertReflectionCommand implements ICommand {
     readonly commandType = 'UpsertReflectionCommand';
 
     constructor(
+        public readonly entryKey: string,
         public readonly journeyId: number,
         public readonly guideSectionId: number,
         public readonly authorId: number,
@@ -12,6 +13,10 @@ export class UpsertReflectionCommand implements ICommand {
     ) {}
 
     static from(dto: IUpsertReflectionRequestDTO): UpsertReflectionCommand {
+        const entryKey = dto.entry_key?.trim();
+        if (!entryKey) {
+            throw new Error('entry_key is required');
+        }
         const journeyId = parseInt(String(dto.journey_id), 10);
         const guideSectionId = parseInt(String(dto.guide_section_id), 10);
         if (Number.isNaN(journeyId) || journeyId <= 0) {
@@ -21,6 +26,7 @@ export class UpsertReflectionCommand implements ICommand {
             throw new Error('Valid guide_section_id is required');
         }
         return new UpsertReflectionCommand(
+            entryKey,
             journeyId,
             guideSectionId,
             dto.author_id,

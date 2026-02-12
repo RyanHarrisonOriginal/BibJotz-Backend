@@ -17,6 +17,7 @@ export class SaveReflectionCommandHandler implements ICommandHandler<SaveReflect
         const updatedContent = command.content !== undefined ? command.content : existing.getContent();
         const updated = ReflectionFactory.create({
             id: existing.getId(),
+            entryKey: existing.getEntryKey(),
             content: updatedContent,
             authorId: existing.getAuthorId(),
             journeyId: existing.getJourneyId(),

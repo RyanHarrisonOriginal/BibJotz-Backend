@@ -166,6 +166,7 @@ model PersonalJourneySection {
 
 model Reflection {
   id Int @id @default(autoincrement())
+  entryKey String @unique @map("entry_key")
   journeyId Int @map("journey_id")
   guideSectionId Int? @map("guide_section_id")
   personalSectionId Int? @map("personal_section_id")
@@ -179,7 +180,6 @@ model Reflection {
   personalSection PersonalJourneySection? @relation(fields: [personalSectionId], references: [id])
   biblicalReferences ReflectionBiblicalReference[]
 
-  @@unique([journeyId, guideSectionId, authorId])
   @@index([journeyId])
   @@map("reflections")
   @@schema("app")

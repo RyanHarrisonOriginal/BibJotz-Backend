@@ -4,6 +4,7 @@ import { BiblicalReference } from "@/domain/BiblicalReferences/biblical-referenc
 export class Reflection extends BaseEntity {
     constructor(
         id: number | null,
+        private readonly entryKey: string,
         private readonly content: string,
         private readonly authorId: number,
         private readonly journeyId: number,
@@ -13,6 +14,10 @@ export class Reflection extends BaseEntity {
         updatedAt: Date = new Date()
     ){
         super(id ?? 0, createdAt, updatedAt);
+    }
+
+    getEntryKey(): string {
+        return this.entryKey;
     }
 
     getContent(): string {

@@ -12,6 +12,7 @@ export class ReflectionPostgresRepository implements IReflectionRepository {
     private async createReflection(tx: Prisma.TransactionClient, reflectionData: any): Promise<any> {
         const savedReflection = await tx.reflection.create({
             data: {
+                entryKey: reflectionData.entryKey,
                 content: reflectionData.content,
                 authorId: reflectionData.authorId,
                 guideSectionId: reflectionData.guideSectionId,
@@ -20,7 +21,7 @@ export class ReflectionPostgresRepository implements IReflectionRepository {
         });
         return savedReflection;
     }
-    
+
     private async updateReflection(tx: Prisma.TransactionClient, reflectionData: any): Promise<any> {
         const savedReflection = await tx.reflection.update({
             where: { id: reflectionData.id },
@@ -101,16 +102,11 @@ export class ReflectionPostgresRepository implements IReflectionRepository {
         return await this.prisma.reflection.findMany(this.ReflectionQuery({ journeyId, guideSectionId, authorId }));
     }
 
-    async upsertReflection(journeyId: number, guideSectionId: number, authorId: number, content: string): Promise<any> {
+    async upsertReflection(entryKey: string, journeyId: number, guideSectionId: number, authorId: number, content: string): Promise<any> {
         return await this.prisma.reflection.upsert({
-            where: {
-                journeyId_guideSectionId_authorId: {
-                    journeyId,
-                    guideSectionId,
-                    authorId,
-                },
-            },
+            where: { entryKey },
             create: {
+                entryKey,
                 journeyId,
                 guideSectionId,
                 authorId,

@@ -10,6 +10,7 @@ export class UpsertReflectionCommandHandler implements ICommandHandler<UpsertRef
 
     async execute(command: UpsertReflectionCommand): Promise<Reflection> {
         const saved = await this.reflectionRepository.upsertReflection(
+            command.entryKey,
             command.journeyId,
             command.guideSectionId,
             command.authorId,
