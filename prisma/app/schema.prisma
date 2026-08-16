@@ -1,0 +1,53 @@
+// Application data: users and notes. Lives in schema "jotz" on DATABASE_URL (bibjotz).
+// This is the only schema we migrate.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../src/generated/app-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["jotz"]
+}
+
+enum NoteScope {
+  BOOK
+  CHAPTER
+  VERSE
+  VERSE_RANGE
+
+  @@schema("jotz")
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  displayName String   @map("display_name") @db.VarChar(100)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  notes       Note[]
+
+  @@schema("jotz")
+  @@map("users")
+}
+
+model Note {
+  id            Int       @id @default(autoincrement())
+  userId        Int       @map("user_id")
+  content       String    @db.Text
+  bookName      String    @map("book_name") @db.VarChar(100)
+  bookShortName String    @map("book_short_name") @db.VarChar(20)
+  chapter       Int?
+  startVerse    Int?      @map("start_verse")
+  endVerse      Int?      @map("end_verse")
+  scope         NoteScope
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, bookName, chapter])
+  @@schema("jotz")
+  @@map("notes")
+}

@@ -1,0 +1,48 @@
+summary: Get a note by id
+parameters:
+  - name: id
+    in: path
+    required: true
+    schema:
+      type: integer
+responses:
+  '200':
+    description: Note
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            userId:
+              type: integer
+            content:
+              type: string
+            bookName:
+              type: string
+            bookShortName:
+              type: string
+            chapter:
+              type: integer
+              nullable: true
+            startVerse:
+              type: integer
+              nullable: true
+            endVerse:
+              type: integer
+              nullable: true
+            scope:
+              type: string
+            referenceLabel:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+  '404':
+    description: Note not found
+  '500':
+    description: Server error

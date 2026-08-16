@@ -1,0 +1,26 @@
+summary: Get book metadata (chapter count)
+parameters:
+  - name: bookName
+    in: path
+    required: true
+    schema:
+      type: string
+    description: Full name or short name (e.g. John or Jn)
+responses:
+  '200':
+    description: Book info
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            book:
+              type: string
+            bookShortName:
+              type: string
+            numberOfChapters:
+              type: integer
+  '404':
+    description: Book not found
+  '500':
+    description: Server error

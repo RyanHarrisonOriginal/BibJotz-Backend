@@ -1,0 +1,73 @@
+summary: Create a note on a verse, range, chapter, or book
+description: |
+  Scope is derived from the scripture fields:
+  - book only → BOOK
+  - book + chapter → CHAPTER
+  - book + chapter + startVerse → VERSE
+  - book + chapter + startVerse + endVerse (greater) → VERSE_RANGE
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required: [userId, content, bookName, bookShortName]
+        properties:
+          userId:
+            type: integer
+          content:
+            type: string
+          bookName:
+            type: string
+          bookShortName:
+            type: string
+          chapter:
+            type: integer
+            nullable: true
+          startVerse:
+            type: integer
+            nullable: true
+          endVerse:
+            type: integer
+            nullable: true
+responses:
+  '201':
+    description: Note created
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            userId:
+              type: integer
+            content:
+              type: string
+            bookName:
+              type: string
+            bookShortName:
+              type: string
+            chapter:
+              type: integer
+              nullable: true
+            startVerse:
+              type: integer
+              nullable: true
+            endVerse:
+              type: integer
+              nullable: true
+            scope:
+              type: string
+            referenceLabel:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+  '400':
+    description: Validation error
+  '500':
+    description: Server error

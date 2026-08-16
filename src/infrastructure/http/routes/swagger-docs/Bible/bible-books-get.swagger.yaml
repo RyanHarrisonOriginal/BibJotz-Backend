@@ -1,0 +1,30 @@
+summary: List books available for a translation
+parameters:
+  - name: translation
+    in: query
+    required: false
+    schema:
+      type: string
+      default: BSB
+    description: Translation code (e.g. BSB)
+responses:
+  '200':
+    description: Books
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              book:
+                type: string
+              bookShortName:
+                type: string
+              numberOfChapters:
+                type: integer
+              testament:
+                type: string
+                nullable: true
+  '500':
+    description: Server error

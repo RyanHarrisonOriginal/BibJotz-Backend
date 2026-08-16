@@ -1,0 +1,17 @@
+---
+description: Backend architecture — DDD, CQRS, ports/adapters, mapping, DTOs, commands/queries, swagger.
+globs: src/**/*.ts
+alwaysApply: false
+---
+
+# Project standards
+
+Follow `docs/BACKEND_STANDARD.md`. Details: `docs/MAPPING_AND_DTO_STANDARD.md`, `docs/COMMAND_STANDARD.md`, `docs/SWAGGER_STANDARD.md`.
+
+- Domain never imports Prisma, Express, or vendor SDKs.
+- Persistence and external services are **ports** (interfaces) in the domain; **adapters** live in `infrastructure/`.
+- Writes: Command + handler. Reads: Query + handler. Register on the bus.
+- `from(dto)` parses HTTP input. DTOs are interfaces only, HTTP boundary only.
+- All shape translation is in a domain Mapper. Controllers map to response DTOs before `res.json()`.
+- Repositories return raw persistence. Handlers map to domain.
+- Every endpoint has a swagger operation file and a root spec path entry.

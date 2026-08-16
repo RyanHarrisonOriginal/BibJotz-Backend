@@ -1,0 +1,74 @@
+// Read-only mapping of the existing bible corpus (schema "app").
+// Never run migrate against this schema — generate the client only.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../src/generated/bible-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("BIBLE_DATABASE_URL")
+  schemas  = ["app"]
+}
+
+model Book {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(100)
+  shortName String?   @map("short_name") @db.VarChar(20)
+  testament String?   @db.VarChar(10)
+  chapters  Chapter[]
+
+  @@schema("app")
+  @@map("books")
+}
+
+model Chapter {
+  id            Int     @id @default(autoincrement())
+  bookId        Int     @map("book_id")
+  chapterNumber Int     @map("chapter_number")
+  book          Book    @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  verses        Verse[]
+
+  @@unique([bookId, chapterNumber])
+  @@schema("app")
+  @@map("chapters")
+}
+
+model Verse {
+  id          Int         @id @default(autoincrement())
+  chapterId   Int         @map("chapter_id")
+  verseNumber Int         @map("verse_number")
+  chapter     Chapter     @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  bibleTexts  BibleText[]
+
+  @@unique([chapterId, verseNumber])
+  @@schema("app")
+  @@map("verses")
+}
+
+model Translation {
+  id         Int         @id @default(autoincrement())
+  code       String      @db.VarChar(10)
+  name       String      @db.Text
+  language   String?     @db.VarChar(50)
+  year       Int?
+  license    String?     @db.Text
+  bibleTexts BibleText[]
+
+  @@schema("app")
+  @@map("translations")
+}
+
+model BibleText {
+  id            Int         @id @default(autoincrement())
+  verseId       Int         @map("verse_id")
+  translationId Int         @map("translation_id")
+  text          String      @db.Text
+  verse         Verse       @relation(fields: [verseId], references: [id], onDelete: Cascade)
+  translation   Translation @relation(fields: [translationId], references: [id], onDelete: Cascade)
+
+  @@unique([verseId, translationId])
+  @@schema("app")
+  @@map("bible_text")
+}

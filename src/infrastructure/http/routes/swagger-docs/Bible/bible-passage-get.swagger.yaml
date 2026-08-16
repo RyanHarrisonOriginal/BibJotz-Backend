@@ -1,0 +1,79 @@
+summary: Get verse text for a chapter or verse range
+parameters:
+  - name: bookName
+    in: path
+    required: true
+    schema:
+      type: string
+  - name: chapterNumber
+    in: path
+    required: true
+    schema:
+      type: integer
+  - name: start
+    in: query
+    required: false
+    schema:
+      type: integer
+    description: Starting verse (omit for full chapter)
+  - name: end
+    in: query
+    required: false
+    schema:
+      type: integer
+    description: Ending verse
+  - name: translation
+    in: query
+    required: false
+    schema:
+      type: string
+    description: Translation code. Omit to return all translations present.
+responses:
+  '200':
+    description: Passage
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            book:
+              type: string
+            bookShortName:
+              type: string
+            chapter:
+              type: integer
+            translations:
+              type: array
+              items:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  name:
+                    type: string
+                  license:
+                    type: string
+                    nullable: true
+                  language:
+                    type: string
+                    nullable: true
+            verses:
+              type: array
+              items:
+                type: object
+                properties:
+                  verse:
+                    type: integer
+                  texts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        translation:
+                          type: string
+                        text:
+                          type: string
+  '404':
+    description: Passage not found
+  '500':
+    description: Server error

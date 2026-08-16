@@ -1,0 +1,29 @@
+summary: Get a user by id
+parameters:
+  - name: id
+    in: path
+    required: true
+    schema:
+      type: integer
+responses:
+  '200':
+    description: User
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            displayName:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+  '404':
+    description: User not found
+  '500':
+    description: Server error

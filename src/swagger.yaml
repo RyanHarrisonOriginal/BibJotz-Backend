@@ -1,0 +1,72 @@
+openapi: 3.0.0
+info:
+  title: BibJotz API
+  version: 1.0.0
+  description: Bible reading and note-taking API. Scripture corpus plus user notes on verses, ranges, chapters, and books.
+
+tags:
+  - name: Bible
+    description: Books, chapters, verses, and translations
+  - name: Notes
+    description: User notes attached to scripture
+  - name: Users
+    description: Lightweight local reader identity
+
+paths:
+  /api/v1/bible/translations:
+    get:
+      tags:
+        - Bible
+      $ref: './infrastructure/http/routes/swagger-docs/Bible/bible-translations-get.swagger.yaml'
+  /api/v1/bible/books:
+    get:
+      tags:
+        - Bible
+      $ref: './infrastructure/http/routes/swagger-docs/Bible/bible-books-get.swagger.yaml'
+  /api/v1/bible/books/{bookName}:
+    get:
+      tags:
+        - Bible
+      $ref: './infrastructure/http/routes/swagger-docs/Bible/bible-book-get.swagger.yaml'
+  /api/v1/bible/books/{bookName}/chapters/{chapterNumber}:
+    get:
+      tags:
+        - Bible
+      $ref: './infrastructure/http/routes/swagger-docs/Bible/bible-chapter-get.swagger.yaml'
+  /api/v1/bible/books/{bookName}/chapters/{chapterNumber}/verses:
+    get:
+      tags:
+        - Bible
+      $ref: './infrastructure/http/routes/swagger-docs/Bible/bible-passage-get.swagger.yaml'
+  /api/v1/notes:
+    get:
+      tags:
+        - Notes
+      $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-list-get.swagger.yaml'
+    post:
+      tags:
+        - Notes
+      $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-post.swagger.yaml'
+  /api/v1/notes/{id}:
+    get:
+      tags:
+        - Notes
+      $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-get.swagger.yaml'
+    patch:
+      tags:
+        - Notes
+      $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-patch.swagger.yaml'
+    delete:
+      tags:
+        - Notes
+      $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-delete.swagger.yaml'
+  /api/v1/users:
+    post:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-post.swagger.yaml'
+  /api/v1/users/{id}:
+    get:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-get.swagger.yaml'

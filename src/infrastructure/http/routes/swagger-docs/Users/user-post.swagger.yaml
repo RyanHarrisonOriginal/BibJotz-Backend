@@ -1,0 +1,32 @@
+summary: Create a local reader identity
+description: Used by the mobile app on first launch. No password or email in this version.
+requestBody:
+  required: false
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          displayName:
+            type: string
+            default: Reader
+responses:
+  '201':
+    description: User created
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            displayName:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+  '500':
+    description: Server error
