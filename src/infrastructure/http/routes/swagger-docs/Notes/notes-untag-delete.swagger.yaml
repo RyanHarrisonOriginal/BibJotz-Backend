@@ -1,0 +1,21 @@
+summary: Remove a tagged library reference from a note
+parameters:
+  - name: id
+    in: path
+    required: true
+    schema:
+      type: integer
+  - name: referenceId
+    in: path
+    required: true
+    schema:
+      type: integer
+responses:
+  '200':
+    description: Note without that tagged reference
+  '400':
+    description: Validation error
+  '404':
+    description: Note not found, or that reference is not tagged on the note
+  '500':
+    description: Server error

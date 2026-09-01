@@ -25,7 +25,8 @@ export class UpdateNoteCommandHandler implements ICommandHandler<UpdateNoteComma
       command.bookShortName !== undefined ||
       command.chapter !== undefined ||
       command.startVerse !== undefined ||
-      command.endVerse !== undefined;
+      command.endVerse !== undefined ||
+      command.verses !== undefined;
 
     if (wantsRetarget) {
       note.retarget(
@@ -35,6 +36,7 @@ export class UpdateNoteCommandHandler implements ICommandHandler<UpdateNoteComma
           chapter: command.chapter !== undefined ? command.chapter : current.chapter,
           startVerse: command.startVerse !== undefined ? command.startVerse : current.startVerse,
           endVerse: command.endVerse !== undefined ? command.endVerse : current.endVerse,
+          verses: command.verses !== undefined ? command.verses : current.verseNumbers(),
         }),
       );
     }

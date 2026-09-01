@@ -3,12 +3,24 @@ import { Note } from '@/domain/Note/note';
 import { INoteListFilters, INoteRepository } from '@/domain/Note/note-repository.interface';
 import { NoteMapper } from '@/domain/Note/note.mapper';
 
+const noteInclude = {
+  references: {
+    include: {
+      reference: {
+        include: { type: true },
+      },
+    },
+    orderBy: { createdAt: 'asc' as const },
+  },
+} satisfies Prisma.NoteInclude;
+
 export class NotePostgresRepository implements INoteRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async save(note: Note): Promise<unknown> {
     const data = NoteMapper.mapNoteToPersistence(note);
     const id = data.id as number | null;
+    const taggedReferenceIds = (data.taggedReferenceIds as number[]) ?? [];
     const payload = {
       userId: data.userId as number,
       content: data.content as string,
@@ -17,21 +29,44 @@ export class NotePostgresRepository implements INoteRepository {
       chapter: (data.chapter as number | null) ?? null,
       startVerse: (data.startVerse as number | null) ?? null,
       endVerse: (data.endVerse as number | null) ?? null,
-      scope: data.scope as 'BOOK' | 'CHAPTER' | 'VERSE' | 'VERSE_RANGE',
+      verseSpans: data.verseSpans == null ? Prisma.DbNull : (data.verseSpans as Prisma.InputJsonValue),
+      scope: data.scope as 'BOOK' | 'CHAPTER' | 'VERSE' | 'VERSE_RANGE' | 'VERSE_SET',
     };
 
-    if (!id) {
-      return this.prisma.note.create({ data: payload });
-    }
+    return this.prisma.$transaction(async (tx) => {
+      const saved = id
+        ? await tx.note.update({ where: { id }, data: payload })
+        : await tx.note.create({ data: payload });
 
-    return this.prisma.note.update({
-      where: { id },
-      data: payload,
+      await tx.noteReference.deleteMany({
+        where:
+          taggedReferenceIds.length > 0
+            ? { noteId: saved.id, referenceId: { notIn: taggedReferenceIds } }
+            : { noteId: saved.id },
+      });
+
+      if (taggedReferenceIds.length > 0) {
+        await tx.noteReference.createMany({
+          data: taggedReferenceIds.map((referenceId) => ({
+            noteId: saved.id,
+            referenceId,
+          })),
+          skipDuplicates: true,
+        });
+      }
+
+      return tx.note.findUniqueOrThrow({
+        where: { id: saved.id },
+        include: noteInclude,
+      });
     });
   }
 
   async findById(id: number): Promise<unknown | null> {
-    return this.prisma.note.findUnique({ where: { id } });
+    return this.prisma.note.findUnique({
+      where: { id },
+      include: noteInclude,
+    });
   }
 
   async findMany(filters: INoteListFilters): Promise<unknown[]> {
@@ -50,6 +85,7 @@ export class NotePostgresRepository implements INoteRepository {
 
     return this.prisma.note.findMany({
       where,
+      include: noteInclude,
       orderBy: { createdAt: 'desc' },
     });
   }

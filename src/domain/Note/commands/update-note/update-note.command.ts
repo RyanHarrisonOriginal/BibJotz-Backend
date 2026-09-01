@@ -2,6 +2,16 @@ import { ICommand } from '@/domain/shared/interfaces/command.interface';
 import { ValidationError } from '@/domain/shared/errors/validation-error';
 import { IUpdateNoteRequestDTO } from '@/domain/Note/note.dto';
 
+function parseVerseList(raw: number[] | string | null | undefined): number[] | null | undefined {
+  if (raw === undefined) return undefined;
+  if (raw == null || raw === '') return null;
+  const values = Array.isArray(raw) ? raw : String(raw).split(',');
+  const verses = values
+    .map((value) => parseInt(String(value).trim(), 10))
+    .filter((n) => !Number.isNaN(n) && n >= 1);
+  return verses.length > 0 ? verses : null;
+}
+
 export class UpdateNoteCommand implements ICommand {
   readonly commandType = 'UpdateNoteCommand';
 
@@ -13,6 +23,7 @@ export class UpdateNoteCommand implements ICommand {
     public readonly chapter: number | null | undefined,
     public readonly startVerse: number | null | undefined,
     public readonly endVerse: number | null | undefined,
+    public readonly verses: number[] | null | undefined,
   ) {}
 
   static from(dto: IUpdateNoteRequestDTO): UpdateNoteCommand {
@@ -25,7 +36,8 @@ export class UpdateNoteCommand implements ICommand {
       dto.bookShortName !== undefined ||
       dto.chapter !== undefined ||
       dto.startVerse !== undefined ||
-      dto.endVerse !== undefined;
+      dto.endVerse !== undefined ||
+      dto.verses !== undefined;
 
     if (!hasContent && !hasReference) {
       throw new ValidationError('Provide content and/or a scripture reference to update');
@@ -39,6 +51,7 @@ export class UpdateNoteCommand implements ICommand {
       dto.chapter,
       dto.startVerse,
       dto.endVerse,
+      parseVerseList(dto.verses),
     );
   }
 }

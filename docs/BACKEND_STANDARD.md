@@ -15,7 +15,7 @@ The BibJotz API is the **only** application server for Bible reading and note-ta
 It does two things:
 
 1. **Read scripture** from the existing Bible corpus (Postgres schema `app`).
-2. **Store and retrieve notes** attached to a verse, verse range, chapter, or book (Postgres schema `jotz`).
+2. **Store and retrieve notes** attached to a verse, verse range, non-contiguous verse set, chapter, or book (Postgres schema `jotz`).
 
 AI topic detection is a planned port. It is **not** implemented. Do not add vendor SDKs into domain code.
 
@@ -149,10 +149,13 @@ A note belongs to a user and a **scripture reference**.
 |------------|--------|
 | book | `BOOK` |
 | book + chapter | `CHAPTER` |
-| book + chapter + startVerse | `VERSE` |
-| book + chapter + startVerse + endVerse (> start) | `VERSE_RANGE` |
+| book + chapter + one verse | `VERSE` |
+| book + chapter + contiguous verses | `VERSE_RANGE` |
+| book + chapter + non-contiguous verses (`verses` or multiple spans) | `VERSE_SET` |
 
-`referenceLabel` is formatted for UI (`John 3:16`, `John 3:16–18`, `John 3`, `John`).
+Clients send `verses: number[]` (preferred) or `startVerse`/`endVerse`. The domain compresses verses into spans (`16–18, 21`). `startVerse`/`endVerse` on the row are the bounding range for indexes.
+
+`referenceLabel` is formatted for UI (`John 3:16`, `John 3:16–18, 21`, `John 3`, `John`).
 
 Listing notes for a chapter (`?book=John&chapter=3`) also returns **whole-book** notes for that book.
 

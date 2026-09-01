@@ -10,6 +10,8 @@ export const noteRoutes = (commandBus: CommandBus, queryBus: QueryBus) => {
 
   router.post('/', asyncHandler(controller.createNote));
   router.get('/', asyncHandler(controller.listNotes));
+  router.post('/:id/references', asyncHandler(controller.tagNote));
+  router.delete('/:id/references/:referenceId', asyncHandler(controller.untagNote));
   router.get('/:id', asyncHandler(controller.getNote));
   router.patch('/:id', asyncHandler(controller.updateNote));
   router.delete('/:id', asyncHandler(controller.deleteNote));

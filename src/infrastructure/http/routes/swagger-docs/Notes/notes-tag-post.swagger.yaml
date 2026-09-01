@@ -1,0 +1,26 @@
+summary: Tag a library reference onto a note
+parameters:
+  - name: id
+    in: path
+    required: true
+    schema:
+      type: integer
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required: [referenceId]
+        properties:
+          referenceId:
+            type: integer
+responses:
+  '200':
+    description: Note with the tagged reference
+  '400':
+    description: Validation error
+  '404':
+    description: Note or reference not found
+  '500':
+    description: Server error

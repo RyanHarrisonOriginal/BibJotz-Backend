@@ -1,0 +1,34 @@
+summary: List reference types for a user
+description: Devotional, Commentary, and Other are created automatically if the user has none yet.
+parameters:
+  - name: userId
+    in: query
+    required: true
+    schema:
+      type: integer
+responses:
+  '200':
+    description: Types A–Z
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              userId:
+                type: integer
+              name:
+                type: string
+              createdAt:
+                type: string
+                format: date-time
+              updatedAt:
+                type: string
+                format: date-time
+  '400':
+    description: Validation error
+  '500':
+    description: Server error

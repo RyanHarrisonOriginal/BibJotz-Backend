@@ -27,6 +27,10 @@ requestBody:
           endVerse:
             type: integer
             nullable: true
+          verses:
+            type: array
+            items:
+              type: integer
 responses:
   '200':
     description: Updated note

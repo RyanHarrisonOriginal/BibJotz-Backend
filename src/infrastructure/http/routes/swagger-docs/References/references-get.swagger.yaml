@@ -1,0 +1,38 @@
+summary: Get a library reference by id
+parameters:
+  - name: id
+    in: path
+    required: true
+    schema:
+      type: integer
+responses:
+  '200':
+    description: Reference
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            userId:
+              type: integer
+            typeId:
+              type: integer
+            typeName:
+              type: string
+            title:
+              type: string
+            author:
+              type: string
+              nullable: true
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+  '404':
+    description: Reference not found
+  '500':
+    description: Server error

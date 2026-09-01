@@ -2,13 +2,17 @@ openapi: 3.0.0
 info:
   title: BibJotz API
   version: 1.0.0
-  description: Bible reading and note-taking API. Scripture corpus plus user notes on verses, ranges, chapters, and books.
+  description: Bible reading and note-taking API. Scripture corpus plus user notes on verses, ranges, verse sets, chapters, and books.
 
 tags:
   - name: Bible
     description: Books, chapters, verses, and translations
   - name: Notes
     description: User notes attached to scripture
+  - name: ReferenceTypes
+    description: Categories for non-biblical works (devotional, commentary, custom)
+  - name: References
+    description: Inventory of devotionals, commentaries, and other works to tag onto notes
   - name: Users
     description: Lightweight local reader identity
 
@@ -60,6 +64,56 @@ paths:
       tags:
         - Notes
       $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-delete.swagger.yaml'
+  /api/v1/notes/{id}/references:
+    post:
+      tags:
+        - Notes
+      $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-tag-post.swagger.yaml'
+  /api/v1/notes/{id}/references/{referenceId}:
+    delete:
+      tags:
+        - Notes
+      $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-untag-delete.swagger.yaml'
+  /api/v1/reference-types:
+    get:
+      tags:
+        - ReferenceTypes
+      $ref: './infrastructure/http/routes/swagger-docs/ReferenceTypes/reference-types-list-get.swagger.yaml'
+    post:
+      tags:
+        - ReferenceTypes
+      $ref: './infrastructure/http/routes/swagger-docs/ReferenceTypes/reference-types-post.swagger.yaml'
+  /api/v1/reference-types/{id}:
+    patch:
+      tags:
+        - ReferenceTypes
+      $ref: './infrastructure/http/routes/swagger-docs/ReferenceTypes/reference-types-patch.swagger.yaml'
+    delete:
+      tags:
+        - ReferenceTypes
+      $ref: './infrastructure/http/routes/swagger-docs/ReferenceTypes/reference-types-delete.swagger.yaml'
+  /api/v1/references:
+    get:
+      tags:
+        - References
+      $ref: './infrastructure/http/routes/swagger-docs/References/references-list-get.swagger.yaml'
+    post:
+      tags:
+        - References
+      $ref: './infrastructure/http/routes/swagger-docs/References/references-post.swagger.yaml'
+  /api/v1/references/{id}:
+    get:
+      tags:
+        - References
+      $ref: './infrastructure/http/routes/swagger-docs/References/references-get.swagger.yaml'
+    patch:
+      tags:
+        - References
+      $ref: './infrastructure/http/routes/swagger-docs/References/references-patch.swagger.yaml'
+    delete:
+      tags:
+        - References
+      $ref: './infrastructure/http/routes/swagger-docs/References/references-delete.swagger.yaml'
   /api/v1/users:
     post:
       tags:

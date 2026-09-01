@@ -16,6 +16,8 @@ import { appPrisma } from '@/infrastructure/database/app-prisma-client';
 import { DatabaseSetup } from '@/infrastructure/database/database-setup';
 import { BiblePostgresRepository } from '@/infrastructure/persistence/postgres/bible-postgres-repository';
 import { NotePostgresRepository } from '@/infrastructure/persistence/postgres/note-postgres-repository';
+import { ReferencePostgresRepository } from '@/infrastructure/persistence/postgres/reference-postgres-repository';
+import { ReferenceTypePostgresRepository } from '@/infrastructure/persistence/postgres/reference-type-postgres-repository';
 import { UserPostgresRepository } from '@/infrastructure/persistence/postgres/user-postgres-repository';
 
 dotenv.config();
@@ -42,9 +44,22 @@ async function startServer(): Promise<void> {
     const bibleRepository = new BiblePostgresRepository(biblePrisma);
     const noteRepository = new NotePostgresRepository(appPrisma);
     const userRepository = new UserPostgresRepository(appPrisma);
+    const referenceRepository = new ReferencePostgresRepository(appPrisma);
+    const referenceTypeRepository = new ReferenceTypePostgresRepository(appPrisma);
 
-    const commandBus = setupCommandBus({ noteRepository, userRepository });
-    const queryBus = setupQueryBus({ bibleRepository, noteRepository, userRepository });
+    const commandBus = setupCommandBus({
+      noteRepository,
+      userRepository,
+      referenceRepository,
+      referenceTypeRepository,
+    });
+    const queryBus = setupQueryBus({
+      bibleRepository,
+      noteRepository,
+      userRepository,
+      referenceRepository,
+      referenceTypeRepository,
+    });
 
     app.use('/api', routes(commandBus, queryBus));
 

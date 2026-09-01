@@ -1,0 +1,38 @@
+summary: Create a custom reference type
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required: [userId, name]
+        properties:
+          userId:
+            type: integer
+          name:
+            type: string
+            example: Sermon
+responses:
+  '201':
+    description: Type created
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            userId:
+              type: integer
+            name:
+              type: string
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+  '400':
+    description: Validation error
+  '500':
+    description: Server error

@@ -20,7 +20,7 @@ parameters:
     required: false
     schema:
       type: string
-      enum: [BOOK, CHAPTER, VERSE, VERSE_RANGE]
+      enum: [BOOK, CHAPTER, VERSE, VERSE_RANGE, VERSE_SET]
 responses:
   '200':
     description: Notes newest first
@@ -50,12 +50,41 @@ responses:
               endVerse:
                 type: integer
                 nullable: true
+              spans:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    start:
+                      type: integer
+                    end:
+                      type: integer
+              verses:
+                type: array
+                items:
+                  type: integer
               scope:
                 type: string
-                enum: [BOOK, CHAPTER, VERSE, VERSE_RANGE]
+                enum: [BOOK, CHAPTER, VERSE, VERSE_RANGE, VERSE_SET]
               referenceLabel:
                 type: string
-                example: John 3:16–18
+                example: John 3:16–18, 21
+              references:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    title:
+                      type: string
+                    author:
+                      type: string
+                      nullable: true
+                    typeId:
+                      type: integer
+                    typeName:
+                      type: string
               createdAt:
                 type: string
                 format: date-time

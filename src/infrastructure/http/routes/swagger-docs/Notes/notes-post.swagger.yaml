@@ -1,10 +1,14 @@
-summary: Create a note on a verse, range, chapter, or book
+summary: Create a note on a verse, range, verse set, chapter, or book
 description: |
   Scope is derived from the scripture fields:
   - book only → BOOK
   - book + chapter → CHAPTER
-  - book + chapter + startVerse → VERSE
-  - book + chapter + startVerse + endVerse (greater) → VERSE_RANGE
+  - verses: [16] or startVerse → VERSE
+  - contiguous verses → VERSE_RANGE
+  - non-contiguous verses (e.g. [16, 18, 21]) → VERSE_SET
+
+  Prefer `verses`. Contiguous numbers are compressed into ranges in `referenceLabel`
+  (`John 3:16–18, 21`).
 requestBody:
   required: true
   content:
@@ -30,6 +34,16 @@ requestBody:
           endVerse:
             type: integer
             nullable: true
+          verses:
+            type: array
+            items:
+              type: integer
+            description: Selected verse numbers in the chapter. May be non-contiguous.
+          referenceIds:
+            type: array
+            items:
+              type: integer
+            description: Library reference ids to tag onto the note.
 responses:
   '201':
     description: Note created
@@ -57,10 +71,41 @@ responses:
             endVerse:
               type: integer
               nullable: true
+            spans:
+              type: array
+              items:
+                type: object
+                properties:
+                  start:
+                    type: integer
+                  end:
+                    type: integer
+            verses:
+              type: array
+              items:
+                type: integer
             scope:
               type: string
+              enum: [BOOK, CHAPTER, VERSE, VERSE_RANGE, VERSE_SET]
             referenceLabel:
               type: string
+              example: John 3:16–18, 21
+            references:
+              type: array
+              items:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  author:
+                    type: string
+                    nullable: true
+                  typeId:
+                    type: integer
+                  typeName:
+                    type: string
             createdAt:
               type: string
               format: date-time

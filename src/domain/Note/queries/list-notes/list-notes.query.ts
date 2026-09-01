@@ -3,7 +3,7 @@ import { ValidationError } from '@/domain/shared/errors/validation-error';
 import { NoteScope } from '@/domain/shared/value-objects/scripture-reference';
 import { IListNotesQueryParamsDTO } from '@/domain/Note/note.dto';
 
-const SCOPES: NoteScope[] = ['BOOK', 'CHAPTER', 'VERSE', 'VERSE_RANGE'];
+const SCOPES: NoteScope[] = ['BOOK', 'CHAPTER', 'VERSE', 'VERSE_RANGE', 'VERSE_SET'];
 
 export class ListNotesQuery implements IQuery {
   readonly queryType = 'ListNotesQuery';

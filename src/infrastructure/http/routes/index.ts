@@ -3,6 +3,8 @@ import { CommandBus } from '@/infrastructure/CQRS/command-bus/command-bus';
 import { QueryBus } from '@/infrastructure/CQRS/query-bus/query-bus';
 import { bibleRoutes } from './bible.routes';
 import { noteRoutes } from './note.routes';
+import { referenceRoutes } from './reference.routes';
+import { referenceTypeRoutes } from './reference-type.routes';
 import { userRoutes } from './user.routes';
 
 export const routes = (commandBus: CommandBus, queryBus: QueryBus) => {
@@ -20,6 +22,8 @@ export const routes = (commandBus: CommandBus, queryBus: QueryBus) => {
 
   router.use(`${API_VERSION}/bible`, bibleRoutes(commandBus, queryBus));
   router.use(`${API_VERSION}/notes`, noteRoutes(commandBus, queryBus));
+  router.use(`${API_VERSION}/reference-types`, referenceTypeRoutes(commandBus, queryBus));
+  router.use(`${API_VERSION}/references`, referenceRoutes(commandBus, queryBus));
   router.use(`${API_VERSION}/users`, userRoutes(commandBus, queryBus));
 
   return router;
