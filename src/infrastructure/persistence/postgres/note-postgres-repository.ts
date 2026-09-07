@@ -91,20 +91,28 @@ export class NotePostgresRepository implements INoteRepository {
   }
 
   async findDistinctCreatedDays(userId: number, timeZone: string): Promise<string[]> {
+    // created_at is TIMESTAMP WITHOUT TIME ZONE storing UTC wall-clock (Prisma DateTime).
+    // Interpret as UTC, then convert to the caller's calendar day.
     const rows = await this.prisma.$queryRaw<{ day: Date }[]>`
-      SELECT DISTINCT (timezone(${timeZone}, created_at))::date AS day
+      SELECT DISTINCT ((created_at AT TIME ZONE 'UTC') AT TIME ZONE ${timeZone})::date AS day
       FROM jotz.notes
       WHERE user_id = ${userId}
       ORDER BY day DESC
     `;
 
-    return rows.map((row) => {
-      if (row.day instanceof Date) return row.day.toISOString().slice(0, 10);
-      return String(row.day).slice(0, 10);
-    });
+    return rows.map((row) => formatPgDate(row.day));
   }
 
   async deleteById(id: number): Promise<void> {
     await this.prisma.note.delete({ where: { id } });
   }
+}
+
+/** PG `date` values arrive as UTC-midnight Date or YYYY-MM-DD string. */
+function formatPgDate(value: Date | string): string {
+  if (typeof value === 'string') return value.slice(0, 10);
+  const year = value.getUTCFullYear();
+  const month = String(value.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(value.getUTCDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }
