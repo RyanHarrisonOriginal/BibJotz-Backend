@@ -90,6 +90,20 @@ export class NotePostgresRepository implements INoteRepository {
     });
   }
 
+  async findDistinctCreatedDays(userId: number, timeZone: string): Promise<string[]> {
+    const rows = await this.prisma.$queryRaw<{ day: Date }[]>`
+      SELECT DISTINCT (timezone(${timeZone}, created_at))::date AS day
+      FROM jotz.notes
+      WHERE user_id = ${userId}
+      ORDER BY day DESC
+    `;
+
+    return rows.map((row) => {
+      if (row.day instanceof Date) return row.day.toISOString().slice(0, 10);
+      return String(row.day).slice(0, 10);
+    });
+  }
+
   async deleteById(id: number): Promise<void> {
     await this.prisma.note.delete({ where: { id } });
   }

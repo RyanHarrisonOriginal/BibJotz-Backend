@@ -51,6 +51,11 @@ paths:
       tags:
         - Notes
       $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-post.swagger.yaml'
+  /api/v1/notes/streak:
+    get:
+      tags:
+        - Notes
+      $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-streak-get.swagger.yaml'
   /api/v1/notes/{id}:
     get:
       tags:

@@ -48,6 +48,15 @@ export interface IListNotesQueryParamsDTO {
   scope?: string | string[];
 }
 
+export interface IGetNoteStreakQueryParamsDTO {
+  userId?: string | string[];
+  timeZone?: string | string[];
+}
+
+export interface INoteStreakResponseDTO {
+  streak: number;
+}
+
 export interface ITaggedReferenceResponseDTO {
   id: number;
   title: string;

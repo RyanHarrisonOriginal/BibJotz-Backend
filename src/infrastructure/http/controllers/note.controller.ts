@@ -10,6 +10,8 @@ import { TagNoteCommand } from '@/domain/Note/commands/tag-note/tag-note.command
 import { UntagNoteCommand } from '@/domain/Note/commands/untag-note/untag-note.command';
 import { GetNoteQuery } from '@/domain/Note/queries/get-note/get-note.query';
 import { ListNotesQuery } from '@/domain/Note/queries/list-notes/list-notes.query';
+import { GetNoteStreakQuery } from '@/domain/Note/queries/get-note-streak/get-note-streak.query';
+import { NoteStreakResult } from '@/domain/Note/queries/get-note-streak/get-note-streak-query.handler';
 
 export class NoteController {
   constructor(
@@ -57,5 +59,11 @@ export class NoteController {
     const query = ListNotesQuery.from(req.query);
     const result = await this.queryBus.execute<ListNotesQuery, Note[]>(query);
     res.json(NoteMapper.mapNotesToResponseDTO(result));
+  };
+
+  getNoteStreak = async (req: Request, res: Response): Promise<void> => {
+    const query = GetNoteStreakQuery.from(req.query);
+    const result = await this.queryBus.execute<GetNoteStreakQuery, NoteStreakResult>(query);
+    res.json(result);
   };
 }

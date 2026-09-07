@@ -11,6 +11,7 @@ import { GetPassageQueryHandler } from '@/domain/Bible/queries/get-passage/get-p
 import { GetTranslationsQueryHandler } from '@/domain/Bible/queries/get-translations/get-translations-query.handler';
 import { GetNoteQueryHandler } from '@/domain/Note/queries/get-note/get-note-query.handler';
 import { ListNotesQueryHandler } from '@/domain/Note/queries/list-notes/list-notes-query.handler';
+import { GetNoteStreakQueryHandler } from '@/domain/Note/queries/get-note-streak/get-note-streak-query.handler';
 import { GetUserQueryHandler } from '@/domain/User/queries/get-user/get-user-query.handler';
 import { ListReferenceTypesQueryHandler } from '@/domain/Reference/queries/list-reference-types/list-reference-types-query.handler';
 import { GetReferenceQueryHandler } from '@/domain/Reference/queries/get-reference/get-reference-query.handler';
@@ -34,6 +35,7 @@ export function setupQueryBus(setup: IQueryBusSetup): QueryBus {
   queryBus.registerHandler('GetTranslationsQuery', new GetTranslationsQueryHandler(setup.bibleRepository));
   queryBus.registerHandler('GetNoteQuery', new GetNoteQueryHandler(setup.noteRepository));
   queryBus.registerHandler('ListNotesQuery', new ListNotesQueryHandler(setup.noteRepository));
+  queryBus.registerHandler('GetNoteStreakQuery', new GetNoteStreakQueryHandler(setup.noteRepository));
   queryBus.registerHandler('GetUserQuery', new GetUserQueryHandler(setup.userRepository));
   queryBus.registerHandler(
     'ListReferenceTypesQuery',

@@ -1,0 +1,31 @@
+summary: Current consecutive-day streak of scripture notes for a user
+parameters:
+  - name: userId
+    in: query
+    required: true
+    schema:
+      type: integer
+  - name: timeZone
+    in: query
+    required: false
+    description: IANA time zone used for calendar-day boundaries (defaults to UTC)
+    schema:
+      type: string
+      example: America/New_York
+responses:
+  '200':
+    description: Current note streak
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [streak]
+          properties:
+            streak:
+              type: integer
+              minimum: 0
+              description: Consecutive local calendar days with at least one note
+  '400':
+    description: Validation error
+  '500':
+    description: Server error
