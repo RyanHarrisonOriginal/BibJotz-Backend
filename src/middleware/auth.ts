@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '@clerk/backend';
 import { UnauthorizedError } from '@/domain/shared/errors/unauthorized-error';
 import { IUserRepository } from '@/domain/User/user-repository.interface';
-import { UserMapper } from '@/domain/User/user.mapper';
+import { ensureUserForClerkId } from '@/domain/User/ensure-user';
 import { User } from '@/domain/User/user';
 import { asyncHandler } from '@/middleware/asyncHandler';
 
@@ -52,18 +52,15 @@ export const clerkAuth = asyncHandler(async (req: Request, _res: Response, next:
   next();
 });
 
-/** Verify Clerk JWT, load the linked DB user, and attach `req.authUser`. */
+/**
+ * Verify Clerk JWT, upsert the BibJotz user for that Clerk id if missing,
+ * and attach `req.authUser`.
+ */
 export function requireAuth(userRepository: IUserRepository) {
   return asyncHandler(async (req: Request, _res: Response, next: NextFunction) => {
     const clerkUserId = await verifyClerkUserId(req);
     req.clerkUserId = clerkUserId;
-
-    const row = await userRepository.findByClerkUserId(clerkUserId);
-    if (!row) {
-      throw new UnauthorizedError('User not provisioned. Call POST /users/me first.');
-    }
-
-    req.authUser = UserMapper.mapUserToDomain(row);
+    req.authUser = await ensureUserForClerkId(userRepository, { clerkUserId });
     next();
   });
 }
