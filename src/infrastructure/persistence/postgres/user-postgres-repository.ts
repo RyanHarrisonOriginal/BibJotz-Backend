@@ -9,7 +9,12 @@ export class UserPostgresRepository implements IUserRepository {
   async save(user: User): Promise<unknown> {
     const data = UserMapper.mapUserToPersistence(user);
     const id = data.id as number | null;
-    const payload = { displayName: data.displayName as string };
+    const payload = {
+      displayName: data.displayName as string,
+      clerkUserId: (data.clerkUserId as string | null) ?? null,
+      username: (data.username as string | null) ?? null,
+      bio: (data.bio as string | null) ?? null,
+    };
 
     if (!id) {
       return this.prisma.user.create({ data: payload });
@@ -23,5 +28,9 @@ export class UserPostgresRepository implements IUserRepository {
 
   async findById(id: number): Promise<unknown | null> {
     return this.prisma.user.findUnique({ where: { id } });
+  }
+
+  async findByClerkUserId(clerkUserId: string): Promise<unknown | null> {
+    return this.prisma.user.findUnique({ where: { clerkUserId } });
   }
 }

@@ -1,6 +1,11 @@
 import { Prisma, PrismaClient } from '@/generated/app-client';
 import { Note } from '@/domain/Note/note';
-import { INoteListFilters, INoteRepository } from '@/domain/Note/note-repository.interface';
+import {
+  IFeedNotesFilters,
+  INoteListFilters,
+  INoteRepository,
+  IProfileNotesFilters,
+} from '@/domain/Note/note-repository.interface';
 import { NoteMapper } from '@/domain/Note/note.mapper';
 
 const noteInclude = {
@@ -11,6 +16,17 @@ const noteInclude = {
       },
     },
     orderBy: { createdAt: 'asc' as const },
+  },
+} satisfies Prisma.NoteInclude;
+
+const noteWithAuthorInclude = {
+  ...noteInclude,
+  user: {
+    select: {
+      id: true,
+      displayName: true,
+      username: true,
+    },
   },
 } satisfies Prisma.NoteInclude;
 
@@ -31,6 +47,8 @@ export class NotePostgresRepository implements INoteRepository {
       endVerse: (data.endVerse as number | null) ?? null,
       verseSpans: data.verseSpans == null ? Prisma.DbNull : (data.verseSpans as Prisma.InputJsonValue),
       scope: data.scope as 'BOOK' | 'CHAPTER' | 'VERSE' | 'VERSE_RANGE' | 'VERSE_SET',
+      isProfileVisible: Boolean(data.isProfileVisible),
+      isFeedShared: Boolean(data.isFeedShared),
     };
 
     return this.prisma.$transaction(async (tx) => {
@@ -87,6 +105,35 @@ export class NotePostgresRepository implements INoteRepository {
       where,
       include: noteInclude,
       orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async findProfileVisible(filters: IProfileNotesFilters): Promise<unknown[]> {
+    return this.prisma.note.findMany({
+      where: {
+        userId: filters.userId,
+        isProfileVisible: true,
+      },
+      include: noteWithAuthorInclude,
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  async findFeedForUser(filters: IFeedNotesFilters): Promise<unknown[]> {
+    const limit = Math.min(Math.max(filters.limit ?? 50, 1), 100);
+
+    return this.prisma.note.findMany({
+      where: {
+        isFeedShared: true,
+        user: {
+          followers: {
+            some: { followerId: filters.viewerUserId },
+          },
+        },
+      },
+      include: noteWithAuthorInclude,
+      orderBy: { createdAt: 'desc' },
+      take: limit,
     });
   }
 

@@ -1,0 +1,14 @@
+summary: List followers of a user
+parameters:
+  - name: id
+    in: path
+    required: true
+    schema:
+      type: integer
+responses:
+  '200':
+    description: Follower summaries
+  '400':
+    description: Validation error
+  '500':
+    description: Server error

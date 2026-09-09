@@ -8,6 +8,8 @@ export interface INoteCreationProps {
   content: string;
   scriptureReference: ScriptureReference;
   taggedReferences?: TaggedReference[];
+  isProfileVisible?: boolean;
+  isFeedShared?: boolean;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -20,6 +22,8 @@ export class NoteFactory {
       data.content,
       data.scriptureReference,
       data.taggedReferences ?? [],
+      data.isProfileVisible ?? false,
+      data.isFeedShared ?? false,
       data.createdAt ?? new Date(),
       data.updatedAt ?? new Date(),
     );

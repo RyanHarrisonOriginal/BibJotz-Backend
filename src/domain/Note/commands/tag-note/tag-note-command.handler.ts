@@ -1,6 +1,7 @@
 import { ICommandHandler } from '@/domain/shared/interfaces/command-handler.interface';
 import { NotFoundError } from '@/domain/shared/errors/not-found-error';
 import { ValidationError } from '@/domain/shared/errors/validation-error';
+import { assertResourceOwner } from '@/domain/shared/assert-owner';
 import { Note } from '@/domain/Note/note';
 import { NoteMapper } from '@/domain/Note/note.mapper';
 import { TaggedReference } from '@/domain/Note/tagged-reference';
@@ -23,6 +24,8 @@ export class TagNoteCommandHandler implements ICommandHandler<TagNoteCommand, No
     if (!referenceRow) throw new NotFoundError('Reference not found');
 
     const note = NoteMapper.mapNoteToDomain(existing);
+    assertResourceOwner(note.getUserId(), command.actorUserId);
+
     const reference = ReferenceMapper.mapReferenceToDomain(referenceRow);
     if (reference.getUserId() !== note.getUserId()) {
       throw new ValidationError('Reference does not belong to this user');

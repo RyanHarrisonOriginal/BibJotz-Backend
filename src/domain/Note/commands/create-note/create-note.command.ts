@@ -11,6 +11,14 @@ function parseVerseList(raw: number[] | string | null | undefined): number[] | n
   return verses.length > 0 ? verses : null;
 }
 
+function parseBool(value: unknown, fallback = false): boolean {
+  if (value === undefined || value === null) return fallback;
+  if (typeof value === 'boolean') return value;
+  if (value === 'true' || value === '1') return true;
+  if (value === 'false' || value === '0') return false;
+  return fallback;
+}
+
 export class CreateNoteCommand implements ICommand {
   readonly commandType = 'CreateNoteCommand';
 
@@ -24,6 +32,8 @@ export class CreateNoteCommand implements ICommand {
     public readonly endVerse: number | null,
     public readonly verses: number[] | null,
     public readonly referenceIds: number[],
+    public readonly isProfileVisible: boolean,
+    public readonly isFeedShared: boolean,
   ) {}
 
   static from(dto: ICreateNoteRequestDTO): CreateNoteCommand {
@@ -43,6 +53,8 @@ export class CreateNoteCommand implements ICommand {
       dto.endVerse ?? null,
       parseVerseList(dto.verses),
       parseIdList(dto.referenceIds),
+      parseBool(dto.isProfileVisible),
+      parseBool(dto.isFeedShared),
     );
   }
 }

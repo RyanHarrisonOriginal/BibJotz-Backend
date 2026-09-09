@@ -1,0 +1,31 @@
+summary: Get the authenticated user's profile
+description: Requires `Authorization: Bearer <Clerk session JWT>`. Returns the DB user linked to the token subject.
+responses:
+  '200':
+    description: Current user
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            displayName:
+              type: string
+            clerkUserId:
+              type: string
+              nullable: true
+            username:
+              type: string
+              nullable: true
+            bio:
+              type: string
+              nullable: true
+            createdAt:
+              type: string
+              format: date-time
+            updatedAt:
+              type: string
+              format: date-time
+  '401':
+    description: Missing token or user not provisioned

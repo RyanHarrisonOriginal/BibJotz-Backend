@@ -6,10 +6,12 @@ export interface ICreateReferenceTypeRequestDTO {
 export interface IUpdateReferenceTypeRequestDTO {
   id?: string;
   name?: string;
+  actorUserId?: number;
 }
 
 export interface IDeleteReferenceTypeParamsDTO {
   id?: string;
+  actorUserId?: number;
 }
 
 export interface IListReferenceTypesQueryParamsDTO {

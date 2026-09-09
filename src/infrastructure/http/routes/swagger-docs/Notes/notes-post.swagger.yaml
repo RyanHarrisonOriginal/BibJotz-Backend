@@ -44,6 +44,14 @@ requestBody:
             items:
               type: integer
             description: Library reference ids to tag onto the note.
+          isProfileVisible:
+            type: boolean
+            default: false
+            description: Show on the author's public profile
+          isFeedShared:
+            type: boolean
+            default: false
+            description: Include in followers' home feed
 responses:
   '201':
     description: Note created

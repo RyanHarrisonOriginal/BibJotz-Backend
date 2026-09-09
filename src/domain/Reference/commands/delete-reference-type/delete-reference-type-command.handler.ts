@@ -1,6 +1,8 @@
 import { ICommandHandler } from '@/domain/shared/interfaces/command-handler.interface';
 import { NotFoundError } from '@/domain/shared/errors/not-found-error';
 import { ValidationError } from '@/domain/shared/errors/validation-error';
+import { assertResourceOwner } from '@/domain/shared/assert-owner';
+import { ReferenceTypeMapper } from '@/domain/Reference/reference-type.mapper';
 import { IReferenceTypeRepository } from '@/domain/Reference/reference-type-repository.interface';
 import { DeleteReferenceTypeCommand } from './delete-reference-type.command';
 
@@ -12,6 +14,9 @@ export class DeleteReferenceTypeCommandHandler
   async execute(command: DeleteReferenceTypeCommand): Promise<void> {
     const existing = await this.referenceTypeRepository.findById(command.id);
     if (!existing) throw new NotFoundError('Reference type not found');
+
+    const type = ReferenceTypeMapper.mapReferenceTypeToDomain(existing);
+    assertResourceOwner(type.getUserId(), command.actorUserId);
 
     const inUse = await this.referenceTypeRepository.countReferences(command.id);
     if (inUse > 0) {

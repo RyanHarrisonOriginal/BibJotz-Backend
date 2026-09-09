@@ -1,0 +1,22 @@
+summary: Home feed of notes shared by people you follow
+parameters:
+  - name: userId
+    in: query
+    required: true
+    schema:
+      type: integer
+    description: Viewer user id (follower)
+  - name: limit
+    in: query
+    required: false
+    schema:
+      type: integer
+      default: 50
+      maximum: 100
+responses:
+  '200':
+    description: Feed notes with author summaries
+  '400':
+    description: Validation error
+  '500':
+    description: Server error

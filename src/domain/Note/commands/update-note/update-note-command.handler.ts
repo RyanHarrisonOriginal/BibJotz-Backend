@@ -1,6 +1,7 @@
 import { ICommandHandler } from '@/domain/shared/interfaces/command-handler.interface';
 import { NotFoundError } from '@/domain/shared/errors/not-found-error';
 import { ScriptureReference } from '@/domain/shared/value-objects/scripture-reference';
+import { assertResourceOwner } from '@/domain/shared/assert-owner';
 import { Note } from '@/domain/Note/note';
 import { NoteMapper } from '@/domain/Note/note.mapper';
 import { INoteRepository } from '@/domain/Note/note-repository.interface';
@@ -14,6 +15,7 @@ export class UpdateNoteCommandHandler implements ICommandHandler<UpdateNoteComma
     if (!existing) throw new NotFoundError('Note not found');
 
     const note = NoteMapper.mapNoteToDomain(existing);
+    assertResourceOwner(note.getUserId(), command.actorUserId);
 
     if (command.content !== undefined) {
       note.updateContent(command.content);
@@ -39,6 +41,13 @@ export class UpdateNoteCommandHandler implements ICommandHandler<UpdateNoteComma
           verses: command.verses !== undefined ? command.verses : current.verseNumbers(),
         }),
       );
+    }
+
+    if (command.isProfileVisible !== undefined || command.isFeedShared !== undefined) {
+      note.setVisibility({
+        isProfileVisible: command.isProfileVisible,
+        isFeedShared: command.isFeedShared,
+      });
     }
 
     const saved = await this.noteRepository.save(note);

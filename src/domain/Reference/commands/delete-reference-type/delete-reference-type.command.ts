@@ -1,15 +1,19 @@
 import { ICommand } from '@/domain/shared/interfaces/command.interface';
 import { ValidationError } from '@/domain/shared/errors/validation-error';
 import { IDeleteReferenceTypeParamsDTO } from '@/domain/Reference/reference-type.dto';
+import { parseActorUserId } from '@/domain/shared/assert-owner';
 
 export class DeleteReferenceTypeCommand implements ICommand {
   readonly commandType = 'DeleteReferenceTypeCommand';
 
-  constructor(public readonly id: number) {}
+  constructor(
+    public readonly id: number,
+    public readonly actorUserId: number,
+  ) {}
 
   static from(dto: IDeleteReferenceTypeParamsDTO): DeleteReferenceTypeCommand {
     const id = parseInt(String(dto.id ?? ''), 10);
     if (Number.isNaN(id) || id < 1) throw new ValidationError('id is required');
-    return new DeleteReferenceTypeCommand(id);
+    return new DeleteReferenceTypeCommand(id, parseActorUserId(dto.actorUserId));
   }
 }

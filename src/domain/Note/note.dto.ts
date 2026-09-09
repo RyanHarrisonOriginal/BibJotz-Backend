@@ -10,16 +10,20 @@ export interface ICreateNoteRequestDTO {
   endVerse?: number | null;
   verses?: number[] | string | null;
   referenceIds?: number[] | string | null;
+  isProfileVisible?: boolean;
+  isFeedShared?: boolean;
 }
 
 export interface ITagNoteRequestDTO {
   id?: string;
   referenceId?: number;
+  actorUserId?: number;
 }
 
 export interface IUntagNoteParamsDTO {
   id?: string;
   referenceId?: string;
+  actorUserId?: number;
 }
 
 export interface IUpdateNoteRequestDTO {
@@ -31,6 +35,9 @@ export interface IUpdateNoteRequestDTO {
   startVerse?: number | null;
   endVerse?: number | null;
   verses?: number[] | string | null;
+  isProfileVisible?: boolean;
+  isFeedShared?: boolean;
+  actorUserId?: number;
 }
 
 export interface IGetNoteParamsDTO {
@@ -39,6 +46,7 @@ export interface IGetNoteParamsDTO {
 
 export interface IDeleteNoteParamsDTO {
   id?: string;
+  actorUserId?: number;
 }
 
 export interface IListNotesQueryParamsDTO {
@@ -53,6 +61,15 @@ export interface IGetNoteStreakQueryParamsDTO {
   timeZone?: string | string[];
 }
 
+export interface IGetFeedQueryParamsDTO {
+  userId?: string | string[];
+  limit?: string | string[];
+}
+
+export interface IListProfileNotesQueryParamsDTO {
+  userId?: string | string[];
+}
+
 export interface INoteStreakResponseDTO {
   streak: number;
 }
@@ -63,6 +80,12 @@ export interface ITaggedReferenceResponseDTO {
   author: string | null;
   typeId: number;
   typeName: string;
+}
+
+export interface INoteAuthorResponseDTO {
+  id: number;
+  displayName: string;
+  username: string | null;
 }
 
 export interface INoteResponseDTO {
@@ -79,6 +102,9 @@ export interface INoteResponseDTO {
   scope: NoteScope;
   referenceLabel: string;
   references: ITaggedReferenceResponseDTO[];
+  isProfileVisible: boolean;
+  isFeedShared: boolean;
+  author?: INoteAuthorResponseDTO;
   createdAt: string;
   updatedAt: string;
 }

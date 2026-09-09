@@ -10,6 +10,7 @@ export interface IUpdateReferenceRequestDTO {
   typeId?: number;
   title?: string;
   author?: string | null;
+  actorUserId?: number;
 }
 
 export interface IGetReferenceParamsDTO {
@@ -18,6 +19,7 @@ export interface IGetReferenceParamsDTO {
 
 export interface IDeleteReferenceParamsDTO {
   id?: string;
+  actorUserId?: number;
 }
 
 export interface IListReferencesQueryParamsDTO {

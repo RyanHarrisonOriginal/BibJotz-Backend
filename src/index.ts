@@ -19,6 +19,8 @@ import { NotePostgresRepository } from '@/infrastructure/persistence/postgres/no
 import { ReferencePostgresRepository } from '@/infrastructure/persistence/postgres/reference-postgres-repository';
 import { ReferenceTypePostgresRepository } from '@/infrastructure/persistence/postgres/reference-type-postgres-repository';
 import { UserPostgresRepository } from '@/infrastructure/persistence/postgres/user-postgres-repository';
+import { FollowPostgresRepository } from '@/infrastructure/persistence/postgres/follow-postgres-repository';
+import { CommentPostgresRepository } from '@/infrastructure/persistence/postgres/comment-postgres-repository';
 
 dotenv.config();
 
@@ -46,12 +48,16 @@ async function startServer(): Promise<void> {
     const userRepository = new UserPostgresRepository(appPrisma);
     const referenceRepository = new ReferencePostgresRepository(appPrisma);
     const referenceTypeRepository = new ReferenceTypePostgresRepository(appPrisma);
+    const followRepository = new FollowPostgresRepository(appPrisma);
+    const commentRepository = new CommentPostgresRepository(appPrisma);
 
     const commandBus = setupCommandBus({
       noteRepository,
       userRepository,
       referenceRepository,
       referenceTypeRepository,
+      followRepository,
+      commentRepository,
     });
     const queryBus = setupQueryBus({
       bibleRepository,
@@ -59,9 +65,11 @@ async function startServer(): Promise<void> {
       userRepository,
       referenceRepository,
       referenceTypeRepository,
+      followRepository,
+      commentRepository,
     });
 
-    app.use('/api', routes(commandBus, queryBus));
+    app.use('/api', routes(commandBus, queryBus, userRepository));
 
     app.get('/health', async (_req, res) => {
       const dbHealth = await DatabaseSetup.getHealthStatus();

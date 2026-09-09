@@ -1,0 +1,27 @@
+summary: Follow a user
+parameters:
+  - name: id
+    in: path
+    required: true
+    schema:
+      type: integer
+    description: User to follow
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required: [followerId]
+        properties:
+          followerId:
+            type: integer
+responses:
+  '201':
+    description: Follow created
+  '400':
+    description: Validation error or already following
+  '404':
+    description: User not found
+  '500':
+    description: Server error

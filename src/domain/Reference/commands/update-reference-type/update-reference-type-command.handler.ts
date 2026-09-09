@@ -1,6 +1,7 @@
 import { ICommandHandler } from '@/domain/shared/interfaces/command-handler.interface';
 import { NotFoundError } from '@/domain/shared/errors/not-found-error';
 import { ValidationError } from '@/domain/shared/errors/validation-error';
+import { assertResourceOwner } from '@/domain/shared/assert-owner';
 import { ReferenceType } from '@/domain/Reference/reference-type';
 import { ReferenceTypeMapper } from '@/domain/Reference/reference-type.mapper';
 import { IReferenceTypeRepository } from '@/domain/Reference/reference-type-repository.interface';
@@ -16,6 +17,7 @@ export class UpdateReferenceTypeCommandHandler
     if (!existing) throw new NotFoundError('Reference type not found');
 
     const type = ReferenceTypeMapper.mapReferenceTypeToDomain(existing);
+    assertResourceOwner(type.getUserId(), command.actorUserId);
     type.rename(command.name);
 
     const duplicate = await this.referenceTypeRepository.findByUserIdAndNormalizedName(

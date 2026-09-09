@@ -31,6 +31,10 @@ requestBody:
             type: array
             items:
               type: integer
+          isProfileVisible:
+            type: boolean
+          isFeedShared:
+            type: boolean
 responses:
   '200':
     description: Updated note

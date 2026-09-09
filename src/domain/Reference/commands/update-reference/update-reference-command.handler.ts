@@ -1,6 +1,7 @@
 import { ICommandHandler } from '@/domain/shared/interfaces/command-handler.interface';
 import { NotFoundError } from '@/domain/shared/errors/not-found-error';
 import { ValidationError } from '@/domain/shared/errors/validation-error';
+import { assertResourceOwner } from '@/domain/shared/assert-owner';
 import { Reference } from '@/domain/Reference/reference';
 import { ReferenceMapper } from '@/domain/Reference/reference.mapper';
 import { IReferenceRepository } from '@/domain/Reference/reference-repository.interface';
@@ -19,6 +20,7 @@ export class UpdateReferenceCommandHandler implements ICommandHandler<UpdateRefe
     if (!existing) throw new NotFoundError('Reference not found');
 
     const reference = ReferenceMapper.mapReferenceToDomain(existing);
+    assertResourceOwner(reference.getUserId(), command.actorUserId);
 
     if (command.typeId !== undefined) {
       const typeRow = await this.referenceTypeRepository.findById(command.typeId);

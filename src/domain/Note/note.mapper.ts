@@ -14,6 +14,12 @@ type RawTaggedReference = {
   };
 };
 
+type RawAuthor = {
+  id?: number;
+  displayName?: string;
+  username?: string | null;
+};
+
 type RawNote = {
   id: number;
   userId: number;
@@ -24,9 +30,12 @@ type RawNote = {
   startVerse: number | null;
   endVerse: number | null;
   verseSpans?: unknown;
+  isProfileVisible?: boolean;
+  isFeedShared?: boolean;
   createdAt: Date;
   updatedAt: Date;
   references?: RawTaggedReference[];
+  user?: RawAuthor;
 };
 
 function spansFromRaw(row: RawNote): VerseSpan[] | undefined {
@@ -68,6 +77,8 @@ export class NoteMapper {
       endVerse: ref.endVerse,
       verseSpans: ref.spans.length > 0 ? ref.spans : null,
       scope: ref.scope,
+      isProfileVisible: note.getIsProfileVisible(),
+      isFeedShared: note.getIsFeedShared(),
       taggedReferenceIds: note.getTaggedReferenceIds(),
     };
   }
@@ -87,6 +98,8 @@ export class NoteMapper {
         spans: spansFromRaw(row),
       }),
       taggedReferences: taggedReferencesFromRaw(row),
+      isProfileVisible: row.isProfileVisible ?? false,
+      isFeedShared: row.isFeedShared ?? false,
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     });
@@ -96,9 +109,9 @@ export class NoteMapper {
     return raw.map((row) => NoteMapper.mapNoteToDomain(row));
   }
 
-  static mapNoteToResponseDTO(note: Note): INoteResponseDTO {
+  static mapNoteToResponseDTO(note: Note, author?: RawAuthor | null): INoteResponseDTO {
     const ref = note.getScriptureReference();
-    return {
+    const dto: INoteResponseDTO = {
       id: note.getId() ?? 0,
       userId: note.getUserId(),
       content: note.getContent(),
@@ -118,12 +131,32 @@ export class NoteMapper {
         typeId: tag.typeId,
         typeName: tag.typeName,
       })),
+      isProfileVisible: note.getIsProfileVisible(),
+      isFeedShared: note.getIsFeedShared(),
       createdAt: note.getCreatedAt().toISOString(),
       updatedAt: note.getUpdatedAt().toISOString(),
     };
+
+    if (author?.id && author.displayName) {
+      dto.author = {
+        id: author.id,
+        displayName: author.displayName,
+        username: author.username ?? null,
+      };
+    }
+
+    return dto;
   }
 
   static mapNotesToResponseDTO(notes: Note[]): INoteResponseDTO[] {
     return notes.map((note) => NoteMapper.mapNoteToResponseDTO(note));
+  }
+
+  static mapRawNotesToResponseDTO(raw: unknown[]): INoteResponseDTO[] {
+    return raw.map((row) => {
+      const note = NoteMapper.mapNoteToDomain(row);
+      const author = (row as RawNote).user ?? null;
+      return NoteMapper.mapNoteToResponseDTO(note, author);
+    });
   }
 }

@@ -4,6 +4,8 @@ import { INoteRepository } from '@/domain/Note/note-repository.interface';
 import { IReferenceRepository } from '@/domain/Reference/reference-repository.interface';
 import { IReferenceTypeRepository } from '@/domain/Reference/reference-type-repository.interface';
 import { IUserRepository } from '@/domain/User/user-repository.interface';
+import { IFollowRepository } from '@/domain/Follow/follow-repository.interface';
+import { ICommentRepository } from '@/domain/Comment/comment-repository.interface';
 import { GetBooksQueryHandler } from '@/domain/Bible/queries/get-books/get-books-query.handler';
 import { GetBookInfoQueryHandler } from '@/domain/Bible/queries/get-book-info/get-book-info-query.handler';
 import { GetChapterInfoQueryHandler } from '@/domain/Bible/queries/get-chapter-info/get-chapter-info-query.handler';
@@ -12,10 +14,15 @@ import { GetTranslationsQueryHandler } from '@/domain/Bible/queries/get-translat
 import { GetNoteQueryHandler } from '@/domain/Note/queries/get-note/get-note-query.handler';
 import { ListNotesQueryHandler } from '@/domain/Note/queries/list-notes/list-notes-query.handler';
 import { GetNoteStreakQueryHandler } from '@/domain/Note/queries/get-note-streak/get-note-streak-query.handler';
+import { GetFeedQueryHandler } from '@/domain/Note/queries/get-feed/get-feed-query.handler';
+import { ListProfileNotesQueryHandler } from '@/domain/Note/queries/list-profile-notes/list-profile-notes-query.handler';
 import { GetUserQueryHandler } from '@/domain/User/queries/get-user/get-user-query.handler';
 import { ListReferenceTypesQueryHandler } from '@/domain/Reference/queries/list-reference-types/list-reference-types-query.handler';
 import { GetReferenceQueryHandler } from '@/domain/Reference/queries/get-reference/get-reference-query.handler';
 import { ListReferencesQueryHandler } from '@/domain/Reference/queries/list-references/list-references-query.handler';
+import { ListFollowersQueryHandler } from '@/domain/Follow/queries/list-followers/list-followers-query.handler';
+import { ListFollowingQueryHandler } from '@/domain/Follow/queries/list-following/list-following-query.handler';
+import { ListCommentsQueryHandler } from '@/domain/Comment/queries/list-comments/list-comments-query.handler';
 
 export interface IQueryBusSetup {
   bibleRepository: IBibleRepository;
@@ -23,6 +30,8 @@ export interface IQueryBusSetup {
   userRepository: IUserRepository;
   referenceRepository: IReferenceRepository;
   referenceTypeRepository: IReferenceTypeRepository;
+  followRepository: IFollowRepository;
+  commentRepository: ICommentRepository;
 }
 
 export function setupQueryBus(setup: IQueryBusSetup): QueryBus {
@@ -36,6 +45,11 @@ export function setupQueryBus(setup: IQueryBusSetup): QueryBus {
   queryBus.registerHandler('GetNoteQuery', new GetNoteQueryHandler(setup.noteRepository));
   queryBus.registerHandler('ListNotesQuery', new ListNotesQueryHandler(setup.noteRepository));
   queryBus.registerHandler('GetNoteStreakQuery', new GetNoteStreakQueryHandler(setup.noteRepository));
+  queryBus.registerHandler('GetFeedQuery', new GetFeedQueryHandler(setup.noteRepository));
+  queryBus.registerHandler(
+    'ListProfileNotesQuery',
+    new ListProfileNotesQueryHandler(setup.noteRepository),
+  );
   queryBus.registerHandler('GetUserQuery', new GetUserQueryHandler(setup.userRepository));
   queryBus.registerHandler(
     'ListReferenceTypesQuery',
@@ -43,6 +57,22 @@ export function setupQueryBus(setup: IQueryBusSetup): QueryBus {
   );
   queryBus.registerHandler('GetReferenceQuery', new GetReferenceQueryHandler(setup.referenceRepository));
   queryBus.registerHandler('ListReferencesQuery', new ListReferencesQueryHandler(setup.referenceRepository));
+  queryBus.registerHandler(
+    'ListFollowersQuery',
+    new ListFollowersQueryHandler(setup.followRepository),
+  );
+  queryBus.registerHandler(
+    'ListFollowingQuery',
+    new ListFollowingQueryHandler(setup.followRepository),
+  );
+  queryBus.registerHandler(
+    'ListCommentsQuery',
+    new ListCommentsQueryHandler(
+      setup.commentRepository,
+      setup.noteRepository,
+      setup.followRepository,
+    ),
+  );
 
   return queryBus;
 }

@@ -1,6 +1,7 @@
 import { ICommand } from '@/domain/shared/interfaces/command.interface';
 import { ValidationError } from '@/domain/shared/errors/validation-error';
 import { IUntagNoteParamsDTO } from '@/domain/Note/note.dto';
+import { parseActorUserId } from '@/domain/shared/assert-owner';
 
 export class UntagNoteCommand implements ICommand {
   readonly commandType = 'UntagNoteCommand';
@@ -8,6 +9,7 @@ export class UntagNoteCommand implements ICommand {
   constructor(
     public readonly noteId: number,
     public readonly referenceId: number,
+    public readonly actorUserId: number,
   ) {}
 
   static from(dto: IUntagNoteParamsDTO): UntagNoteCommand {
@@ -15,6 +17,6 @@ export class UntagNoteCommand implements ICommand {
     if (Number.isNaN(noteId) || noteId < 1) throw new ValidationError('id is required');
     const referenceId = parseInt(String(dto.referenceId ?? ''), 10);
     if (Number.isNaN(referenceId) || referenceId < 1) throw new ValidationError('referenceId is required');
-    return new UntagNoteCommand(noteId, referenceId);
+    return new UntagNoteCommand(noteId, referenceId, parseActorUserId(dto.actorUserId));
   }
 }

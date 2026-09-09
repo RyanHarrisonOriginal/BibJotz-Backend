@@ -9,11 +9,18 @@ export class CreateUserCommandHandler implements ICommandHandler<CreateUserComma
   constructor(private readonly userRepository: IUserRepository) {}
 
   async execute(command: CreateUserCommand): Promise<User> {
+    const existing = await this.userRepository.findByClerkUserId(command.clerkUserId);
+    if (existing) return UserMapper.mapUserToDomain(existing);
+
     const user = UserFactory.create({
       id: null,
       displayName: command.displayName,
+      clerkUserId: command.clerkUserId,
+      username: command.username,
+      bio: command.bio,
     });
     const saved = await this.userRepository.save(user);
     return UserMapper.mapUserToDomain(saved);
   }
 }
+

@@ -1,5 +1,7 @@
 import { ICommandHandler } from '@/domain/shared/interfaces/command-handler.interface';
 import { NotFoundError } from '@/domain/shared/errors/not-found-error';
+import { assertResourceOwner } from '@/domain/shared/assert-owner';
+import { ReferenceMapper } from '@/domain/Reference/reference.mapper';
 import { IReferenceRepository } from '@/domain/Reference/reference-repository.interface';
 import { DeleteReferenceCommand } from './delete-reference.command';
 
@@ -9,6 +11,8 @@ export class DeleteReferenceCommandHandler implements ICommandHandler<DeleteRefe
   async execute(command: DeleteReferenceCommand): Promise<void> {
     const existing = await this.referenceRepository.findById(command.id);
     if (!existing) throw new NotFoundError('Reference not found');
+    const reference = ReferenceMapper.mapReferenceToDomain(existing);
+    assertResourceOwner(reference.getUserId(), command.actorUserId);
     await this.referenceRepository.deleteById(command.id);
   }
 }

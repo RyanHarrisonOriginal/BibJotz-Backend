@@ -8,6 +8,7 @@ import { UpdateReferenceCommand } from '@/domain/Reference/commands/update-refer
 import { DeleteReferenceCommand } from '@/domain/Reference/commands/delete-reference/delete-reference.command';
 import { GetReferenceQuery } from '@/domain/Reference/queries/get-reference/get-reference.query';
 import { ListReferencesQuery } from '@/domain/Reference/queries/list-references/list-references.query';
+import { requireAuthUserId } from '@/middleware/auth';
 
 export class ReferenceController {
   constructor(
@@ -16,19 +17,26 @@ export class ReferenceController {
   ) {}
 
   createReference = async (req: Request, res: Response): Promise<void> => {
-    const command = CreateReferenceCommand.from(req.body);
+    const command = CreateReferenceCommand.from({ ...req.body, userId: requireAuthUserId(req) });
     const result = await this.commandBus.execute<CreateReferenceCommand, Reference>(command);
     res.status(201).json(ReferenceMapper.mapReferenceToResponseDTO(result));
   };
 
   updateReference = async (req: Request, res: Response): Promise<void> => {
-    const command = UpdateReferenceCommand.from({ ...req.params, ...req.body });
+    const command = UpdateReferenceCommand.from({
+      ...req.params,
+      ...req.body,
+      actorUserId: requireAuthUserId(req),
+    });
     const result = await this.commandBus.execute<UpdateReferenceCommand, Reference>(command);
     res.json(ReferenceMapper.mapReferenceToResponseDTO(result));
   };
 
   deleteReference = async (req: Request, res: Response): Promise<void> => {
-    const command = DeleteReferenceCommand.from(req.params);
+    const command = DeleteReferenceCommand.from({
+      ...req.params,
+      actorUserId: requireAuthUserId(req),
+    });
     await this.commandBus.execute(command);
     res.status(204).send();
   };
@@ -40,7 +48,7 @@ export class ReferenceController {
   };
 
   listReferences = async (req: Request, res: Response): Promise<void> => {
-    const query = ListReferencesQuery.from(req.query);
+    const query = ListReferencesQuery.from({ ...req.query, userId: String(requireAuthUserId(req)) });
     const result = await this.queryBus.execute<ListReferencesQuery, Reference[]>(query);
     res.json(ReferenceMapper.mapReferencesToResponseDTO(result));
   };

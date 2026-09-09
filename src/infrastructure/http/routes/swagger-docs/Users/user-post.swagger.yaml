@@ -1,5 +1,8 @@
-summary: Create a local reader identity
-description: Used by the mobile app on first launch. No password or email in this version.
+summary: Ensure the authenticated Clerk user has a local DB row
+description: |
+  Requires `Authorization: Bearer <Clerk session JWT>`.
+  Links (or creates) a `users` row by the token subject (`clerk_user_id`).
+  Client-supplied `clerkUserId` is ignored; identity always comes from the JWT.
 requestBody:
   required: false
   content:
@@ -10,9 +13,15 @@ requestBody:
           displayName:
             type: string
             default: Reader
+          username:
+            type: string
+            nullable: true
+          bio:
+            type: string
+            nullable: true
 responses:
-  '201':
-    description: User created
+  '200':
+    description: Existing or newly created user for this Clerk account
     content:
       application/json:
         schema:
@@ -22,11 +31,22 @@ responses:
               type: integer
             displayName:
               type: string
+            clerkUserId:
+              type: string
+              nullable: true
+            username:
+              type: string
+              nullable: true
+            bio:
+              type: string
+              nullable: true
             createdAt:
               type: string
               format: date-time
             updatedAt:
               type: string
               format: date-time
+  '401':
+    description: Missing or invalid Clerk token
   '500':
     description: Server error

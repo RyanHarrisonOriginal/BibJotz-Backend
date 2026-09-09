@@ -1,5 +1,6 @@
 import { ICommandHandler } from '@/domain/shared/interfaces/command-handler.interface';
 import { NotFoundError } from '@/domain/shared/errors/not-found-error';
+import { assertResourceOwner } from '@/domain/shared/assert-owner';
 import { Note } from '@/domain/Note/note';
 import { NoteMapper } from '@/domain/Note/note.mapper';
 import { INoteRepository } from '@/domain/Note/note-repository.interface';
@@ -13,6 +14,8 @@ export class UntagNoteCommandHandler implements ICommandHandler<UntagNoteCommand
     if (!existing) throw new NotFoundError('Note not found');
 
     const note = NoteMapper.mapNoteToDomain(existing);
+    assertResourceOwner(note.getUserId(), command.actorUserId);
+
     if (!note.getTaggedReferenceIds().includes(command.referenceId)) {
       throw new NotFoundError('That reference is not tagged on this note');
     }

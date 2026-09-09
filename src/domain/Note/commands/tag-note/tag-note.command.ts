@@ -1,6 +1,7 @@
 import { ICommand } from '@/domain/shared/interfaces/command.interface';
 import { ValidationError } from '@/domain/shared/errors/validation-error';
 import { ITagNoteRequestDTO } from '@/domain/Note/note.dto';
+import { parseActorUserId } from '@/domain/shared/assert-owner';
 
 export class TagNoteCommand implements ICommand {
   readonly commandType = 'TagNoteCommand';
@@ -8,6 +9,7 @@ export class TagNoteCommand implements ICommand {
   constructor(
     public readonly noteId: number,
     public readonly referenceId: number,
+    public readonly actorUserId: number,
   ) {}
 
   static from(dto: ITagNoteRequestDTO): TagNoteCommand {
@@ -15,6 +17,6 @@ export class TagNoteCommand implements ICommand {
     if (Number.isNaN(noteId) || noteId < 1) throw new ValidationError('id is required');
     const referenceId = Number(dto.referenceId);
     if (!referenceId || Number.isNaN(referenceId)) throw new ValidationError('referenceId is required');
-    return new TagNoteCommand(noteId, referenceId);
+    return new TagNoteCommand(noteId, referenceId, parseActorUserId(dto.actorUserId));
   }
 }

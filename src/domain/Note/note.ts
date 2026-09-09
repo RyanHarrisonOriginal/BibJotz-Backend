@@ -10,6 +10,8 @@ export class Note extends BaseEntity {
     private content: string,
     private scriptureReference: ScriptureReference,
     private taggedReferences: TaggedReference[] = [],
+    private isProfileVisible: boolean = false,
+    private isFeedShared: boolean = false,
     createdAt: Date = new Date(),
     updatedAt: Date = new Date(),
   ) {
@@ -38,6 +40,14 @@ export class Note extends BaseEntity {
     return this.taggedReferences.map((tag) => tag.id);
   }
 
+  getIsProfileVisible(): boolean {
+    return this.isProfileVisible;
+  }
+
+  getIsFeedShared(): boolean {
+    return this.isFeedShared;
+  }
+
   updateContent(content: string): void {
     Note.assertContent(content);
     this.content = content;
@@ -46,6 +56,16 @@ export class Note extends BaseEntity {
 
   retarget(reference: ScriptureReference): void {
     this.scriptureReference = reference;
+    this.touch();
+  }
+
+  setVisibility(options: { isProfileVisible?: boolean; isFeedShared?: boolean }): void {
+    if (options.isProfileVisible !== undefined) {
+      this.isProfileVisible = options.isProfileVisible;
+    }
+    if (options.isFeedShared !== undefined) {
+      this.isFeedShared = options.isFeedShared;
+    }
     this.touch();
   }
 

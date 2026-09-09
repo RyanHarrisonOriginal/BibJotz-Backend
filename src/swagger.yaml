@@ -2,19 +2,21 @@ openapi: 3.0.0
 info:
   title: BibJotz API
   version: 1.0.0
-  description: Bible reading and note-taking API. Scripture corpus plus user notes on verses, ranges, verse sets, chapters, and books.
+  description: Bible reading and note-taking API. Scripture corpus plus user notes on verses, ranges, verse sets, chapters, and books. Includes community follows, feed sharing, and comments.
 
 tags:
   - name: Bible
     description: Books, chapters, verses, and translations
   - name: Notes
     description: User notes attached to scripture
+  - name: Comments
+    description: Comments on shared or profile-visible notes
   - name: ReferenceTypes
     description: Categories for non-biblical works (devotional, commentary, custom)
   - name: References
     description: Inventory of devotionals, commentaries, and other works to tag onto notes
   - name: Users
-    description: Lightweight local reader identity
+    description: Local reader identity, profiles, and follows
 
 paths:
   /api/v1/bible/translations:
@@ -56,6 +58,11 @@ paths:
       tags:
         - Notes
       $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-streak-get.swagger.yaml'
+  /api/v1/notes/feed:
+    get:
+      tags:
+        - Notes
+      $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-feed-get.swagger.yaml'
   /api/v1/notes/{id}:
     get:
       tags:
@@ -79,6 +86,20 @@ paths:
       tags:
         - Notes
       $ref: './infrastructure/http/routes/swagger-docs/Notes/notes-untag-delete.swagger.yaml'
+  /api/v1/notes/{id}/comments:
+    get:
+      tags:
+        - Comments
+      $ref: './infrastructure/http/routes/swagger-docs/Comments/comments-list-get.swagger.yaml'
+    post:
+      tags:
+        - Comments
+      $ref: './infrastructure/http/routes/swagger-docs/Comments/comments-post.swagger.yaml'
+  /api/v1/comments/{id}:
+    delete:
+      tags:
+        - Comments
+      $ref: './infrastructure/http/routes/swagger-docs/Comments/comments-delete.swagger.yaml'
   /api/v1/reference-types:
     get:
       tags:
@@ -119,6 +140,15 @@ paths:
       tags:
         - References
       $ref: './infrastructure/http/routes/swagger-docs/References/references-delete.swagger.yaml'
+  /api/v1/users/me:
+    post:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-post.swagger.yaml'
+    get:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-me-get.swagger.yaml'
   /api/v1/users:
     post:
       tags:
@@ -129,3 +159,31 @@ paths:
       tags:
         - Users
       $ref: './infrastructure/http/routes/swagger-docs/Users/user-get.swagger.yaml'
+    patch:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-patch.swagger.yaml'
+  /api/v1/users/{id}/notes:
+    get:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-notes-get.swagger.yaml'
+  /api/v1/users/{id}/follow:
+    post:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-follow-post.swagger.yaml'
+    delete:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-follow-delete.swagger.yaml'
+  /api/v1/users/{id}/followers:
+    get:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-followers-get.swagger.yaml'
+  /api/v1/users/{id}/following:
+    get:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-following-get.swagger.yaml'

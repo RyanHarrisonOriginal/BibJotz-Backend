@@ -1,12 +1,14 @@
 import { ICommand } from '@/domain/shared/interfaces/command.interface';
 import { ValidationError } from '@/domain/shared/errors/validation-error';
 import { IUpdateReferenceRequestDTO } from '@/domain/Reference/reference.dto';
+import { parseActorUserId } from '@/domain/shared/assert-owner';
 
 export class UpdateReferenceCommand implements ICommand {
   readonly commandType = 'UpdateReferenceCommand';
 
   constructor(
     public readonly id: number,
+    public readonly actorUserId: number,
     public readonly typeId: number | undefined,
     public readonly title: string | undefined,
     public readonly author: string | null | undefined,
@@ -23,6 +25,12 @@ export class UpdateReferenceCommand implements ICommand {
       throw new ValidationError('Provide a title, author, and/or type to update');
     }
 
-    return new UpdateReferenceCommand(id, dto.typeId, dto.title, dto.author);
+    return new UpdateReferenceCommand(
+      id,
+      parseActorUserId(dto.actorUserId),
+      dto.typeId,
+      dto.title,
+      dto.author,
+    );
   }
 }
