@@ -1,5 +1,7 @@
 summary: Get the authenticated user's profile
-description: Requires `Authorization: Bearer <Clerk session JWT>`. Returns the DB user linked to the token subject.
+description: >-
+  Requires an Authorization Bearer Clerk session JWT.
+  Returns the DB user linked to the token subject.
 responses:
   '200':
     description: Current user
