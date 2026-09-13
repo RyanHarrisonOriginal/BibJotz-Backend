@@ -8,6 +8,7 @@ import { referenceRoutes } from './reference.routes';
 import { referenceTypeRoutes } from './reference-type.routes';
 import { userRoutes } from './user.routes';
 import { commentRoutes } from './comment.routes';
+import { searchRoutes } from './search.routes';
 import { clerkAuth, requireAuth } from '@/middleware/auth';
 
 export const routes = (
@@ -36,6 +37,7 @@ export const routes = (
   router.use(`${API_VERSION}/reference-types`, auth, referenceTypeRoutes(commandBus, queryBus));
   router.use(`${API_VERSION}/references`, auth, referenceRoutes(commandBus, queryBus));
   router.use(`${API_VERSION}/comments`, auth, commentRoutes(commandBus, queryBus));
+  router.use(`${API_VERSION}/search`, auth, searchRoutes(queryBus));
   router.use(`${API_VERSION}/users`, userRoutes(commandBus, queryBus, clerkAuth, auth));
 
   return router;

@@ -4,6 +4,7 @@ import {
   IFeedNotesFilters,
   INoteListFilters,
   INoteRepository,
+  INoteSearchFilters,
   IProfileNotesFilters,
 } from '@/domain/Note/note-repository.interface';
 import { NoteMapper } from '@/domain/Note/note.mapper';
@@ -134,6 +135,31 @@ export class NotePostgresRepository implements INoteRepository {
       include: noteWithAuthorInclude,
       orderBy: { createdAt: 'desc' },
       take: limit,
+    });
+  }
+
+  async searchPublic(filters: INoteSearchFilters): Promise<unknown[]> {
+    const q = filters.query.trim();
+    if (!q) return [];
+
+    return this.prisma.note.findMany({
+      where: {
+        AND: [
+          {
+            OR: [{ isProfileVisible: true }, { isFeedShared: true }],
+          },
+          {
+            OR: [
+              { content: { contains: q, mode: 'insensitive' } },
+              { bookName: { contains: q, mode: 'insensitive' } },
+              { bookShortName: { contains: q, mode: 'insensitive' } },
+            ],
+          },
+        ],
+      },
+      include: noteWithAuthorInclude,
+      orderBy: { createdAt: 'desc' },
+      take: filters.limit,
     });
   }
 

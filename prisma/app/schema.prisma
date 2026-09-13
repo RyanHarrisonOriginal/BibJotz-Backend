@@ -27,7 +27,7 @@ model User {
   id             Int             @id @default(autoincrement())
   displayName    String          @map("display_name") @db.VarChar(100)
   clerkUserId    String?         @unique @map("clerk_user_id") @db.VarChar(64)
-  username       String?         @db.VarChar(50)
+  username       String?         @unique @db.VarChar(50)
   bio            String?         @db.VarChar(280)
   createdAt      DateTime        @default(now()) @map("created_at")
   updatedAt      DateTime        @updatedAt @map("updated_at")

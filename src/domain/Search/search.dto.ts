@@ -1,0 +1,12 @@
+export type SearchType = 'all' | 'people' | 'notes';
+
+export interface ISearchQueryParamsDTO {
+  q?: string | string[];
+  type?: string | string[];
+  limit?: string | string[];
+}
+
+export interface ISearchResponseDTO {
+  people: unknown[];
+  notes: unknown[];
+}

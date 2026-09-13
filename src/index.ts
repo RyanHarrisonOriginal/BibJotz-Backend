@@ -1,4 +1,10 @@
-import 'module-alias/register';
+import path from 'path';
+
+// Production runs from dist/ and needs module-alias. Dev uses tsconfig-paths (-r).
+if (path.basename(__dirname) === 'dist') {
+  require('module-alias/register');
+}
+
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';

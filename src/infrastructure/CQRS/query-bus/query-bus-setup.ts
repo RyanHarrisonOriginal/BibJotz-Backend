@@ -23,6 +23,7 @@ import { ListReferencesQueryHandler } from '@/domain/Reference/queries/list-refe
 import { ListFollowersQueryHandler } from '@/domain/Follow/queries/list-followers/list-followers-query.handler';
 import { ListFollowingQueryHandler } from '@/domain/Follow/queries/list-following/list-following-query.handler';
 import { ListCommentsQueryHandler } from '@/domain/Comment/queries/list-comments/list-comments-query.handler';
+import { SearchQueryHandler } from '@/domain/Search/queries/search/search-query.handler';
 
 export interface IQueryBusSetup {
   bibleRepository: IBibleRepository;
@@ -72,6 +73,10 @@ export function setupQueryBus(setup: IQueryBusSetup): QueryBus {
       setup.noteRepository,
       setup.followRepository,
     ),
+  );
+  queryBus.registerHandler(
+    'SearchQuery',
+    new SearchQueryHandler(setup.userRepository, setup.noteRepository),
   );
 
   return queryBus;

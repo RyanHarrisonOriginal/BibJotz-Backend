@@ -17,6 +17,8 @@ tags:
     description: Inventory of devotionals, commentaries, and other works to tag onto notes
   - name: Users
     description: Local reader identity, profiles, and follows
+  - name: Search
+    description: Find people and public notes
 
 paths:
   /api/v1/bible/translations:
@@ -187,3 +189,8 @@ paths:
       tags:
         - Users
       $ref: './infrastructure/http/routes/swagger-docs/Users/user-following-get.swagger.yaml'
+  /api/v1/search:
+    get:
+      tags:
+        - Search
+      $ref: './infrastructure/http/routes/swagger-docs/Search/search-get.swagger.yaml'

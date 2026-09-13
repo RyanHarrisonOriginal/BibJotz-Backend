@@ -1,6 +1,6 @@
 import { PrismaClient } from '@/generated/app-client';
 import { User } from '@/domain/User/user';
-import { IUserRepository } from '@/domain/User/user-repository.interface';
+import { IUserRepository, IUserSearchFilters } from '@/domain/User/user-repository.interface';
 import { UserMapper } from '@/domain/User/user.mapper';
 
 export class UserPostgresRepository implements IUserRepository {
@@ -32,5 +32,21 @@ export class UserPostgresRepository implements IUserRepository {
 
   async findByClerkUserId(clerkUserId: string): Promise<unknown | null> {
     return this.prisma.user.findUnique({ where: { clerkUserId } });
+  }
+
+  async search(filters: IUserSearchFilters): Promise<unknown[]> {
+    const q = filters.query.trim();
+    if (!q) return [];
+
+    return this.prisma.user.findMany({
+      where: {
+        OR: [
+          { displayName: { contains: q, mode: 'insensitive' } },
+          { username: { contains: q, mode: 'insensitive' } },
+        ],
+      },
+      orderBy: { displayName: 'asc' },
+      take: filters.limit,
+    });
   }
 }

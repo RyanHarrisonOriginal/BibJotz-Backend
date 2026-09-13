@@ -17,6 +17,11 @@ export interface IFeedNotesFilters {
   limit?: number;
 }
 
+export interface INoteSearchFilters {
+  query: string;
+  limit: number;
+}
+
 /**
  * Port: note persistence. Implemented by a Postgres adapter.
  * Returns raw persistence shapes only.
@@ -27,6 +32,7 @@ export interface INoteRepository {
   findMany(filters: INoteListFilters): Promise<unknown[]>;
   findProfileVisible(filters: IProfileNotesFilters): Promise<unknown[]>;
   findFeedForUser(filters: IFeedNotesFilters): Promise<unknown[]>;
+  searchPublic(filters: INoteSearchFilters): Promise<unknown[]>;
   /** Distinct local calendar days (YYYY-MM-DD) with a note, newest first. */
   findDistinctCreatedDays(userId: number, timeZone: string): Promise<string[]>;
   deleteById(id: number): Promise<void>;
