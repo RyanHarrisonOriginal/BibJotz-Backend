@@ -42,8 +42,7 @@ export class CreateNoteCommandHandler implements ICommandHandler<CreateNoteComma
         verses: command.verses,
       }),
       taggedReferences,
-      isProfileVisible: command.isProfileVisible,
-      isFeedShared: command.isFeedShared,
+      audience: command.audience,
     });
     const saved = await this.noteRepository.save(note);
     return NoteMapper.mapNoteToDomain(saved);

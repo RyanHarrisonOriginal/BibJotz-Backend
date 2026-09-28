@@ -1,4 +1,7 @@
 import { IFollowRepository } from '@/domain/Follow/follow-repository.interface';
+import { NoteAudience } from '@/domain/Note/note-audience';
+
+export type FollowGrant = 'NONE' | 'PENDING' | 'ACCEPTED';
 
 export interface NoteViewer {
   id: number | null;
@@ -6,59 +9,63 @@ export interface NoteViewer {
 
 export interface ViewableNote {
   userId: number;
-  isProfileVisible: boolean;
-  isFeedShared: boolean;
+  audience: NoteAudience;
 }
 
 /**
- * Owner can always view. Otherwise the note is visible when it is on the
- * author's profile, or when it is feed-shared and the viewer follows the author.
+ * Owner can always view. PUBLIC is visible to anyone.
+ * FOLLOWERS requires an ACCEPTED follow from the viewer to the author.
+ * PENDING and PRIVATE grant nothing to anyone else.
  */
 export function canViewNote(
   viewer: NoteViewer | null,
   note: ViewableNote,
-  isFollower: boolean,
+  followGrant: FollowGrant,
 ): boolean {
   const viewerId = viewer?.id ?? null;
   if (viewerId != null && viewerId === note.userId) return true;
-  if (note.isProfileVisible) return true;
-  if (note.isFeedShared && isFollower) return true;
+  if (note.audience === 'PUBLIC') return true;
+  if (note.audience === 'FOLLOWERS' && viewerId != null && followGrant === 'ACCEPTED') return true;
   return false;
 }
 
 export function viewableNoteFrom(note: {
   getUserId(): number;
-  getIsProfileVisible(): boolean;
-  getIsFeedShared(): boolean;
+  getAudience(): NoteAudience;
 }): ViewableNote {
   return {
     userId: note.getUserId(),
-    isProfileVisible: note.getIsProfileVisible(),
-    isFeedShared: note.getIsFeedShared(),
+    audience: note.getAudience(),
   };
 }
 
-/** Follow is only needed when feed sharing is the remaining way to see the note. */
-function followLookupNeeded(viewerId: number | null, note: ViewableNote): boolean {
+/** Follow status is only needed for another author's FOLLOWERS note. */
+export function followLookupNeeded(viewerId: number | null, note: ViewableNote): boolean {
   if (viewerId == null) return false;
   if (viewerId === note.userId) return false;
-  if (note.isProfileVisible) return false;
-  return note.isFeedShared;
+  return note.audience === 'FOLLOWERS';
 }
 
-export async function resolveIsFollower(
+export function followGrantFrom(row: unknown): FollowGrant {
+  if (row == null || typeof row !== 'object') return 'NONE';
+  const status = (row as { status?: string }).status;
+  if (status === 'ACCEPTED' || status === 'PENDING') return status;
+  return 'NONE';
+}
+
+export async function resolveFollowGrant(
   followRepository: IFollowRepository,
   viewerId: number | null,
   note: ViewableNote,
-  cache?: Map<number, boolean>,
-): Promise<boolean> {
-  if (viewerId == null || !followLookupNeeded(viewerId, note)) return false;
+  cache?: Map<number, FollowGrant>,
+): Promise<FollowGrant> {
+  if (viewerId == null || !followLookupNeeded(viewerId, note)) return 'NONE';
 
   const cached = cache?.get(note.userId);
   if (cached !== undefined) return cached;
 
   const follow = await followRepository.findByPair(viewerId, note.userId);
-  const isFollower = follow != null;
-  cache?.set(note.userId, isFollower);
-  return isFollower;
+  const grant = followGrantFrom(follow);
+  cache?.set(note.userId, grant);
+  return grant;
 }

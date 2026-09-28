@@ -6,7 +6,7 @@ import { ICommentRepository } from '@/domain/Comment/comment-repository.interfac
 import { NoteMapper } from '@/domain/Note/note.mapper';
 import { INoteRepository } from '@/domain/Note/note-repository.interface';
 import { IFollowRepository } from '@/domain/Follow/follow-repository.interface';
-import { canViewNote, resolveIsFollower, viewableNoteFrom } from '@/domain/Note/can-view-note';
+import { canViewNote, resolveFollowGrant, viewableNoteFrom } from '@/domain/Note/can-view-note';
 import { ListCommentsQuery } from './list-comments.query';
 
 export class ListCommentsQueryHandler
@@ -25,8 +25,8 @@ export class ListCommentsQueryHandler
     const note = NoteMapper.mapNoteToDomain(noteRow);
     const view = viewableNoteFrom(note);
     const viewer = query.viewerUserId == null ? null : { id: query.viewerUserId };
-    const isFollower = await resolveIsFollower(this.followRepository, query.viewerUserId, view);
-    if (!canViewNote(viewer, view, isFollower)) {
+    const followGrant = await resolveFollowGrant(this.followRepository, query.viewerUserId, view);
+    if (!canViewNote(viewer, view, followGrant)) {
       throw new NotFoundError('Note not found');
     }
 

@@ -2,6 +2,7 @@ import { BaseEntity } from '@/domain/shared/base-entity';
 import { ScriptureReference } from '@/domain/shared/value-objects/scripture-reference';
 import { ValidationError } from '@/domain/shared/errors/validation-error';
 import { TaggedReference } from '@/domain/Note/tagged-reference';
+import { NoteAudience } from '@/domain/Note/note-audience';
 
 export class Note extends BaseEntity {
   constructor(
@@ -10,8 +11,7 @@ export class Note extends BaseEntity {
     private content: string,
     private scriptureReference: ScriptureReference,
     private taggedReferences: TaggedReference[] = [],
-    private isProfileVisible: boolean = false,
-    private isFeedShared: boolean = false,
+    private audience: NoteAudience = 'PRIVATE',
     createdAt: Date = new Date(),
     updatedAt: Date = new Date(),
   ) {
@@ -40,12 +40,13 @@ export class Note extends BaseEntity {
     return this.taggedReferences.map((tag) => tag.id);
   }
 
-  getIsProfileVisible(): boolean {
-    return this.isProfileVisible;
+  getAudience(): NoteAudience {
+    return this.audience;
   }
 
-  getIsFeedShared(): boolean {
-    return this.isFeedShared;
+  setAudience(audience: NoteAudience): void {
+    this.audience = audience;
+    this.touch();
   }
 
   updateContent(content: string): void {
@@ -56,16 +57,6 @@ export class Note extends BaseEntity {
 
   retarget(reference: ScriptureReference): void {
     this.scriptureReference = reference;
-    this.touch();
-  }
-
-  setVisibility(options: { isProfileVisible?: boolean; isFeedShared?: boolean }): void {
-    if (options.isProfileVisible !== undefined) {
-      this.isProfileVisible = options.isProfileVisible;
-    }
-    if (options.isFeedShared !== undefined) {
-      this.isFeedShared = options.isFeedShared;
-    }
     this.touch();
   }
 

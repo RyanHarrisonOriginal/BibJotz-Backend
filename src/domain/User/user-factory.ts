@@ -1,4 +1,4 @@
-import { User } from '@/domain/User/user';
+import { FollowPolicy, User } from '@/domain/User/user';
 
 export interface IUserCreationProps {
   id: number | null;
@@ -8,6 +8,8 @@ export interface IUserCreationProps {
   bio?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
+  followPolicy?: FollowPolicy;
+  followListsPublic?: boolean;
 }
 
 export class UserFactory {
@@ -20,6 +22,8 @@ export class UserFactory {
       data.bio ?? null,
       data.createdAt ?? new Date(),
       data.updatedAt ?? new Date(),
+      data.followPolicy ?? 'APPROVAL',
+      data.followListsPublic ?? false,
     );
   }
 }

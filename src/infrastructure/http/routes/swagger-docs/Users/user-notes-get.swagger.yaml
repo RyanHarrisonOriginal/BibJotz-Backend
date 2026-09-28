@@ -1,4 +1,4 @@
-summary: List profile-visible notes for a user
+summary: List notes on a profile that the viewer is allowed to read
 parameters:
   - name: id
     in: path
@@ -7,7 +7,7 @@ parameters:
       type: integer
 responses:
   '200':
-    description: Notes with isProfileVisible=true
+    description: Notes matching the shared visibility rule for this viewer
   '400':
     description: Validation error
   '500':

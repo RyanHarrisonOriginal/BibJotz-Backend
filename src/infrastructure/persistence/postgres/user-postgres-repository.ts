@@ -1,6 +1,6 @@
 import { PrismaClient } from '@/generated/app-client';
 import { User } from '@/domain/User/user';
-import { IUserRepository, IUserSearchFilters } from '@/domain/User/user-repository.interface';
+import { ISavedFollowSettings, IUserRepository, IUserSearchFilters } from '@/domain/User/user-repository.interface';
 import { UserMapper } from '@/domain/User/user.mapper';
 
 export class UserPostgresRepository implements IUserRepository {
@@ -14,6 +14,8 @@ export class UserPostgresRepository implements IUserRepository {
       clerkUserId: (data.clerkUserId as string | null) ?? null,
       username: (data.username as string | null) ?? null,
       bio: (data.bio as string | null) ?? null,
+      followPolicy: (data.followPolicy as 'OPEN' | 'APPROVAL') ?? 'APPROVAL',
+      followListsPublic: Boolean(data.followListsPublic),
     };
 
     if (!id) {
@@ -47,6 +49,38 @@ export class UserPostgresRepository implements IUserRepository {
       },
       orderBy: { displayName: 'asc' },
       take: filters.limit,
+    });
+  }
+
+  async saveFollowSettings(user: User, acceptPendingRequests: boolean): Promise<ISavedFollowSettings> {
+    const id = user.getId();
+    if (!id) throw new Error('User id is required to save follow settings');
+
+    return this.prisma.$transaction(async (tx) => {
+      let acceptedFollowerIds: number[] = [];
+      if (acceptPendingRequests) {
+        const pending = await tx.userFollow.findMany({
+          where: { followingId: id, status: 'PENDING' },
+          select: { followerId: true },
+        });
+        acceptedFollowerIds = pending.map((row) => row.followerId);
+        if (acceptedFollowerIds.length > 0) {
+          await tx.userFollow.updateMany({
+            where: { followingId: id, status: 'PENDING' },
+            data: { status: 'ACCEPTED' },
+          });
+        }
+      }
+
+      const raw = await tx.user.update({
+        where: { id },
+        data: {
+          followPolicy: user.getFollowPolicy(),
+          followListsPublic: user.getFollowListsPublic(),
+        },
+      });
+
+      return { raw, acceptedFollowerIds };
     });
   }
 }

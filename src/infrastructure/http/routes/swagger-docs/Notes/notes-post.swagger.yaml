@@ -44,14 +44,11 @@ requestBody:
             items:
               type: integer
             description: Library reference ids to tag onto the note.
-          isProfileVisible:
-            type: boolean
-            default: false
-            description: Show on the author's public profile
-          isFeedShared:
-            type: boolean
-            default: false
-            description: Include in followers' home feed
+          audience:
+            type: string
+            enum: [PRIVATE, FOLLOWERS, PUBLIC]
+            default: PRIVATE
+            description: Who can read the note. PRIVATE is the author only. FOLLOWERS requires an accepted follow. PUBLIC is any reader.
 responses:
   '201':
     description: Note created
@@ -114,6 +111,9 @@ responses:
                     type: integer
                   typeName:
                     type: string
+            audience:
+              type: string
+              enum: [PRIVATE, FOLLOWERS, PUBLIC]
             createdAt:
               type: string
               format: date-time

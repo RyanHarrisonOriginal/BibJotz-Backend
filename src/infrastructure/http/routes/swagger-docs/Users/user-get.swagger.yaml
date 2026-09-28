@@ -29,6 +29,19 @@ responses:
             updatedAt:
               type: string
               format: date-time
+            followerCount:
+              type: integer
+              description: Accepted followers only
+            followingCount:
+              type: integer
+              description: Accepted follows only
+            followPolicy:
+              type: string
+              enum: [OPEN, APPROVAL]
+            viewerFollowStatus:
+              type: string
+              enum: [NONE, PENDING, ACCEPTED]
+              description: The caller's follow of this user
   '404':
     description: User not found
   '500':

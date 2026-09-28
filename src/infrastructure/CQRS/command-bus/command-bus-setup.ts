@@ -18,8 +18,13 @@ import { DeleteReferenceTypeCommandHandler } from '@/domain/Reference/commands/d
 import { CreateReferenceCommandHandler } from '@/domain/Reference/commands/create-reference/create-reference-command.handler';
 import { UpdateReferenceCommandHandler } from '@/domain/Reference/commands/update-reference/update-reference-command.handler';
 import { DeleteReferenceCommandHandler } from '@/domain/Reference/commands/delete-reference/delete-reference-command.handler';
+import { IFollowEventPublisher } from '@/domain/Follow/ports/follow-event-publisher.port';
 import { FollowUserCommandHandler } from '@/domain/Follow/commands/follow-user/follow-user-command.handler';
 import { UnfollowUserCommandHandler } from '@/domain/Follow/commands/unfollow-user/unfollow-user-command.handler';
+import { AcceptFollowRequestCommandHandler } from '@/domain/Follow/commands/accept-follow-request/accept-follow-request-command.handler';
+import { DeclineFollowRequestCommandHandler } from '@/domain/Follow/commands/decline-follow-request/decline-follow-request-command.handler';
+import { RemoveFollowerCommandHandler } from '@/domain/Follow/commands/remove-follower/remove-follower-command.handler';
+import { UpdateFollowSettingsCommandHandler } from '@/domain/Follow/commands/update-follow-settings/update-follow-settings-command.handler';
 import { CreateCommentCommandHandler } from '@/domain/Comment/commands/create-comment/create-comment-command.handler';
 import { DeleteCommentCommandHandler } from '@/domain/Comment/commands/delete-comment/delete-comment-command.handler';
 
@@ -30,6 +35,7 @@ export interface ICommandBusSetup {
   referenceTypeRepository: IReferenceTypeRepository;
   followRepository: IFollowRepository;
   commentRepository: ICommentRepository;
+  followEventPublisher: IFollowEventPublisher;
 }
 
 export function setupCommandBus(setup: ICommandBusSetup): CommandBus {
@@ -74,11 +80,31 @@ export function setupCommandBus(setup: ICommandBusSetup): CommandBus {
   );
   commandBus.registerHandler(
     'FollowUserCommand',
-    new FollowUserCommandHandler(setup.followRepository, setup.userRepository),
+    new FollowUserCommandHandler(
+      setup.followRepository,
+      setup.userRepository,
+      setup.followEventPublisher,
+    ),
   );
   commandBus.registerHandler(
     'UnfollowUserCommand',
-    new UnfollowUserCommandHandler(setup.followRepository),
+    new UnfollowUserCommandHandler(setup.followRepository, setup.followEventPublisher),
+  );
+  commandBus.registerHandler(
+    'AcceptFollowRequestCommand',
+    new AcceptFollowRequestCommandHandler(setup.followRepository, setup.followEventPublisher),
+  );
+  commandBus.registerHandler(
+    'DeclineFollowRequestCommand',
+    new DeclineFollowRequestCommandHandler(setup.followRepository, setup.followEventPublisher),
+  );
+  commandBus.registerHandler(
+    'RemoveFollowerCommand',
+    new RemoveFollowerCommandHandler(setup.followRepository, setup.followEventPublisher),
+  );
+  commandBus.registerHandler(
+    'UpdateFollowSettingsCommand',
+    new UpdateFollowSettingsCommandHandler(setup.userRepository, setup.followEventPublisher),
   );
   commandBus.registerHandler(
     'CreateCommentCommand',

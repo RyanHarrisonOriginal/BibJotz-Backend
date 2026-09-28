@@ -1,59 +1,44 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
-import { canViewNote } from '@/domain/Note/can-view-note';
+import { canViewNote, FollowGrant, NoteViewer } from '@/domain/Note/can-view-note';
+import { NoteAudience } from '@/domain/Note/note-audience';
 
 const authorId = 10;
-const viewerId = 20;
+const otherId = 20;
 
-const cases: Array<{
-  role: 'owner' | 'follower' | 'non-follower';
-  isProfileVisible: boolean;
-  isFeedShared: boolean;
-  expected: boolean;
-}> = [
-  { role: 'owner', isProfileVisible: true, isFeedShared: true, expected: true },
-  { role: 'owner', isProfileVisible: true, isFeedShared: false, expected: true },
-  { role: 'owner', isProfileVisible: false, isFeedShared: true, expected: true },
-  { role: 'owner', isProfileVisible: false, isFeedShared: false, expected: true },
-  { role: 'follower', isProfileVisible: true, isFeedShared: true, expected: true },
-  { role: 'follower', isProfileVisible: true, isFeedShared: false, expected: true },
-  { role: 'follower', isProfileVisible: false, isFeedShared: true, expected: true },
-  { role: 'follower', isProfileVisible: false, isFeedShared: false, expected: false },
-  { role: 'non-follower', isProfileVisible: true, isFeedShared: true, expected: true },
-  { role: 'non-follower', isProfileVisible: true, isFeedShared: false, expected: true },
-  { role: 'non-follower', isProfileVisible: false, isFeedShared: true, expected: false },
-  { role: 'non-follower', isProfileVisible: false, isFeedShared: false, expected: false },
+const viewers: { role: string; viewer: NoteViewer; grant: FollowGrant }[] = [
+  { role: 'owner', viewer: { id: authorId }, grant: 'NONE' },
+  { role: 'accepted follower', viewer: { id: otherId }, grant: 'ACCEPTED' },
+  { role: 'pending requester', viewer: { id: otherId }, grant: 'PENDING' },
+  { role: 'stranger', viewer: { id: otherId }, grant: 'NONE' },
 ];
 
+const audiences: NoteAudience[] = ['PRIVATE', 'FOLLOWERS', 'PUBLIC'];
+
+function expected(role: string, audience: NoteAudience): boolean {
+  if (role === 'owner') return true;
+  if (audience === 'PUBLIC') return true;
+  if (audience === 'FOLLOWERS' && role === 'accepted follower') return true;
+  return false;
+}
+
 describe('canViewNote', () => {
-  for (const testCase of cases) {
-    it(`${testCase.role}, profileVisible=${testCase.isProfileVisible}, feedShared=${testCase.isFeedShared}`, () => {
-      const viewer = { id: testCase.role === 'owner' ? authorId : viewerId };
-      const isFollower = testCase.role === 'follower';
-      const actual = canViewNote(
-        viewer,
-        {
-          userId: authorId,
-          isProfileVisible: testCase.isProfileVisible,
-          isFeedShared: testCase.isFeedShared,
-        },
-        isFollower,
-      );
-      assert.equal(actual, testCase.expected);
-    });
+  for (const viewerCase of viewers) {
+    for (const audience of audiences) {
+      it(`${viewerCase.role} x ${audience}`, () => {
+        assert.equal(
+          canViewNote(viewerCase.viewer, { userId: authorId, audience }, viewerCase.grant),
+          expected(viewerCase.role, audience),
+        );
+      });
+    }
   }
 
-  it('null viewer can see a profile-visible note', () => {
-    assert.equal(
-      canViewNote(null, { userId: authorId, isProfileVisible: true, isFeedShared: false }, false),
-      true,
-    );
+  it('null viewer can read a public note', () => {
+    assert.equal(canViewNote(null, { userId: authorId, audience: 'PUBLIC' }, 'NONE'), true);
   });
 
-  it('null viewer cannot see a feed-shared note', () => {
-    assert.equal(
-      canViewNote(null, { userId: authorId, isProfileVisible: false, isFeedShared: true }, false),
-      false,
-    );
+  it('null viewer cannot read a followers note', () => {
+    assert.equal(canViewNote(null, { userId: authorId, audience: 'FOLLOWERS' }, 'ACCEPTED'), false);
   });
 });

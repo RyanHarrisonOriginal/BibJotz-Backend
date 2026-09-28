@@ -15,7 +15,10 @@ export interface IUpdateUserRequestDTO {
 
 export interface IGetUserParamsDTO {
   id?: string;
+  viewerUserId?: string;
 }
+
+export type ViewerFollowStatus = 'NONE' | 'PENDING' | 'ACCEPTED';
 
 export interface IUserResponseDTO {
   id: number;
@@ -27,6 +30,13 @@ export interface IUserResponseDTO {
   updatedAt: string;
 }
 
+/** GET /users/me. */
+export interface IUserMeResponseDTO extends IUserResponseDTO {
+  followPolicy: 'OPEN' | 'APPROVAL';
+  followListsPublic: boolean;
+  pendingRequestCount: number;
+}
+
 /** GET /users/:id. Public profile; clerkUserId stays off this response. */
 export interface IUserProfileResponseDTO {
   id: number;
@@ -35,4 +45,8 @@ export interface IUserProfileResponseDTO {
   bio: string | null;
   createdAt: string;
   updatedAt: string;
+  followerCount: number;
+  followingCount: number;
+  followPolicy: 'OPEN' | 'APPROVAL';
+  viewerFollowStatus: ViewerFollowStatus;
 }

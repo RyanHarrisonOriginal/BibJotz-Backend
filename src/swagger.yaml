@@ -151,6 +151,31 @@ paths:
       tags:
         - Users
       $ref: './infrastructure/http/routes/swagger-docs/Users/user-me-get.swagger.yaml'
+  /api/v1/users/me/follow-requests:
+    get:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-follow-requests-get.swagger.yaml'
+  /api/v1/users/me/follow-requests/{followerId}/accept:
+    post:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-follow-request-accept.swagger.yaml'
+  /api/v1/users/me/follow-requests/{followerId}/decline:
+    post:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-follow-request-decline.swagger.yaml'
+  /api/v1/users/me/followers/{followerId}:
+    delete:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-remove-follower.swagger.yaml'
+  /api/v1/users/me/follow-settings:
+    patch:
+      tags:
+        - Users
+      $ref: './infrastructure/http/routes/swagger-docs/Users/user-follow-settings-patch.swagger.yaml'
   /api/v1/users:
     post:
       tags:

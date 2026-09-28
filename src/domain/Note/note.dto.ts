@@ -1,4 +1,5 @@
 import { NoteScope, VerseSpan } from '@/domain/shared/value-objects/scripture-reference';
+import { NoteAudience } from '@/domain/Note/note-audience';
 
 export interface ICreateNoteRequestDTO {
   userId: number;
@@ -10,6 +11,7 @@ export interface ICreateNoteRequestDTO {
   endVerse?: number | null;
   verses?: number[] | string | null;
   referenceIds?: number[] | string | null;
+  audience?: string | null;
   isProfileVisible?: boolean;
   isFeedShared?: boolean;
 }
@@ -35,6 +37,7 @@ export interface IUpdateNoteRequestDTO {
   startVerse?: number | null;
   endVerse?: number | null;
   verses?: number[] | string | null;
+  audience?: string | null;
   isProfileVisible?: boolean;
   isFeedShared?: boolean;
   actorUserId?: number;
@@ -69,6 +72,7 @@ export interface IGetFeedQueryParamsDTO {
 
 export interface IListProfileNotesQueryParamsDTO {
   userId?: string | string[];
+  viewerUserId?: string | string[];
 }
 
 export interface INoteStreakResponseDTO {
@@ -103,8 +107,7 @@ export interface INoteResponseDTO {
   scope: NoteScope;
   referenceLabel: string;
   references: ITaggedReferenceResponseDTO[];
-  isProfileVisible: boolean;
-  isFeedShared: boolean;
+  audience: NoteAudience;
   author?: INoteAuthorResponseDTO;
   createdAt: string;
   updatedAt: string;

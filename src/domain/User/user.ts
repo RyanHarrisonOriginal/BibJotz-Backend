@@ -1,6 +1,8 @@
 import { BaseEntity } from '@/domain/shared/base-entity';
 import { ValidationError } from '@/domain/shared/errors/validation-error';
 
+export type FollowPolicy = 'OPEN' | 'APPROVAL';
+
 export class User extends BaseEntity {
   constructor(
     id: number | null,
@@ -10,6 +12,8 @@ export class User extends BaseEntity {
     private bio: string | null = null,
     createdAt: Date = new Date(),
     updatedAt: Date = new Date(),
+    private followPolicy: FollowPolicy = 'APPROVAL',
+    private followListsPublic: boolean = false,
   ) {
     super(id, createdAt, updatedAt);
     if (!displayName?.trim()) throw new ValidationError('displayName is required');
@@ -29,6 +33,36 @@ export class User extends BaseEntity {
 
   getBio(): string | null {
     return this.bio;
+  }
+
+  getFollowPolicy(): FollowPolicy {
+    return this.followPolicy;
+  }
+
+  getFollowListsPublic(): boolean {
+    return this.followListsPublic;
+  }
+
+  /**
+   * Applies only the fields that were sent.
+   * Returns whether followPolicy actually changed, and the policy before the change.
+   */
+  changeFollowSettings(input: { followPolicy?: FollowPolicy; followListsPublic?: boolean }): {
+    policyChanged: boolean;
+    previousPolicy: FollowPolicy;
+  } {
+    const previousPolicy = this.followPolicy;
+    let changed = false;
+    if (input.followPolicy !== undefined && input.followPolicy !== this.followPolicy) {
+      this.followPolicy = input.followPolicy;
+      changed = true;
+    }
+    if (input.followListsPublic !== undefined && input.followListsPublic !== this.followListsPublic) {
+      this.followListsPublic = input.followListsPublic;
+      changed = true;
+    }
+    if (changed) this.touch();
+    return { policyChanged: previousPolicy !== this.followPolicy, previousPolicy };
   }
 
   updateProfile(options: {

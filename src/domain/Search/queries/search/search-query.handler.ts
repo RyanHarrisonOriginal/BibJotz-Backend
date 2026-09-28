@@ -30,7 +30,7 @@ export class SearchQueryHandler implements IQueryHandler<SearchQuery, ISearchRes
       query.type === 'people'
         ? Promise.resolve([] as INoteResponseDTO[])
         : this.noteRepository
-            .searchPublic({ query: query.q, limit: query.limit })
+            .searchVisible({ query: query.q, limit: query.limit, viewerUserId: query.viewerUserId })
             .then((rows) => NoteMapper.mapRawNotesToResponseDTO(rows));
 
     const [people, notes] = await Promise.all([peoplePromise, notesPromise]);

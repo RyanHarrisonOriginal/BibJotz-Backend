@@ -8,6 +8,7 @@ import {
   IProfileNotesFilters,
 } from '@/domain/Note/note-repository.interface';
 import { NoteMapper } from '@/domain/Note/note.mapper';
+import { visibleNoteWhere } from '@/infrastructure/persistence/postgres/visible-note-where';
 
 const noteInclude = {
   references: {
@@ -48,8 +49,7 @@ export class NotePostgresRepository implements INoteRepository {
       endVerse: (data.endVerse as number | null) ?? null,
       verseSpans: data.verseSpans == null ? Prisma.DbNull : (data.verseSpans as Prisma.InputJsonValue),
       scope: data.scope as 'BOOK' | 'CHAPTER' | 'VERSE' | 'VERSE_RANGE' | 'VERSE_SET',
-      isProfileVisible: Boolean(data.isProfileVisible),
-      isFeedShared: Boolean(data.isFeedShared),
+      audience: data.audience as 'PRIVATE' | 'FOLLOWERS' | 'PUBLIC',
     };
 
     return this.prisma.$transaction(async (tx) => {
@@ -118,11 +118,10 @@ export class NotePostgresRepository implements INoteRepository {
     });
   }
 
-  async findProfileVisible(filters: IProfileNotesFilters): Promise<unknown[]> {
+  async findVisibleProfileNotes(filters: IProfileNotesFilters): Promise<unknown[]> {
     return this.prisma.note.findMany({
       where: {
-        userId: filters.userId,
-        isProfileVisible: true,
+        AND: [{ userId: filters.authorUserId }, visibleNoteWhere(filters.viewerUserId)],
       },
       include: noteWithAuthorInclude,
       orderBy: { createdAt: 'desc' },
@@ -134,12 +133,17 @@ export class NotePostgresRepository implements INoteRepository {
 
     return this.prisma.note.findMany({
       where: {
-        isFeedShared: true,
-        user: {
-          followers: {
-            some: { followerId: filters.viewerUserId },
+        AND: [
+          { NOT: { userId: filters.viewerUserId } },
+          {
+            user: {
+              followers: {
+                some: { followerId: filters.viewerUserId, status: 'ACCEPTED' },
+              },
+            },
           },
-        },
+          visibleNoteWhere(filters.viewerUserId),
+        ],
       },
       include: noteWithAuthorInclude,
       orderBy: { createdAt: 'desc' },
@@ -147,16 +151,14 @@ export class NotePostgresRepository implements INoteRepository {
     });
   }
 
-  async searchPublic(filters: INoteSearchFilters): Promise<unknown[]> {
+  async searchVisible(filters: INoteSearchFilters): Promise<unknown[]> {
     const q = filters.query.trim();
     if (!q) return [];
 
     return this.prisma.note.findMany({
       where: {
         AND: [
-          {
-            OR: [{ isProfileVisible: true }, { isFeedShared: true }],
-          },
+          visibleNoteWhere(filters.viewerUserId),
           {
             OR: [
               { content: { contains: q, mode: 'insensitive' } },

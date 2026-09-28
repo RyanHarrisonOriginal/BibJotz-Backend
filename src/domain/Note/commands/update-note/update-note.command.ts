@@ -2,6 +2,7 @@ import { ICommand } from '@/domain/shared/interfaces/command.interface';
 import { ValidationError } from '@/domain/shared/errors/validation-error';
 import { IUpdateNoteRequestDTO } from '@/domain/Note/note.dto';
 import { parseActorUserId } from '@/domain/shared/assert-owner';
+import { NoteAudience, parseNoteAudience, rejectLegacyVisibilityFields } from '@/domain/Note/note-audience';
 
 function parseVerseList(raw: number[] | string | null | undefined): number[] | null | undefined {
   if (raw === undefined) return undefined;
@@ -11,14 +12,6 @@ function parseVerseList(raw: number[] | string | null | undefined): number[] | n
     .map((value) => parseInt(String(value).trim(), 10))
     .filter((n) => !Number.isNaN(n) && n >= 1);
   return verses.length > 0 ? verses : null;
-}
-
-function parseOptionalBool(value: unknown): boolean | undefined {
-  if (value === undefined) return undefined;
-  if (typeof value === 'boolean') return value;
-  if (value === 'true' || value === '1') return true;
-  if (value === 'false' || value === '0') return false;
-  throw new ValidationError('Visibility flags must be boolean');
 }
 
 export class UpdateNoteCommand implements ICommand {
@@ -34,11 +27,11 @@ export class UpdateNoteCommand implements ICommand {
     public readonly startVerse: number | null | undefined,
     public readonly endVerse: number | null | undefined,
     public readonly verses: number[] | null | undefined,
-    public readonly isProfileVisible: boolean | undefined,
-    public readonly isFeedShared: boolean | undefined,
+    public readonly audience: NoteAudience | undefined,
   ) {}
 
   static from(dto: IUpdateNoteRequestDTO): UpdateNoteCommand {
+    rejectLegacyVisibilityFields(dto);
     const id = parseInt(String(dto.id ?? ''), 10);
     if (Number.isNaN(id) || id < 1) throw new ValidationError('id is required');
     const actorUserId = parseActorUserId(dto.actorUserId);
@@ -51,10 +44,10 @@ export class UpdateNoteCommand implements ICommand {
       dto.startVerse !== undefined ||
       dto.endVerse !== undefined ||
       dto.verses !== undefined;
-    const hasVisibility = dto.isProfileVisible !== undefined || dto.isFeedShared !== undefined;
+    const hasAudience = dto.audience !== undefined;
 
-    if (!hasContent && !hasReference && !hasVisibility) {
-      throw new ValidationError('Provide content, scripture reference, and/or visibility flags to update');
+    if (!hasContent && !hasReference && !hasAudience) {
+      throw new ValidationError('Provide content, scripture reference, and/or audience to update');
     }
 
     return new UpdateNoteCommand(
@@ -67,8 +60,7 @@ export class UpdateNoteCommand implements ICommand {
       dto.startVerse,
       dto.endVerse,
       parseVerseList(dto.verses),
-      parseOptionalBool(dto.isProfileVisible),
-      parseOptionalBool(dto.isFeedShared),
+      hasAudience ? parseNoteAudience(dto.audience) : undefined,
     );
   }
 }

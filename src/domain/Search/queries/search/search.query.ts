@@ -16,6 +16,7 @@ export class SearchQuery implements IQuery {
     public readonly q: string,
     public readonly type: SearchType,
     public readonly limit: number,
+    public readonly viewerUserId: number,
   ) {}
 
   static from(dto: ISearchQueryParamsDTO): SearchQuery {
@@ -32,6 +33,11 @@ export class SearchQuery implements IQuery {
     const limit = rawLimit != null ? parseInt(String(rawLimit), 10) : 20;
     if (Number.isNaN(limit) || limit < 1) throw new ValidationError('limit must be a positive integer');
 
-    return new SearchQuery(q, rawType, Math.min(limit, 50));
+    const viewerUserId = parseInt(String(first(dto.viewerUserId) ?? ''), 10);
+    if (Number.isNaN(viewerUserId) || viewerUserId < 1) {
+      throw new ValidationError('viewerUserId is required');
+    }
+
+    return new SearchQuery(q, rawType, Math.min(limit, 50), viewerUserId);
   }
 }

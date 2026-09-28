@@ -1,0 +1,10 @@
+summary: Remove an accepted follower
+parameters:
+  - name: followerId
+    in: path
+    required: true
+    schema:
+      type: integer
+responses:
+  '204':
+    description: Follower removed, or there was no accepted follower

@@ -9,7 +9,8 @@ export interface INoteListFilters {
 }
 
 export interface IProfileNotesFilters {
-  userId: number;
+  authorUserId: number;
+  viewerUserId: number;
 }
 
 export interface IFeedNotesFilters {
@@ -18,6 +19,7 @@ export interface IFeedNotesFilters {
 }
 
 export interface INoteSearchFilters {
+  viewerUserId: number;
   query: string;
   limit: number;
 }
@@ -32,9 +34,9 @@ export interface INoteRepository {
   /** Notes linked to a reference through NoteReference. Visibility is not filtered here. */
   findManyByReferenceId(referenceId: number): Promise<unknown[]>;
   findMany(filters: INoteListFilters): Promise<unknown[]>;
-  findProfileVisible(filters: IProfileNotesFilters): Promise<unknown[]>;
+  findVisibleProfileNotes(filters: IProfileNotesFilters): Promise<unknown[]>;
   findFeedForUser(filters: IFeedNotesFilters): Promise<unknown[]>;
-  searchPublic(filters: INoteSearchFilters): Promise<unknown[]>;
+  searchVisible(filters: INoteSearchFilters): Promise<unknown[]>;
   /** Distinct local calendar days (YYYY-MM-DD) with a note, newest first. */
   findDistinctCreatedDays(userId: number, timeZone: string): Promise<string[]>;
   deleteById(id: number): Promise<void>;

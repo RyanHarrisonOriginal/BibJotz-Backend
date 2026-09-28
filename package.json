@@ -8,7 +8,7 @@
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/index.ts",
     "lint": "eslint src/**/*.ts",
-    "test": "node --require ts-node/register/transpile-only --require tsconfig-paths/register --test src/domain/Note/can-view-note.test.ts src/infrastructure/http/note-reference-reads.test.ts src/infrastructure/http/require-auth.test.ts",
+    "test": "node --require ts-node/register/transpile-only --require tsconfig-paths/register --test src/domain/Note/can-view-note.test.ts src/domain/Note/note-audience.test.ts src/infrastructure/persistence/postgres/visible-note-where.test.ts src/infrastructure/http/note-reference-reads.test.ts src/infrastructure/http/visibility-policy.test.ts src/infrastructure/http/follow-lists.test.ts src/infrastructure/http/follow-flow.test.ts src/infrastructure/http/require-auth.test.ts",
     "db:generate": "npm run db:generate:bible && npm run db:generate:app",
     "db:generate:bible": "prisma generate --schema prisma/bible/schema.prisma",
     "db:generate:app": "prisma generate --schema prisma/app/schema.prisma",

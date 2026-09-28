@@ -1,0 +1,32 @@
+summary: Update follow settings
+description: >
+  APPROVAL to OPEN accepts every pending request in the same transaction.
+  OPEN to APPROVAL leaves existing accepted follows unchanged.
+  Omitting followListsPublic leaves it unchanged.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          followPolicy:
+            type: string
+            enum: [OPEN, APPROVAL]
+          followListsPublic:
+            type: boolean
+responses:
+  '200':
+    description: Updated settings
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            followPolicy:
+              type: string
+              enum: [OPEN, APPROVAL]
+            followListsPublic:
+              type: boolean
+  '400':
+    description: Validation error

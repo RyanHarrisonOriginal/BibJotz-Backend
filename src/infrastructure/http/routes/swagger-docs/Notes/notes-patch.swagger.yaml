@@ -31,10 +31,9 @@ requestBody:
             type: array
             items:
               type: integer
-          isProfileVisible:
-            type: boolean
-          isFeedShared:
-            type: boolean
+          audience:
+            type: string
+            enum: [PRIVATE, FOLLOWERS, PUBLIC]
 responses:
   '200':
     description: Updated note

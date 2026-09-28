@@ -1,6 +1,7 @@
 import { Note } from '@/domain/Note/note';
 import { ScriptureReference } from '@/domain/shared/value-objects/scripture-reference';
 import { TaggedReference } from '@/domain/Note/tagged-reference';
+import { NoteAudience } from '@/domain/Note/note-audience';
 
 export interface INoteCreationProps {
   id: number | null;
@@ -8,8 +9,7 @@ export interface INoteCreationProps {
   content: string;
   scriptureReference: ScriptureReference;
   taggedReferences?: TaggedReference[];
-  isProfileVisible?: boolean;
-  isFeedShared?: boolean;
+  audience?: NoteAudience;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -22,8 +22,7 @@ export class NoteFactory {
       data.content,
       data.scriptureReference,
       data.taggedReferences ?? [],
-      data.isProfileVisible ?? false,
-      data.isFeedShared ?? false,
+      data.audience ?? 'PRIVATE',
       data.createdAt ?? new Date(),
       data.updatedAt ?? new Date(),
     );

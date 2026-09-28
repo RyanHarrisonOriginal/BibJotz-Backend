@@ -10,7 +10,7 @@ parameters:
     required: false
     schema:
       type: integer
-    description: Needed to view comments on feed-shared (non-profile) notes
+    description: Authenticated viewer. Hidden notes return the same 404 as a missing note.
 responses:
   '200':
     description: Comments

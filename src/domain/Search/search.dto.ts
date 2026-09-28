@@ -4,6 +4,7 @@ export interface ISearchQueryParamsDTO {
   q?: string | string[];
   type?: string | string[];
   limit?: string | string[];
+  viewerUserId?: string | string[];
 }
 
 export interface ISearchResponseDTO {

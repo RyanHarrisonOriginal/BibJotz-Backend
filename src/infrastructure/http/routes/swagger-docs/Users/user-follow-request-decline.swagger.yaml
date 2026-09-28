@@ -1,0 +1,12 @@
+summary: Decline a follow request
+parameters:
+  - name: followerId
+    in: path
+    required: true
+    schema:
+      type: integer
+responses:
+  '204':
+    description: Request removed
+  '404':
+    description: No pending request from that user

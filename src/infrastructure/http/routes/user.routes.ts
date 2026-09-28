@@ -16,6 +16,19 @@ export const userRoutes = (
   // Provision / resolve current user from Clerk token (no DB user required yet)
   router.post('/me', clerkAuth, asyncHandler(controller.ensureMe));
   router.get('/me', requireAuth, asyncHandler(controller.getMe));
+  router.get('/me/follow-requests', requireAuth, asyncHandler(controller.listFollowRequests));
+  router.post(
+    '/me/follow-requests/:followerId/accept',
+    requireAuth,
+    asyncHandler(controller.acceptFollowRequest),
+  );
+  router.post(
+    '/me/follow-requests/:followerId/decline',
+    requireAuth,
+    asyncHandler(controller.declineFollowRequest),
+  );
+  router.delete('/me/followers/:followerId', requireAuth, asyncHandler(controller.removeFollower));
+  router.patch('/me/follow-settings', requireAuth, asyncHandler(controller.updateFollowSettings));
 
   // Legacy create alias — still requires Clerk token; clerkUserId comes from JWT
   router.post('/', clerkAuth, asyncHandler(controller.createUser));

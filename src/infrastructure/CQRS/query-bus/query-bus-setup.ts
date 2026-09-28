@@ -22,6 +22,8 @@ import { GetReferenceQueryHandler } from '@/domain/Reference/queries/get-referen
 import { ListReferencesQueryHandler } from '@/domain/Reference/queries/list-references/list-references-query.handler';
 import { ListFollowersQueryHandler } from '@/domain/Follow/queries/list-followers/list-followers-query.handler';
 import { ListFollowingQueryHandler } from '@/domain/Follow/queries/list-following/list-following-query.handler';
+import { ListFollowRequestsQueryHandler } from '@/domain/Follow/queries/list-follow-requests/list-follow-requests-query.handler';
+import { GetCurrentUserQueryHandler } from '@/domain/User/queries/get-current-user/get-current-user-query.handler';
 import { ListCommentsQueryHandler } from '@/domain/Comment/queries/list-comments/list-comments-query.handler';
 import { SearchQueryHandler } from '@/domain/Search/queries/search/search-query.handler';
 
@@ -54,7 +56,18 @@ export function setupQueryBus(setup: IQueryBusSetup): QueryBus {
     'ListProfileNotesQuery',
     new ListProfileNotesQueryHandler(setup.noteRepository),
   );
-  queryBus.registerHandler('GetUserQuery', new GetUserQueryHandler(setup.userRepository));
+  queryBus.registerHandler(
+    'GetUserQuery',
+    new GetUserQueryHandler(setup.userRepository, setup.followRepository),
+  );
+  queryBus.registerHandler(
+    'GetCurrentUserQuery',
+    new GetCurrentUserQueryHandler(setup.userRepository, setup.followRepository),
+  );
+  queryBus.registerHandler(
+    'ListFollowRequestsQuery',
+    new ListFollowRequestsQueryHandler(setup.followRepository),
+  );
   queryBus.registerHandler(
     'ListReferenceTypesQuery',
     new ListReferenceTypesQueryHandler(setup.referenceTypeRepository),
@@ -70,11 +83,11 @@ export function setupQueryBus(setup: IQueryBusSetup): QueryBus {
   queryBus.registerHandler('ListReferencesQuery', new ListReferencesQueryHandler(setup.referenceRepository));
   queryBus.registerHandler(
     'ListFollowersQuery',
-    new ListFollowersQueryHandler(setup.followRepository),
+    new ListFollowersQueryHandler(setup.followRepository, setup.userRepository),
   );
   queryBus.registerHandler(
     'ListFollowingQuery',
-    new ListFollowingQueryHandler(setup.followRepository),
+    new ListFollowingQueryHandler(setup.followRepository, setup.userRepository),
   );
   queryBus.registerHandler(
     'ListCommentsQuery',

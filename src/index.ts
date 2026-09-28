@@ -27,6 +27,7 @@ import { ReferenceTypePostgresRepository } from '@/infrastructure/persistence/po
 import { UserPostgresRepository } from '@/infrastructure/persistence/postgres/user-postgres-repository';
 import { FollowPostgresRepository } from '@/infrastructure/persistence/postgres/follow-postgres-repository';
 import { CommentPostgresRepository } from '@/infrastructure/persistence/postgres/comment-postgres-repository';
+import { NoopFollowEventPublisher } from '@/infrastructure/adapters/follow/noop-follow-event-publisher';
 
 dotenv.config();
 
@@ -64,6 +65,7 @@ async function startServer(): Promise<void> {
       referenceTypeRepository,
       followRepository,
       commentRepository,
+      followEventPublisher: new NoopFollowEventPublisher(),
     });
     const queryBus = setupQueryBus({
       bibleRepository,

@@ -1,0 +1,12 @@
+summary: Accept a follow request
+parameters:
+  - name: followerId
+    in: path
+    required: true
+    schema:
+      type: integer
+responses:
+  '200':
+    description: Accepted follow, or the existing accepted follow
+  '404':
+    description: No request from that user

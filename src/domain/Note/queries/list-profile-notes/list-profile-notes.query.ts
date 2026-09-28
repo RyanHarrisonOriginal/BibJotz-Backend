@@ -10,11 +10,18 @@ function first(value: string | string[] | undefined): string | undefined {
 export class ListProfileNotesQuery implements IQuery {
   readonly queryType = 'ListProfileNotesQuery';
 
-  constructor(public readonly userId: number) {}
+  constructor(
+    public readonly authorUserId: number,
+    public readonly viewerUserId: number,
+  ) {}
 
   static from(dto: IListProfileNotesQueryParamsDTO): ListProfileNotesQuery {
-    const userId = parseInt(String(first(dto.userId) ?? ''), 10);
-    if (Number.isNaN(userId) || userId < 1) throw new ValidationError('userId is required');
-    return new ListProfileNotesQuery(userId);
+    const authorUserId = parseInt(String(first(dto.userId) ?? ''), 10);
+    if (Number.isNaN(authorUserId) || authorUserId < 1) throw new ValidationError('userId is required');
+    const viewerUserId = parseInt(String(first(dto.viewerUserId) ?? ''), 10);
+    if (Number.isNaN(viewerUserId) || viewerUserId < 1) {
+      throw new ValidationError('viewerUserId is required');
+    }
+    return new ListProfileNotesQuery(authorUserId, viewerUserId);
   }
 }

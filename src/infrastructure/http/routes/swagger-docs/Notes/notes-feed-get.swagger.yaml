@@ -1,11 +1,11 @@
-summary: Home feed of notes shared by people you follow
+summary: Home feed of notes from people the viewer follows
 parameters:
   - name: userId
     in: query
     required: true
     schema:
       type: integer
-    description: Viewer user id (follower)
+    description: Authenticated viewer. Only notes from accepted follows. Own notes are omitted.
   - name: limit
     in: query
     required: false

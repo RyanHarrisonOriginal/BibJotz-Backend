@@ -1,4 +1,4 @@
-import { UserFollow } from '@/domain/Follow/user-follow';
+import { FollowStatus, UserFollow } from '@/domain/Follow/user-follow';
 import { IFollowResponseDTO, IFollowUserSummaryDTO } from '@/domain/Follow/follow.dto';
 
 type RawFollow = {
@@ -6,6 +6,7 @@ type RawFollow = {
   followerId: number;
   followingId: number;
   createdAt: Date;
+  status?: FollowStatus;
   follower?: {
     id: number;
     displayName: string;
@@ -21,7 +22,7 @@ type RawFollow = {
 export class FollowMapper {
   static mapFollowToDomain(raw: unknown): UserFollow {
     const row = raw as RawFollow;
-    return new UserFollow(row.id, row.followerId, row.followingId, row.createdAt);
+    return new UserFollow(row.id, row.followerId, row.followingId, row.createdAt, row.status ?? 'ACCEPTED');
   }
 
   static mapFollowToResponseDTO(follow: UserFollow): IFollowResponseDTO {
@@ -29,6 +30,7 @@ export class FollowMapper {
       id: follow.getId() ?? 0,
       followerId: follow.getFollowerId(),
       followingId: follow.getFollowingId(),
+      status: follow.getStatus(),
       createdAt: follow.getCreatedAt().toISOString(),
     };
   }

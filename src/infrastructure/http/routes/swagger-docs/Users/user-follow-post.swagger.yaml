@@ -1,4 +1,7 @@
 summary: Follow a user
+description: >
+  An OPEN account is followed immediately (ACCEPTED). An APPROVAL account creates a PENDING request.
+  Repeating the request returns the existing row and does not change its status.
 parameters:
   - name: id
     in: path
@@ -6,22 +9,13 @@ parameters:
     schema:
       type: integer
     description: User to follow
-requestBody:
-  required: true
-  content:
-    application/json:
-      schema:
-        type: object
-        required: [followerId]
-        properties:
-          followerId:
-            type: integer
 responses:
   '201':
-    description: Follow created
+    description: Follow or request created
+  '200':
+    description: Existing follow returned unchanged
   '400':
-    description: Validation error or already following
+    description: Cannot follow yourself
   '404':
     description: User not found
-  '500':
-    description: Server error
+

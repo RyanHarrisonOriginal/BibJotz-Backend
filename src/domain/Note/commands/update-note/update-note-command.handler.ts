@@ -43,11 +43,8 @@ export class UpdateNoteCommandHandler implements ICommandHandler<UpdateNoteComma
       );
     }
 
-    if (command.isProfileVisible !== undefined || command.isFeedShared !== undefined) {
-      note.setVisibility({
-        isProfileVisible: command.isProfileVisible,
-        isFeedShared: command.isFeedShared,
-      });
+    if (command.audience !== undefined) {
+      note.setAudience(command.audience);
     }
 
     const saved = await this.noteRepository.save(note);

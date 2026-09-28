@@ -35,8 +35,7 @@ type StoredNote = {
   startVerse: number | null;
   endVerse: number | null;
   verseSpans: null;
-  isProfileVisible: boolean;
-  isFeedShared: boolean;
+  audience: 'PRIVATE' | 'FOLLOWERS' | 'PUBLIC';
   createdAt: Date;
   updatedAt: Date;
   references: Array<{
@@ -90,9 +89,9 @@ class MemoryFollows {
   pairs = new Set<string>();
   lookups = 0;
 
-  async findByPair(followerId: number, followingId: number): Promise<{ id: number } | null> {
+  async findByPair(followerId: number, followingId: number): Promise<{ id: number; status: 'ACCEPTED' } | null> {
     this.lookups += 1;
-    return this.pairs.has(`${followerId}:${followingId}`) ? { id: 1 } : null;
+    return this.pairs.has(`${followerId}:${followingId}`) ? { id: 1, status: 'ACCEPTED' } : null;
   }
 
   follow(followerId: number, followingId: number): void {
@@ -106,6 +105,7 @@ function note(input: {
   content: string;
   isProfileVisible?: boolean;
   isFeedShared?: boolean;
+  audience?: 'PRIVATE' | 'FOLLOWERS' | 'PUBLIC';
   referenceId?: number;
 }): StoredNote {
   return {
@@ -118,8 +118,9 @@ function note(input: {
     startVerse: 16,
     endVerse: 16,
     verseSpans: null,
-    isProfileVisible: input.isProfileVisible ?? false,
-    isFeedShared: input.isFeedShared ?? false,
+    audience:
+      input.audience ??
+      (input.isProfileVisible ? 'PUBLIC' : input.isFeedShared ? 'FOLLOWERS' : 'PRIVATE'),
     createdAt: NOW,
     updatedAt: NOW,
     references: input.referenceId == null ? [] : [
@@ -263,8 +264,7 @@ describe('single-record read authorization', { concurrency: false }, () => {
 
       assert.equal(result.status, 200);
       assert.equal(result.body.content, 'owner private note');
-      assert.equal(result.body.isProfileVisible, false);
-      assert.equal(result.body.isFeedShared, false);
+      assert.equal(result.body.audience, 'PRIVATE');
       assert.equal(harness.follows.lookups, 0);
     });
 
@@ -436,8 +436,7 @@ describe('single-record read authorization', { concurrency: false }, () => {
       assert.equal(visible.status, 200);
       assert.equal(harness.follows.lookups, 0);
 
-      shared.isProfileVisible = false;
-      shared.isFeedShared = false;
+      shared.audience = 'PRIVATE';
 
       const hidden = await getJson(`${harness.baseUrl}/api/v1/references/85`, VIEWER_ID);
       const missing = await getJson(`${harness.baseUrl}/api/v1/references/${MISSING_ID}`, VIEWER_ID);

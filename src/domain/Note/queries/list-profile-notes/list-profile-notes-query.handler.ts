@@ -10,7 +10,10 @@ export class ListProfileNotesQueryHandler
   constructor(private readonly noteRepository: INoteRepository) {}
 
   async execute(query: ListProfileNotesQuery): Promise<INoteResponseDTO[]> {
-    const rows = await this.noteRepository.findProfileVisible({ userId: query.userId });
+    const rows = await this.noteRepository.findVisibleProfileNotes({
+      authorUserId: query.authorUserId,
+      viewerUserId: query.viewerUserId,
+    });
     return NoteMapper.mapRawNotesToResponseDTO(rows);
   }
 }

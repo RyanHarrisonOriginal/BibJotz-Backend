@@ -1,12 +1,12 @@
 import { ICommandHandler } from '@/domain/shared/interfaces/command-handler.interface';
 import { NotFoundError } from '@/domain/shared/errors/not-found-error';
-import { ValidationError } from '@/domain/shared/errors/validation-error';
 import { NoteComment } from '@/domain/Comment/note-comment';
 import { ICommentRepository } from '@/domain/Comment/comment-repository.interface';
 import { NoteMapper } from '@/domain/Note/note.mapper';
 import { INoteRepository } from '@/domain/Note/note-repository.interface';
 import { IUserRepository } from '@/domain/User/user-repository.interface';
 import { IFollowRepository } from '@/domain/Follow/follow-repository.interface';
+import { canViewNote, resolveFollowGrant, viewableNoteFrom } from '@/domain/Note/can-view-note';
 import { CreateCommentCommand } from './create-comment.command';
 
 export class CreateCommentCommandHandler implements ICommandHandler<CreateCommentCommand, unknown> {
@@ -26,24 +26,13 @@ export class CreateCommentCommandHandler implements ICommandHandler<CreateCommen
     if (!userRow) throw new NotFoundError('User not found');
 
     const note = NoteMapper.mapNoteToDomain(noteRow);
-    const canComment = await this.canCommentOnNote(note.getUserId(), command.userId, note);
-    if (!canComment) {
-      throw new ValidationError('You cannot comment on this note');
+    const view = viewableNoteFrom(note);
+    const followGrant = await resolveFollowGrant(this.followRepository, command.userId, view);
+    if (!canViewNote({ id: command.userId }, view, followGrant)) {
+      throw new NotFoundError('Note not found');
     }
 
     const comment = new NoteComment(null, command.noteId, command.userId, command.content);
     return this.commentRepository.save(comment);
-  }
-
-  private async canCommentOnNote(
-    authorId: number,
-    commenterId: number,
-    note: { getIsProfileVisible(): boolean; getIsFeedShared(): boolean },
-  ): Promise<boolean> {
-    if (authorId === commenterId) return true;
-    if (note.getIsProfileVisible()) return true;
-    if (!note.getIsFeedShared()) return false;
-    const follow = await this.followRepository.findByPair(commenterId, authorId);
-    return follow != null;
   }
 }

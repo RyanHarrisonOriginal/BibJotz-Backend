@@ -3,6 +3,7 @@ import { NoteFactory } from '@/domain/Note/note-factory';
 import { INoteResponseDTO } from '@/domain/Note/note.dto';
 import { TaggedReference } from '@/domain/Note/tagged-reference';
 import { ScriptureReference, VerseSpan } from '@/domain/shared/value-objects/scripture-reference';
+import { NoteAudience } from '@/domain/Note/note-audience';
 
 type RawTaggedReference = {
   reference?: {
@@ -30,8 +31,7 @@ type RawNote = {
   startVerse: number | null;
   endVerse: number | null;
   verseSpans?: unknown;
-  isProfileVisible?: boolean;
-  isFeedShared?: boolean;
+  audience?: NoteAudience;
   createdAt: Date;
   updatedAt: Date;
   references?: RawTaggedReference[];
@@ -77,8 +77,7 @@ export class NoteMapper {
       endVerse: ref.endVerse,
       verseSpans: ref.spans.length > 0 ? ref.spans : null,
       scope: ref.scope,
-      isProfileVisible: note.getIsProfileVisible(),
-      isFeedShared: note.getIsFeedShared(),
+      audience: note.getAudience(),
       taggedReferenceIds: note.getTaggedReferenceIds(),
     };
   }
@@ -98,8 +97,7 @@ export class NoteMapper {
         spans: spansFromRaw(row),
       }),
       taggedReferences: taggedReferencesFromRaw(row),
-      isProfileVisible: row.isProfileVisible ?? false,
-      isFeedShared: row.isFeedShared ?? false,
+      audience: row.audience ?? 'PRIVATE',
       createdAt: row.createdAt,
       updatedAt: row.updatedAt,
     });
@@ -131,8 +129,7 @@ export class NoteMapper {
         typeId: tag.typeId,
         typeName: tag.typeName,
       })),
-      isProfileVisible: note.getIsProfileVisible(),
-      isFeedShared: note.getIsFeedShared(),
+      audience: note.getAudience(),
       createdAt: note.getCreatedAt().toISOString(),
       updatedAt: note.getUpdatedAt().toISOString(),
     };

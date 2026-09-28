@@ -29,5 +29,12 @@ responses:
             updatedAt:
               type: string
               format: date-time
+            followPolicy:
+              type: string
+              enum: [OPEN, APPROVAL]
+            followListsPublic:
+              type: boolean
+            pendingRequestCount:
+              type: integer
   '401':
     description: Missing token or user not provisioned

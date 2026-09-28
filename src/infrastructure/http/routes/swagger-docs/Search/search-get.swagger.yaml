@@ -3,8 +3,8 @@ get:
     - Search
   summary: Search people and public notes
   description: >
-    Search users by display name or username, and notes that are profile-visible
-    or feed-shared by content or book name.
+    Search users by display name or username, and notes the viewer is allowed to read,
+    by content or book name.
   security:
     - bearerAuth: []
   parameters:
