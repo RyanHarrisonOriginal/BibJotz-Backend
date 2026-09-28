@@ -15,6 +15,7 @@ export interface IUpdateReferenceRequestDTO {
 
 export interface IGetReferenceParamsDTO {
   id?: string;
+  viewerUserId?: string | string[];
 }
 
 export interface IDeleteReferenceParamsDTO {

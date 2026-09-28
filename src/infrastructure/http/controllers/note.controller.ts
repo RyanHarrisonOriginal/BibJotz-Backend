@@ -71,7 +71,10 @@ export class NoteController {
   };
 
   getNote = async (req: Request, res: Response): Promise<void> => {
-    const query = GetNoteQuery.from(req.params);
+    const query = GetNoteQuery.from({
+      id: req.params.id,
+      viewerUserId: String(requireAuthUserId(req)),
+    });
     const result = await this.queryBus.execute<GetNoteQuery, Note>(query);
     res.json(NoteMapper.mapNoteToResponseDTO(result));
   };

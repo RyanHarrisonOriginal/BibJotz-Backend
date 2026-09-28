@@ -69,7 +69,7 @@ export class UserController {
   getUser = async (req: Request, res: Response): Promise<void> => {
     const query = GetUserQuery.from(req.params);
     const result = await this.queryBus.execute<GetUserQuery, User>(query);
-    res.json(UserMapper.mapUserToResponseDTO(result));
+    res.json(UserMapper.mapUserToProfileResponseDTO(result));
   };
 
   followUser = async (req: Request, res: Response): Promise<void> => {

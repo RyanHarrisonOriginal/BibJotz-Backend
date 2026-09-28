@@ -3,14 +3,27 @@ import { NotFoundError } from '@/domain/shared/errors/not-found-error';
 import { Note } from '@/domain/Note/note';
 import { NoteMapper } from '@/domain/Note/note.mapper';
 import { INoteRepository } from '@/domain/Note/note-repository.interface';
+import { IFollowRepository } from '@/domain/Follow/follow-repository.interface';
+import { canViewNote, resolveIsFollower, viewableNoteFrom } from '@/domain/Note/can-view-note';
 import { GetNoteQuery } from './get-note.query';
 
 export class GetNoteQueryHandler implements IQueryHandler<GetNoteQuery, Note> {
-  constructor(private readonly noteRepository: INoteRepository) {}
+  constructor(
+    private readonly noteRepository: INoteRepository,
+    private readonly followRepository: IFollowRepository,
+  ) {}
 
   async execute(query: GetNoteQuery): Promise<Note> {
     const row = await this.noteRepository.findById(query.id);
     if (!row) throw new NotFoundError('Note not found');
-    return NoteMapper.mapNoteToDomain(row);
+
+    const note = NoteMapper.mapNoteToDomain(row);
+    const view = viewableNoteFrom(note);
+    const isFollower = await resolveIsFollower(this.followRepository, query.viewerUserId, view);
+    if (!canViewNote({ id: query.viewerUserId }, view, isFollower)) {
+      throw new NotFoundError('Note not found');
+    }
+
+    return note;
   }
 }

@@ -1,6 +1,6 @@
 import { User } from '@/domain/User/user';
 import { UserFactory } from '@/domain/User/user-factory';
-import { IUserResponseDTO } from '@/domain/User/user.dto';
+import { IUserProfileResponseDTO, IUserResponseDTO } from '@/domain/User/user.dto';
 
 type RawUser = {
   id: number;
@@ -41,6 +41,17 @@ export class UserMapper {
       id: user.getId() ?? 0,
       displayName: user.getDisplayName(),
       clerkUserId: user.getClerkUserId(),
+      username: user.getUsername(),
+      bio: user.getBio(),
+      createdAt: user.getCreatedAt().toISOString(),
+      updatedAt: user.getUpdatedAt().toISOString(),
+    };
+  }
+
+  static mapUserToProfileResponseDTO(user: User): IUserProfileResponseDTO {
+    return {
+      id: user.getId() ?? 0,
+      displayName: user.getDisplayName(),
       username: user.getUsername(),
       bio: user.getBio(),
       createdAt: user.getCreatedAt().toISOString(),

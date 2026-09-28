@@ -29,6 +29,8 @@ export interface INoteSearchFilters {
 export interface INoteRepository {
   save(note: Note): Promise<unknown>;
   findById(id: number): Promise<unknown | null>;
+  /** Notes linked to a reference through NoteReference. Visibility is not filtered here. */
+  findManyByReferenceId(referenceId: number): Promise<unknown[]>;
   findMany(filters: INoteListFilters): Promise<unknown[]>;
   findProfileVisible(filters: IProfileNotesFilters): Promise<unknown[]>;
   findFeedForUser(filters: IFeedNotesFilters): Promise<unknown[]>;

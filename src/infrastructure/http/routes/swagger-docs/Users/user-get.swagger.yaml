@@ -17,6 +17,12 @@ responses:
               type: integer
             displayName:
               type: string
+            username:
+              type: string
+              nullable: true
+            bio:
+              type: string
+              nullable: true
             createdAt:
               type: string
               format: date-time

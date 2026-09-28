@@ -26,3 +26,13 @@ export interface IUserResponseDTO {
   createdAt: string;
   updatedAt: string;
 }
+
+/** GET /users/:id. Public profile; clerkUserId stays off this response. */
+export interface IUserProfileResponseDTO {
+  id: number;
+  displayName: string;
+  username: string | null;
+  bio: string | null;
+  createdAt: string;
+  updatedAt: string;
+}

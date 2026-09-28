@@ -15,7 +15,7 @@ responses:
   '200':
     description: Comments
   '400':
-    description: Not allowed or validation error
+    description: Validation error
   '404':
     description: Note not found
   '500':

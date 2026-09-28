@@ -42,7 +42,10 @@ export class ReferenceController {
   };
 
   getReference = async (req: Request, res: Response): Promise<void> => {
-    const query = GetReferenceQuery.from(req.params);
+    const query = GetReferenceQuery.from({
+      id: req.params.id,
+      viewerUserId: String(requireAuthUserId(req)),
+    });
     const result = await this.queryBus.execute<GetReferenceQuery, Reference>(query);
     res.json(ReferenceMapper.mapReferenceToResponseDTO(result));
   };

@@ -42,6 +42,7 @@ export interface IUpdateNoteRequestDTO {
 
 export interface IGetNoteParamsDTO {
   id?: string;
+  viewerUserId?: string | string[];
 }
 
 export interface IDeleteNoteParamsDTO {

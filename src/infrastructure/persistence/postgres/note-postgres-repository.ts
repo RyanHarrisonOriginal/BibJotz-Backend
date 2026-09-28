@@ -88,6 +88,15 @@ export class NotePostgresRepository implements INoteRepository {
     });
   }
 
+  async findManyByReferenceId(referenceId: number): Promise<unknown[]> {
+    return this.prisma.note.findMany({
+      where: {
+        references: { some: { referenceId } },
+      },
+      include: noteInclude,
+    });
+  }
+
   async findMany(filters: INoteListFilters): Promise<unknown[]> {
     const where: Prisma.NoteWhereInput = { userId: filters.userId };
 

@@ -43,7 +43,10 @@ export function setupQueryBus(setup: IQueryBusSetup): QueryBus {
   queryBus.registerHandler('GetChapterInfoQuery', new GetChapterInfoQueryHandler(setup.bibleRepository));
   queryBus.registerHandler('GetPassageQuery', new GetPassageQueryHandler(setup.bibleRepository));
   queryBus.registerHandler('GetTranslationsQuery', new GetTranslationsQueryHandler(setup.bibleRepository));
-  queryBus.registerHandler('GetNoteQuery', new GetNoteQueryHandler(setup.noteRepository));
+  queryBus.registerHandler(
+    'GetNoteQuery',
+    new GetNoteQueryHandler(setup.noteRepository, setup.followRepository),
+  );
   queryBus.registerHandler('ListNotesQuery', new ListNotesQueryHandler(setup.noteRepository));
   queryBus.registerHandler('GetNoteStreakQuery', new GetNoteStreakQueryHandler(setup.noteRepository));
   queryBus.registerHandler('GetFeedQuery', new GetFeedQueryHandler(setup.noteRepository));
@@ -56,7 +59,14 @@ export function setupQueryBus(setup: IQueryBusSetup): QueryBus {
     'ListReferenceTypesQuery',
     new ListReferenceTypesQueryHandler(setup.referenceTypeRepository),
   );
-  queryBus.registerHandler('GetReferenceQuery', new GetReferenceQueryHandler(setup.referenceRepository));
+  queryBus.registerHandler(
+    'GetReferenceQuery',
+    new GetReferenceQueryHandler(
+      setup.referenceRepository,
+      setup.noteRepository,
+      setup.followRepository,
+    ),
+  );
   queryBus.registerHandler('ListReferencesQuery', new ListReferencesQueryHandler(setup.referenceRepository));
   queryBus.registerHandler(
     'ListFollowersQuery',
